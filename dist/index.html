@@ -14,6 +14,10 @@
 </head>
 <body>
   <div class="test-content">这个页面提供指导开发的时候测试用。</div>
-  <script src="./guide.js"></script>
+  <script type="module">
+    import EasyGuide from './guide.esm.js'
+
+    console.log(new EasyGuide());
+  </script>
 </body>
 </html>
