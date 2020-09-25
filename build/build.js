@@ -35,40 +35,45 @@ const banner =
   ' * Released under the MIT License.\n' +
   ' */'
 
-const builds = [{
-  entry: resolve('src/index.js'),
-  dest: resolve('dist/guide.js'),
-  format: 'umd',
-  moduleName: 'EasyGuide',
-  plugins: [
-    babel({
-      exclude: 'node_modules/**' // only transpile our source code
-    })
-  ],
-  banner
-}, {
-  entry: resolve('src/index.js'),
-  dest: resolve('dist/guide.esm.js'),
-  format: 'es',
-  moduleName: 'EasyGuide',
-  plugins: [
-    babel({
-      exclude: 'node_modules/**' // only transpile our source code
-    })
-  ],
-  banner
-}, {
-  entry: resolve('src/index.js'),
-  dest: resolve('dist/guide.min.js'),
-  format: 'umd',
-  moduleName: 'EasyGuide',
-  plugins: [
-    babel({
-      exclude: 'node_modules/**' // only transpile our source code
-    })
-  ],
-  banner
-}]
+// 平时开发的时候，只需要打包 esm 格式的文件，发布 mpm 包的时候，所有格式都需要
+const builds = [
+  // {
+  //   entry: resolve('src/index.js'),
+  //   dest: resolve('dist/guide.js'),
+  //   format: 'umd',
+  //   moduleName: 'EasyGuide',
+  //   plugins: [
+  //     babel({
+  //       exclude: 'node_modules/**' // only transpile our source code
+  //     })
+  //   ],
+  //   banner
+  // },
+  {
+    entry: resolve('src/index.js'),
+    dest: resolve('dist/guide.esm.js'),
+    format: 'es',
+    moduleName: 'EasyGuide',
+    plugins: [
+      babel({
+        exclude: 'node_modules/**' // only transpile our source code
+      })
+    ],
+    banner
+  },
+  // {
+  //   entry: resolve('src/index.js'),
+  //   dest: resolve('dist/guide.min.js'),
+  //   format: 'umd',
+  //   moduleName: 'EasyGuide',
+  //   plugins: [
+  //     babel({
+  //       exclude: 'node_modules/**' // only transpile our source code
+  //     })
+  //   ],
+  //   banner
+  // }
+]
 
 function build(builds) {
   let built = 0
