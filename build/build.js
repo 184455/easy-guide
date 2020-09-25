@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const rollup = require('rollup')
+const colors = require('colors')
 const version = require('../package.json').version
 const babel = require('rollup-plugin-babel')
 const uglify = require('uglify-js')
@@ -13,6 +14,19 @@ if (!fs.existsSync('dist')) {
 function resolve(p) {
   return path.resolve(__dirname, '../', p)
 }
+
+function copyCSS() {
+  fs.copyFile(resolve('./src/index.css'), resolve('./dist/guide.css'), function (err) {
+    if(err) console.log('CSS Copy Fail !'.red)
+  })
+}
+
+/**
+ * CSS 样式暂时复制到 /dist
+ * 
+ * TODO: 把 CSS 文件加入 rollup 打包文件
+ */
+copyCSS()
 
 const banner =
   '/*!\n' +
