@@ -1,3 +1,44 @@
-.test {
-  color: red;
+/*  */
+/* ------------要求他们的父元素高度撑开，并且是有相对定位 ------------------------------------ */
+#EasyGuideWrap {
+  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100001;
+  overflow: hidden;
+}
+#EasyGuideWrap .div-show-exit {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  color: white;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 4px 10px;
+  font-size: 15px;
+  cursor: pointer;
+}
+#EasyGuideCanvasId {
+  display: block;
+}
+#EasyGuideDivContainerId {
+  position: relative;
+  height: 0;
+}
+#EasyGuideDivContainerId > div {
+  position: absolute;
+  z-index: 999;
+  border: 2px solid #8bccea;
+}
+
+/* ------------ 业务小样式 --------------------------------------------------------------- */
+.e_disable-body-selected {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.e_lock-scroll {
+  position: fixed;
 }

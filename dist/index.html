@@ -19,7 +19,16 @@
   <script type="module">
     import EasyGuide from './guide.esm.js'
 
-    console.log(new EasyGuide());
+    const Guide = new EasyGuide({ scrollAble: true })
+
+    // 请求指导的数据
+    fetch('https://anti-bot.baidu.com/abdr').then(res => {
+      // 请求成功
+      // Guide.setOptions({ guideList }) // 设置配置项
+      // Guide.show()
+      console.log(Guide);
+      Guide._showGuideMainTain()
+    })
   </script>
 </body>
 </html>

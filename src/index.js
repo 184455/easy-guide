@@ -1,7 +1,7 @@
 import initMixin from './guide/core'
 
-function EasyGuide() {
-  this._init()
+function EasyGuide(options = {}) {
+  this.init(options)
 }
 
 initMixin(EasyGuide)
