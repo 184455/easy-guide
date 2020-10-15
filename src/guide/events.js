@@ -1,0 +1,261 @@
+import {
+  TemplateDragArea,
+  tagX, tagY,
+  TemplateItemTop,
+  TemplateItemRight,
+  TemplateItemBottom,
+  TemplateItemLeft,
+  ElementDataSetName,
+  GuideDragItem,
+  defaultFillStyle
+} from '../config/constant'
+import { utilsMoveDiv, utilsCreateElement, editElementStyle } from '../utils/dom'
+
+const defaultPosition = (windowWidth) => ({ left: (windowWidth / 2 - 150) | 0, top: 200, width: 300, height: 120 })
+
+// 创建指导的小框
+const createGuideItem = (EG, elementName, { top, left, width, height }) => {
+  const tempFragment = document.createDocumentFragment()
+  const topStep = utilsCreateElement('div', { class: 'e_top-step-number' })
+  topStep.innerHTML = 1
+
+  const guideContent = utilsCreateElement('div', { class: 'e_guide-content' })
+  editElementStyle(guideContent, { bottom: `${height + 12}px` })
+  const contentText = utilsCreateElement('div', { class: 'e_guide-content-text' })
+  contentText.innerHTML = 'I am content!'
+  guideContent.appendChild(contentText)
+  const guideContentBtn = utilsCreateElement('div', { class: 'e_guide-content-btn' })
+
+  const closeBtn = utilsCreateElement('button', { class: 'e_close-btn' })
+  closeBtn.innerHTML = '关闭'
+  const prevBtn = utilsCreateElement('button', { class: 'e_prev-btn' })
+  prevBtn.innerHTML = '上一步'
+  const nextBtn = utilsCreateElement('button', { class: 'e_next-btn' })
+  nextBtn.innerHTML = '下一步'
+  guideContentBtn.appendChild(closeBtn)
+  guideContentBtn.appendChild(prevBtn)
+  guideContentBtn.appendChild(nextBtn)
+  guideContent.appendChild(guideContentBtn)
+
+  tempFragment.appendChild(topStep)
+  tempFragment.appendChild(guideContent)
+  const temp = utilsCreateElement('div', {
+    class: `e_guide-item ${elementName}`,
+    [ElementDataSetName]: GuideDragItem
+  })
+  temp.appendChild(tempFragment)
+
+  editElementStyle(temp, { top: `${top}px`, left: `${left}px`, width: `${width}px`, height: `${height}px` })
+  EG.EasyGuideDivContainer.appendChild(temp)
+}
+
+// canvas 画布
+const canvasPainting = (ctx, next, area, guideList = []) => {
+  const { left, top, width, height } = next
+  const { windowWidth, windowHeight } = area
+
+  ctx.save()
+  ctx.clearRect(0, 0, windowWidth, windowHeight)
+  ctx.fillStyle = defaultFillStyle
+  ctx.fillRect(0, 0, windowWidth, windowHeight)
+  if (Array.isArray(guideList) && guideList.length) {
+    guideList.forEach(item => {
+      ctx.clearRect(item.left, item.top, item.width, item.height)
+    })
+  }
+  ctx.clearRect(left, top, width, height)
+  ctx.restore()
+}
+
+const handleTemplateDropAreaDown = (EG, event) => {
+  const { offsetLeft, offsetTop } = EG.currentTarget.parentElement // 从父元素取距离屏幕的位置
+  EG.onMouseDownPositionImage = {
+    deltaX: event[tagX] - offsetLeft,
+    deltaY: event[tagY] - offsetTop
+  }
+}
+const handleTemplateDropAreaMove = (EG, event) => {
+  const { deltaX, deltaY } = EG.onMouseDownPositionImage // 鼠标落点和元素的边距，需要减去，保持移动前不抖动
+  utilsMoveDiv(EG.currentTarget.parentElement, event[tagX] - deltaX, event[tagY] - deltaY)
+}
+const handleTemplateDropAreaUp = (EG, event) => {
+  EG.onMouseDownPositionImage = null
+}
+
+// 拖拽用户指导Item
+const handleGuideDragItemDown = (_this, event) => {
+  const { offsetLeft, offsetTop, clientWidth, clientHeight } = _this.currentTarget // 从父元素取距离屏幕的位置
+  _this.onMouseDownPositionImage = {
+    deltaX: event[tagX] - offsetLeft,
+    deltaY: event[tagY] - offsetTop,
+    clientWidth, clientHeight
+  }
+}
+const handleGuideDragItemMove = (_this, event) => {
+  const { windowWidth, windowHeight, onMouseDownPositionImage, currentTarget, EasyGuideCanvasContext } = _this
+  const { deltaX, deltaY, clientWidth: width, clientHeight: height } = onMouseDownPositionImage // 鼠标落点和元素的边距，需要减去，保持移动前不抖动
+  const left = event[tagX] - deltaX
+  const top = event[tagY] - deltaY
+
+  utilsMoveDiv(currentTarget, left, top)
+  canvasPainting(
+    EasyGuideCanvasContext,
+    { left, top, width, height },
+    { windowWidth, windowHeight },
+    [defaultPosition(windowWidth)]
+  )
+}
+const handleGuideDragItemUp = (_this, event) => {
+  _this.onMouseDownPositionImage = null
+}
+
+export default function initEvents (EasyGuide) {
+  /**
+   * 点击事件
+   * @param e
+   */
+  const handelWrapperClick = (EG, e) => {
+    const elementName = e.target.dataset.elementName
+    // 支持事件的元素列表
+    const eventElementNameList = [TemplateItemTop, TemplateItemRight, TemplateItemBottom, TemplateItemLeft, GuideDragItem]
+    if (eventElementNameList.indexOf(elementName) < 0) return
+
+    const { windowWidth, windowHeight } = EG
+
+    if (/^template-item-(top|right|bottom|left)$/.test(elementName)) {
+      // 点击模版添加
+      const position = defaultPosition(EG.windowWidth)
+      createGuideItem(EG, elementName, position)
+      canvasPainting(EG.EasyGuideCanvasContext, position, { windowWidth, windowHeight })
+      return
+    }
+
+    switch (elementName) {
+      // case DivDotName:
+      //   dotMouseDown(e)
+      //   break
+      default:
+    }
+  }
+  /**
+   * 鼠标按下事件
+   * @param e
+   */
+  const handelWrapperDown = (_this, e) => {
+    const elementName = e.target.dataset.elementName
+    const eventElementNameList = [TemplateDragArea, GuideDragItem] // 支持事件的元素列表
+    if (eventElementNameList.indexOf(elementName) < 0) return
+
+    _this.currentTarget = e.target
+    const currentTargetName = elementName
+
+    // 按下
+    switch (currentTargetName) {
+      case TemplateDragArea:
+        // 模板栏拖动
+        handleTemplateDropAreaDown(_this, e)
+        break
+      case GuideDragItem:
+        // 指导 Item 拖拽维护
+        handleGuideDragItemDown(_this, e)
+        break
+      // case BorderDivName:
+      //   divMouseDown(e)
+      //   break
+      // case DivDotName:
+      //   dotMouseDown(e)
+      //   break
+      default:
+    }
+  }
+
+  /**
+   * 鼠标移动事件
+   * @param e
+   */
+  const handelWrapperMove = (_this, e) => {
+    if (!_this.currentTarget) return
+    const currentTargetName = _this.currentTarget.dataset.elementName
+
+    switch (currentTargetName) {
+      case TemplateDragArea:
+        handleTemplateDropAreaMove(_this, e)
+        break
+      case GuideDragItem:
+        // 指导 Item 拖拽维护
+        handleGuideDragItemMove(_this, e)
+        break
+      // case BorderDivName:
+      //   divMouseMove(e)
+      //   break
+      // case DivDotName:
+      //   dotMouseMove(e)
+      //   break
+      default:
+    }
+  }
+
+  /**
+   * 鼠标抬起事件
+   * @param e
+   */
+  const handelWrapperUp = (_this, e) => {
+    if (!_this.currentTarget) return
+    const currentTargetName = _this.currentTarget.dataset.elementName
+
+    switch (currentTargetName) {
+      case TemplateDragArea:
+        handleTemplateDropAreaUp(_this, e)
+        break
+      case GuideDragItem:
+        // 指导 Item 拖拽维护
+        handleGuideDragItemUp(_this, e)
+        break
+      // case BorderDivName:
+      //   divMouseUp(e)
+      //   break
+      // case DivDotName:
+      //   dotMouseUp(e)
+      //   break
+      default:
+    }
+    _this.currentTarget = null
+  }
+
+  // 初始化 所有关于事件的东西
+  EasyGuide.prototype.initEvents = function () {
+    // 在根节点代理所有的事件
+
+    // 点击事件
+    const _handelWrapperClick = e => {
+      handelWrapperClick(this, e)
+    }
+    // 按下事件
+    const _handelWrapperDown = e => {
+      handelWrapperDown(this, e)
+    }
+    // 按下移动事件
+    const _handelWrapperMove = e => {
+      handelWrapperMove(this, e)
+    }
+    // 起来事件
+    const _handelWrapperUp = e => {
+      handelWrapperUp(this, e)
+    }
+
+    const listenerTarget = this.EasyGuideWrap
+    listenerTarget.onclick = _handelWrapperClick
+    listenerTarget.onmousedown = _handelWrapperDown
+    listenerTarget.onmousemove = _handelWrapperMove
+    listenerTarget.onmouseup = _handelWrapperUp
+  }
+
+  // 解绑所有事件
+  EasyGuide.prototype.eventsDestroy = function () {
+    const listenerTarget = this.EasyGuideWrap
+    listenerTarget.onclick = null
+    listenerTarget.onmousedown = null
+    listenerTarget.onmousemove = null
+    listenerTarget.onmouseup = null
+  }
+}

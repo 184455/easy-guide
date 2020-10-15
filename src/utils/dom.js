@@ -14,7 +14,7 @@ export function utilsCreateElement(eleType = 'div', props = {}) {
   return ele
 }
 
-/*
+/**
  * 判断一个元素是否有某个样式的名称
  * @param el {DOM}
  * @param className {String} class name
@@ -38,4 +38,40 @@ export function addClass(el, className) {
   const classNameList = el.className.split(' ')
   classNameList.push(className)
   el.className = classNameList.join(' ')
+}
+
+/**
+ * 向元素中写入一个dataset 属性
+ * @param {dom} el 写入的元素
+ * @param {string} key dataset 的 key
+ * @param {string} value dataset 的 value
+ */
+export function writeElementDataSet (el, key, value) {
+  if (el.dataset) {
+    el.dataset[key] = value
+  } else {
+    el.setAttribute(`data-${key}`, value)
+  }
+}
+
+/**
+ * 设置dom元素绝对定位的左和上边距
+ * @param ele {dom}
+ * @param left {number}
+ * @param top {number}
+ */
+export function utilsMoveDiv (ele, left, top) {
+  ele.style.left = left + 'px'
+  ele.style.top = top + 'px'
+}
+
+/**
+ * 设置dom元素的 style 属性
+ * @param ele {dom}
+ * @param props {object} 设置的属性
+ */
+export function editElementStyle (ele, props) {
+  Object.keys(props).forEach(key => {
+    ele.style[key] = props[key]
+  })
 }

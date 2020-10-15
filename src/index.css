@@ -1,4 +1,9 @@
-/*  */
+/* ------------ 清除自带样式 ------------------------------------------------------------ */
+body {
+  margin: 0;
+  padding: 0;
+}
+
 /* ------------要求他们的父元素高度撑开，并且是有相对定位 ------------------------------------ */
 #EasyGuideWrap {
   position: relative;
@@ -24,14 +29,120 @@
   display: block;
 }
 #EasyGuideDivContainerId {
-  position: relative;
   height: 0;
 }
-#EasyGuideDivContainerId > div {
+#EasyGuideDivContainerId .e_guide-item {
   position: absolute;
-  z-index: 999;
-  border: 2px solid #8bccea;
+  top: 300px;
+  width: 200px;
+  height: 100px;
+  left: calc(50vw - 100px);
+  z-index: 99999;
+  cursor: move;
 }
+#EasyGuideDivContainerId .e_guide-item .e_guide-content {
+  position: absolute;
+  left: 15px;
+  bottom: 112px;
+  min-width: 220px;
+  max-width: 320px;
+  min-height: 90px;
+  padding: 10px;
+  border-radius: 3px;
+  font-size: 14px;
+  box-shadow: 0 1px 10px rgba(0,0,0,.4);
+  background-color: white;
+  z-index: 99999;
+}
+#EasyGuideDivContainerId .e_guide-item .e_guide-content .e_guide-content-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+.e_guide-content::before {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  border: 5px solid white;
+  border-top-color: white;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent
+}
+#EasyGuideDivContainerId .e_top-step-number {
+  box-sizing: content-box;
+    position: absolute;
+    top: -16px;
+    left: -16px;
+    z-index: 9999999999 !important;
+    padding: 2px;
+    font-size: 13px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    text-shadow: 1px 1px 1px rgba(0,0,0,.3);
+    background: #ff3019;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,.4);
+}
+#EasyGuideTemplateId {
+  position: fixed;
+  left: calc(100vw - 250px);
+  top: 100px;
+  width: 200px;
+  font-size: 14px;
+  background-color: white;
+}
+#EasyGuideTemplateId .e_template-close-btn {
+  position: absolute;
+  right: 0;
+  top: -30px;
+  height: 18px;
+  width: 20px;
+  padding-bottom: 2px;
+  color: white;
+  text-align: center;
+  border: 1px solid white;
+  border-radius: 20px;
+  cursor: pointer;
+}
+#EasyGuideTemplateId .e_template-close-btn::after {
+  position: absolute;
+  content: '';
+  width: 1px;
+  background: white;
+  height: 25px;
+  height: 9px;
+  bottom: -9px;
+  left: 10px;
+}
+#EasyGuideTemplateId .e_template-top-text {
+  text-align: center;
+  padding: 15px 0;
+  cursor: move;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+#EasyGuideTemplateId .e_template-list {
+  background: #d9d9d9;
+  margin: 0;
+  overflow: hidden;
+}
+#EasyGuideTemplateId .e_template-list > div {
+  position: relative;
+  background: #fff;
+  margin: 16px 12px;
+  text-align: center;
+}
+/* #EasyGuideTemplateId .e_template-close-btn {}
+#EasyGuideTemplateId .e_template-close-btn {} */
+
 
 /* ------------ 业务小样式 --------------------------------------------------------------- */
 .e_disable-body-selected {
