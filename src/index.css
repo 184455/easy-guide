@@ -53,6 +53,7 @@ body {
   box-shadow: 0 1px 10px rgba(0,0,0,.4);
   background-color: white;
   z-index: 99999;
+  cursor: default;
 }
 #EasyGuideDivContainerId .e_guide-item .e_guide-content .e_guide-content-btn {
   position: absolute;

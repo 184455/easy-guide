@@ -29,7 +29,7 @@ export default function initMixin (EasyGuide) {
     const { scrollAble } = this.Options
 
     // 用户指导列表
-    this.guideList = null
+    this.guideList = []
 
     // 创建最 EasyGuide 最外层容器
     this.EasyGuideWrap = utilsCreateElement('div', { id: EasyGuideWrapId })

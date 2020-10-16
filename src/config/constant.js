@@ -8,7 +8,7 @@ export const MODE = {
   MAINTAIN: 'MAINTAIN'    // 编辑模式
 }
 
-export const defaultFillStyle = 'rgba(0, 0, 0, 0.5)'
+export const DefaultFillStyle = 'rgba(0, 0, 0, 0.5)'
 
 // ------------------ 元素ID --------------------------
 

@@ -19,7 +19,13 @@
   <script type="module">
     import EasyGuide from './guide.esm.js'
 
-    const Guide = new EasyGuide({ scrollAble: true })
+    const Guide = new EasyGuide({
+      scrollAble: true,
+      mode: 'MAINTAIN',
+      onGuideListChange: (action, data, list) => {
+        console.log({ action, data, list });
+      }
+    })
 
     // 请求指导的数据
     fetch('https://anti-bot.baidu.com/abdr').then(res => {
@@ -28,6 +34,7 @@
       // Guide.show()
       console.log(Guide);
       Guide._showGuideMainTain()
+      // Guide.setGuideList([{left: 756, top: 338, width: 300, height: 120, id: "1602742042912"}])
     })
   </script>
 </body>
