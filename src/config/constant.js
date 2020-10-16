@@ -29,6 +29,9 @@ export const EasyGuideTemplateId = 'EasyGuideTemplateId'
 // 元素 dataset 的 key
 export const ElementDataSetName = 'data-element-name'
 
+// 元素 close button 的 key
+export const CloseButton = 'data-element-name'
+
 // canvas 元素 dataset 名字
 export const CanvasName = 'canvas'
 

@@ -1,4 +1,5 @@
 // 工具方法
+import { DefaultFillStyle } from '../config/constant'
 
 /**
  * 创建一个 div 元素
@@ -21,8 +22,7 @@ export function utilsCreateElement(eleType = 'div', props = {}) {
  * @return {Boolean}
  */
 export function hasClass(el, className) {
-  const reg = new RegExp(`(^|\\s)${className}(\\s|$)`)
-  return reg.test(el.className)
+  return el.className.indexOf(className) > -1
 }
 
 /**
@@ -35,9 +35,23 @@ export function addClass(el, className) {
     return
   }
 
-  const classNameList = el.className.split(' ')
+  const classNameList = el.className.trim().split(/\s+/)
   classNameList.push(className)
-  el.className = classNameList.join(' ')
+  el.className = classNameList.join(' ').trim()
+}
+
+/**
+ * 删除某个元素的样式
+ * @param el {DOM} Must
+ * @param className
+ */
+export function deleteClass(el, className) {
+  if (!hasClass(el, className)) {
+    return
+  }
+
+  const classNameList = el.className.split(' ').filter(name => name !== className)
+  el.className = classNameList.length ? classNameList.join(' ') : ''
 }
 
 /**
@@ -74,4 +88,22 @@ export function editElementStyle (ele, props) {
   Object.keys(props).forEach(key => {
     ele.style[key] = props[key]
   })
+}
+
+// canvas 画布
+export function canvasPainting (ctx, next, area, guideList = [], _DefaultFillStyle = DefaultFillStyle) {
+  const { left, top, width, height } = next
+  const { windowWidth, windowHeight } = area
+
+  ctx.save()
+  ctx.clearRect(0, 0, windowWidth, windowHeight)
+  ctx.fillStyle = _DefaultFillStyle
+  ctx.fillRect(0, 0, windowWidth, windowHeight)
+  if (Array.isArray(guideList) && guideList.length) {
+    guideList.forEach(item => {
+      ctx.clearRect(item.left, item.top, item.width, item.height)
+    })
+  }
+  ctx.clearRect(left, top, width, height)
+  ctx.restore()
 }

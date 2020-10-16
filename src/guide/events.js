@@ -7,9 +7,9 @@ import {
   TemplateItemLeft,
   ElementDataSetName,
   GuideDragItem,
-  DefaultFillStyle
+  CloseButton
 } from '../config/constant'
-import { utilsMoveDiv, utilsCreateElement, editElementStyle } from '../utils/dom'
+import { utilsMoveDiv, utilsCreateElement, editElementStyle, canvasPainting } from '../utils/dom'
 
 const defaultPosition = (windowWidth) => ({
   left: (windowWidth / 2 - 150) | 0,
@@ -71,22 +71,9 @@ const createGuideItem = (EG, elementName, { top, left, width, height, id }) => {
   EG.EasyGuideDivContainer.appendChild(temp)
 }
 
-// canvas 画布
-const canvasPainting = (ctx, next, area, guideList = []) => {
-  const { left, top, width, height } = next
-  const { windowWidth, windowHeight } = area
-
-  ctx.save()
-  ctx.clearRect(0, 0, windowWidth, windowHeight)
-  ctx.fillStyle = DefaultFillStyle
-  ctx.fillRect(0, 0, windowWidth, windowHeight)
-  if (Array.isArray(guideList) && guideList.length) {
-    guideList.forEach(item => {
-      ctx.clearRect(item.left, item.top, item.width, item.height)
-    })
-  }
-  ctx.clearRect(left, top, width, height)
-  ctx.restore()
+// 关闭按钮
+const handleClickCloseButton = (_this, event) => {
+  _this.destroy()
 }
 
 // 拖动模版框
@@ -146,7 +133,7 @@ const handelWrapperClick = (_this, e) => {
   // 支持事件的元素列表
   const eventElementNameList = [
     TemplateItemTop, TemplateItemRight, TemplateItemBottom,
-    TemplateItemLeft, GuideDragItem
+    TemplateItemLeft, GuideDragItem, CloseButton
   ]
   if (eventElementNameList.indexOf(elementName) < 0) return
 
@@ -162,9 +149,9 @@ const handelWrapperClick = (_this, e) => {
   }
 
   switch (elementName) {
-    // case DivDotName:
-    //   dotMouseDown(e)
-    //   break
+    case CloseButton:
+      handleClickCloseButton(_this, e)
+      break
     default:
   }
 }

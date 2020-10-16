@@ -14,7 +14,13 @@
   </style>
 </head>
 <body>
-  <div class="test-content">这个页面提供指导开发的时候测试用。</div>
+  <div class="test-content">
+    <div>这个页面提供指导开发的时候测试用。</div>
+    <div>
+      <button id="showMaintainGuide">显示：维护模式</button>
+      <button>显示：只读模式</button>
+    </div>
+  </div>
 
   <script type="module">
     import EasyGuide from './guide.esm.js'
@@ -23,19 +29,16 @@
       scrollAble: true,
       mode: 'MAINTAIN',
       onGuideListChange: (action, data, list) => {
-        console.log({ action, data, list });
+        console.log({ action, data, list })
       }
     })
 
-    // 请求指导的数据
-    fetch('https://anti-bot.baidu.com/abdr').then(res => {
-      // 请求成功
-      // Guide.setOptions({ guideList }) // 设置配置项
-      // Guide.show()
-      console.log(Guide);
+    function showMaintainGuide () {
       Guide._showGuideMainTain()
-      // Guide.setGuideList([{left: 756, top: 338, width: 300, height: 120, id: "1602742042912"}])
-    })
+      Guide.initEvents()
+    }
+
+    document.getElementById('showMaintainGuide').addEventListener('click', showMaintainGuide)
   </script>
 </body>
 </html>

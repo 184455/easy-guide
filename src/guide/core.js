@@ -6,12 +6,17 @@ import {
   EasyGuideTemplateId,
   ElementDataSetName,
   CanvasName,
-  TemplateDragArea
+  CloseButton,
+  TemplateDragArea,
+  DefaultFillStyle
 } from '../config/constant'
-import { utilsCreateElement, addClass } from '../utils/dom'
+import { utilsCreateElement, addClass, deleteClass } from '../utils/dom'
 
 function handleBodyClassName () {
   addClass(document.body, 'e_disable-body-selected')
+}
+function handleRemoveBodyClassName () {
+  deleteClass(document.body, 'e_disable-body-selected')
 }
 
 /**
@@ -54,9 +59,20 @@ export default function initMixin (EasyGuide) {
   // 展示-编辑模式
   EasyGuide.prototype._showGuideMainTain = function () {
     const { windowWidth, windowHeight, Options } = this
-    const tempFragment = document.createDocumentFragment()
+
+    // 处理 body 样式
+    handleBodyClassName()
+
+    const root = document.getElementById(EasyGuideWrapId)
+    if (!root) {
+      // 如果根节点不在，重新插入
+      document.body.insertBefore(this.EasyGuideWrap, document.body.childNodes[0])
+      return
+    }
 
     // 创建 Canvas 画板
+    const tempFragment = document.createDocumentFragment()
+
     const tempCanvas = utilsCreateElement('canvas', {
       id: EasyGuideCanvasId,
       width: windowWidth,
@@ -70,7 +86,10 @@ export default function initMixin (EasyGuide) {
 
     // 生成气泡模版
     this.EasyGuideTemplate = utilsCreateElement('div', { id: EasyGuideTemplateId })
-    const templateCloseBtn = utilsCreateElement('div', { class: 'e_template-close-btn' })
+    const templateCloseBtn = utilsCreateElement('div', {
+      class: 'e_template-close-btn',
+      [ElementDataSetName]: CloseButton
+    })
     templateCloseBtn.innerHTML = 'x'
     this.EasyGuideTemplate.appendChild(templateCloseBtn)
     const templateTopText = utilsCreateElement('div', {
@@ -98,22 +117,19 @@ export default function initMixin (EasyGuide) {
     tempFragment.appendChild(this.EasyGuideTemplate)
     this.EasyGuideWrap.appendChild(tempFragment)
 
-    // 处理 body 样式
-    handleBodyClassName()
-
     // 生成画板
     this.EasyGuideCanvasContext.fillStyle = Options.defaultFillStyle
     this.EasyGuideCanvasContext.fillRect(0, 0, windowWidth, windowHeight)
+    this.EasyGuideCanvasContext.restore()
   }
 
   // 展示
   EasyGuide.prototype.show = function () {}
 
   // 销毁指导，数据，事件清理
-  EasyGuide.prototype.destroy = function () {}
-
-  // 获取 canvas 上下文
-  EasyGuide.prototype.getCanvasContext = function () {
-    return this.EasyGuideCanvasContext
+  EasyGuide.prototype.destroy = function () {
+    this.eventsDestroy()
+    handleRemoveBodyClassName()
+    document.body.removeChild(this.EasyGuideWrap)
   }
 };
