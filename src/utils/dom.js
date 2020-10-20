@@ -92,7 +92,6 @@ export function editElementStyle (ele, props) {
 
 // canvas 画布
 export function canvasPainting (ctx, next, windowArea, guideList = [], _DefaultFillStyle = DefaultFillStyle) {
-  const { left, top, width, height } = next
   const { windowWidth, windowHeight } = windowArea
 
   ctx.save()
@@ -104,7 +103,10 @@ export function canvasPainting (ctx, next, windowArea, guideList = [], _DefaultF
       ctx.clearRect(item.left, item.top, item.width, item.height)
     })
   }
-  ctx.clearRect(left, top, width, height)
+  if (typeof next === 'object') {
+    const { left, top, width, height } = next
+    ctx.clearRect(left, top, width, height)
+  }
   ctx.restore()
 }
 

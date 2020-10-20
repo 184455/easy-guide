@@ -13,7 +13,8 @@ import {
   DotBottom,
   DotLeft,
   MinHeight,
-  MinWidth
+  MinWidth,
+  DeleteBtn
 } from '../config/constant'
 import {
   utilsMoveDiv, utilsCreateElement,
@@ -57,7 +58,10 @@ const createGuideItem = (EG, elementName, { top, left, width, height, id }) => {
     guideContentBtn.appendChild(nextBtn)
   } else if (Options.mode === MODE.MAINTAIN) {
     // 维护编辑模式
-    const deleteBtn = utilsCreateElement('button', { class: 'e_delete-btn' })
+    const deleteBtn = utilsCreateElement('button', {
+      class: 'e_delete-btn',
+      [ElementDataSetName]: DeleteBtn
+    })
     deleteBtn.innerHTML = '删除'
     const editBtn = utilsCreateElement('button', { class: 'e_edit-btn' })
     editBtn.innerHTML = '编辑'
@@ -94,6 +98,13 @@ const createGuideItem = (EG, elementName, { top, left, width, height, id }) => {
 // 关闭按钮
 const handleClickCloseButton = (_this, event) => {
   _this.destroy()
+}
+
+// 维护模式下，删除某个用户指导
+const handleDeleteItem = (_this, event) => {
+  const { guideList } = _this
+  const deleteId = event.target.parentElement.parentElement.parentElement.id
+  _this.dispatch('delete', guideList.find(i => i.id === deleteId) || {})
 }
 
 // 拖动模版框
@@ -213,7 +224,7 @@ const handelWrapperClick = (_this, e) => {
   // 支持事件的元素列表
   const eventElementNameList = [
     TemplateItemTop, TemplateItemRight, TemplateItemBottom,
-    TemplateItemLeft, GuideDragItem, CloseButton
+    TemplateItemLeft, GuideDragItem, CloseButton, DeleteBtn
   ]
   if (eventElementNameList.indexOf(elementName) < 0) return
 
@@ -231,6 +242,9 @@ const handelWrapperClick = (_this, e) => {
   switch (elementName) {
     case CloseButton:
       handleClickCloseButton(_this, e)
+      break
+    case DeleteBtn:
+      handleDeleteItem(_this, e)
       break
     default:
   }

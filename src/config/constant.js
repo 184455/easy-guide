@@ -57,6 +57,9 @@ export const DotRight = 'e_dot-right'
 export const DotBottom = 'e_dot-bottom'
 export const DotLeft = 'e_dot-left'
 
+// 删除按钮
+export const DeleteBtn = 'deleteButton'
+
 // ------------------ 事件 --------------------------
 
 // 事件 X 轴取值字段
