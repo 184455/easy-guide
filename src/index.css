@@ -40,10 +40,46 @@ body {
   z-index: 99999;
   cursor: move;
 }
+#EasyGuideDivContainerId .e_guide-item .e_dot-common {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: white;
+  border: 2px solid #58a;
+  cursor: row-resize;
+}
+.e_dot-common::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  bottom: -10px;
+  left: -10px;
+  background: transparent;
+}
+#EasyGuideDivContainerId .e_guide-item .e_dot-top {
+  top: -6px;
+  left: calc(50% - 6px);
+}
+#EasyGuideDivContainerId .e_guide-item .e_dot-right {
+  right: -6px;
+  top: calc(50% - 6px);
+  cursor: col-resize;
+}
+#EasyGuideDivContainerId .e_guide-item .e_dot-bottom {
+  bottom: -6px;
+  left: calc(50% - 6px);
+}
+#EasyGuideDivContainerId .e_guide-item .e_dot-left {
+  left: -6px;
+  top: calc(50% - 6px);
+  cursor: col-resize;
+}
 #EasyGuideDivContainerId .e_guide-item .e_guide-content {
   position: absolute;
   left: 15px;
-  bottom: 112px;
+  bottom: calc(100% + 12px);;
   min-width: 220px;
   max-width: 320px;
   min-height: 90px;

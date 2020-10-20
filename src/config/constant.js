@@ -8,6 +8,10 @@ export const MODE = {
   MAINTAIN: 'MAINTAIN'    // 编辑模式
 }
 
+// 选区最小高度，宽度
+export const MinHeight = 50
+export const MinWidth = 100
+
 export const DefaultFillStyle = 'rgba(0, 0, 0, 0.5)'
 
 // ------------------ 元素ID --------------------------
@@ -46,6 +50,12 @@ export const TemplateItemTop = 'template-item-top'
 export const TemplateItemRight = 'template-item-right'
 export const TemplateItemBottom = 'template-item-bottom'
 export const TemplateItemLeft = 'template-item-left'
+
+// dot 上下左右
+export const DotTop = 'e_dot-top'
+export const DotRight = 'e_dot-right'
+export const DotBottom = 'e_dot-bottom'
+export const DotLeft = 'e_dot-left'
 
 // ------------------ 事件 --------------------------
 

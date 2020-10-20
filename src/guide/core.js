@@ -7,8 +7,7 @@ import {
   ElementDataSetName,
   CanvasName,
   CloseButton,
-  TemplateDragArea,
-  DefaultFillStyle
+  TemplateDragArea
 } from '../config/constant'
 import { utilsCreateElement, addClass, deleteClass } from '../utils/dom'
 

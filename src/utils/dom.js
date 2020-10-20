@@ -91,9 +91,9 @@ export function editElementStyle (ele, props) {
 }
 
 // canvas 画布
-export function canvasPainting (ctx, next, area, guideList = [], _DefaultFillStyle = DefaultFillStyle) {
+export function canvasPainting (ctx, next, windowArea, guideList = [], _DefaultFillStyle = DefaultFillStyle) {
   const { left, top, width, height } = next
-  const { windowWidth, windowHeight } = area
+  const { windowWidth, windowHeight } = windowArea
 
   ctx.save()
   ctx.clearRect(0, 0, windowWidth, windowHeight)
@@ -106,4 +106,16 @@ export function canvasPainting (ctx, next, area, guideList = [], _DefaultFillSty
   }
   ctx.clearRect(left, top, width, height)
   ctx.restore()
+}
+
+/**
+ * 获取元素的：左 上 宽 高
+ * @param {dom} el 目标元素
+ */
+export function getPosition (el) {
+  const res = {};
+  (['top', 'left', 'width', 'height']).map(item => {
+    res[item] = parseInt(el.style[item], 10)
+  })
+  return res
 }

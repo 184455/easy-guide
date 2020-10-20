@@ -7,9 +7,19 @@ import {
   TemplateItemLeft,
   ElementDataSetName,
   GuideDragItem,
-  CloseButton
+  CloseButton,
+  DotTop,
+  DotRight,
+  DotBottom,
+  DotLeft,
+  MinHeight,
+  MinWidth
 } from '../config/constant'
-import { utilsMoveDiv, utilsCreateElement, editElementStyle, canvasPainting } from '../utils/dom'
+import {
+  utilsMoveDiv, utilsCreateElement,
+  editElementStyle, canvasPainting,
+  getPosition
+} from '../utils/dom'
 
 const defaultPosition = (windowWidth) => ({
   left: (windowWidth / 2 - 150) | 0,
@@ -27,7 +37,7 @@ const createGuideItem = (EG, elementName, { top, left, width, height, id }) => {
   topStep.innerHTML = 1
 
   const guideContent = utilsCreateElement('div', { class: 'e_guide-content' })
-  editElementStyle(guideContent, { bottom: `${height + 12}px` })
+  // editElementStyle(guideContent, { bottom: `${height + 12}px` })
   const contentText = utilsCreateElement('div', { class: 'e_guide-content-text' })
   contentText.innerHTML = 'I am content!'
   guideContent.appendChild(contentText)
@@ -56,8 +66,18 @@ const createGuideItem = (EG, elementName, { top, left, width, height, id }) => {
     guideContentBtn.appendChild(editBtn)
   }
 
+  //  创建 dot 拖动调整宽度的元素
+  const dotFrag = document.createDocumentFragment();
+  (['top', 'right', 'bottom', 'left']).map(item => {
+    dotFrag.appendChild(utilsCreateElement('div', {
+      class: `e_dot-${item} e_dot-common`,
+      [ElementDataSetName]: `e_dot-${item}`
+    }))
+  })
+
   guideContent.appendChild(guideContentBtn)
 
+  tempFragment.appendChild(dotFrag)
   tempFragment.appendChild(topStep)
   tempFragment.appendChild(guideContent)
   const temp = utilsCreateElement('div', {
@@ -77,19 +97,19 @@ const handleClickCloseButton = (_this, event) => {
 }
 
 // 拖动模版框
-const handleTemplateDropAreaDown = (EG, event) => {
-  const { offsetLeft, offsetTop } = EG.currentTarget.parentElement // 从父元素取距离屏幕的位置
-  EG.onMouseDownPositionImage = {
+const handleTemplateDropAreaDown = (_this, event) => {
+  const { offsetLeft, offsetTop } = _this.currentTarget.parentElement // 从父元素取距离屏幕的位置
+  _this.onMouseDownPositionImage = {
     deltaX: event[tagX] - offsetLeft,
     deltaY: event[tagY] - offsetTop
   }
 }
-const handleTemplateDropAreaMove = (EG, event) => {
-  const { deltaX, deltaY } = EG.onMouseDownPositionImage // 鼠标落点和元素的边距，需要减去，保持移动前不抖动
-  utilsMoveDiv(EG.currentTarget.parentElement, event[tagX] - deltaX, event[tagY] - deltaY)
+const handleTemplateDropAreaMove = (_this, event) => {
+  const { deltaX, deltaY } = _this.onMouseDownPositionImage // 鼠标落点和元素的边距，需要减去，保持移动前不抖动
+  utilsMoveDiv(_this.currentTarget.parentElement, event[tagX] - deltaX, event[tagY] - deltaY)
 }
-const handleTemplateDropAreaUp = (EG, event) => {
-  EG.onMouseDownPositionImage = null
+const handleTemplateDropAreaUp = (_this, event) => {
+  _this.onMouseDownPositionImage = null
 }
 
 // 拖拽用户指导Item
@@ -123,6 +143,66 @@ const handleGuideDragItemUp = (_this, event) => {
   _this.onMouseDownPositionImage = null
 }
 
+// 拖拽 dot 调整选区宽高
+const handleDotDown = (_this, event) => {
+  const elementName = event.target.dataset.elementName
+  const { clientWidth, clientHeight, id } = _this.currentTarget.parentElement
+  _this.onMouseDownPositionImage = {
+    id,
+    clientWidth,
+    clientHeight,
+    elementName,
+    startX: event[tagX],
+    startY: event[tagY],
+    position: getPosition(_this.currentTarget.parentElement)
+  }
+}
+const handleDotMove = (_this, event) => {
+  const { startX, startY, clientWidth, clientHeight, position, id, elementName } = _this.onMouseDownPositionImage
+  const { windowWidth, windowHeight, currentTarget, EasyGuideCanvasContext, guideList } = _this
+  const { top, left } = position
+
+  let newPosition = {}
+  let canvasPosition = {}
+  switch (elementName) {
+    case DotTop:
+      const deltaY = startY - event[tagY]
+      newPosition = { height: `${clientHeight + deltaY}px`, top: `${top - deltaY}px` }
+      canvasPosition = { height: clientHeight + deltaY, top: top - deltaY }
+      break
+    case DotRight:
+      newPosition = { width: `${clientWidth + (event[tagX] - startX)}px` }
+      canvasPosition = { width: clientWidth + (event[tagX] - startX) }
+      break
+    case DotBottom:
+      newPosition = { height: `${clientHeight + (event[tagY] - startY)}px` }
+      canvasPosition = { height: clientHeight + (event[tagY] - startY) }
+      break
+    case DotLeft:
+      const deltaX = startX - event[tagX]
+      newPosition = { width: `${clientWidth + deltaX}px`, left: `${left - deltaX}px` }
+      canvasPosition = { width: clientWidth + deltaX, left: left - deltaX }
+      break
+    default:
+  }
+
+  // 设置一个选区的最小宽高
+  if (canvasPosition.width < MinWidth || canvasPosition.height < MinHeight) {
+    return
+  }
+
+  editElementStyle(currentTarget.parentElement, newPosition)
+  canvasPainting(
+    EasyGuideCanvasContext,
+    Object.assign({}, position, canvasPosition),
+    { windowWidth, windowHeight },
+    guideList.filter(o => o.id !== id)
+  )
+}
+const handleDotUp = (_this, event) => {
+  _this.onMouseDownPositionImage = null
+}
+
 // ======================= 事件分发 ===============================================================
 /**
  * 点击事件
@@ -139,7 +219,7 @@ const handelWrapperClick = (_this, e) => {
 
   const { windowWidth, windowHeight } = _this
 
-  if (/^template-item-(top|right|bottom|left)$/.test(elementName)) {
+  if (elementName.indexOf('template-item-') > -1) {
     // 点击模版添加
     const position = defaultPosition(_this.windowWidth)
     createGuideItem(_this, elementName, position)
@@ -162,14 +242,22 @@ const handelWrapperClick = (_this, e) => {
  */
 const handelWrapperDown = (_this, e) => {
   const elementName = e.target.dataset.elementName
-  const eventElementNameList = [TemplateDragArea, GuideDragItem] // 支持事件的元素列表
+  const eventElementNameList = [
+    TemplateDragArea, GuideDragItem,
+    DotTop, DotRight, DotBottom, DotLeft
+  ] // 支持事件的元素列表
   if (eventElementNameList.indexOf(elementName) < 0) return
 
   _this.currentTarget = e.target
-  const currentTargetName = elementName
+
+  if (elementName.indexOf('e_dot-') > -1) {
+    // dot 鼠标按下
+    handleDotDown(_this, e)
+    return
+  }
 
   // 按下
-  switch (currentTargetName) {
+  switch (elementName) {
     case TemplateDragArea:
       // 模板栏拖动
       handleTemplateDropAreaDown(_this, e)
@@ -178,12 +266,6 @@ const handelWrapperDown = (_this, e) => {
       // 指导 Item 拖拽维护
       handleGuideDragItemDown(_this, e)
       break
-    // case BorderDivName:
-    //   divMouseDown(e)
-    //   break
-    // case DivDotName:
-    //   dotMouseDown(e)
-    //   break
     default:
   }
 }
@@ -195,6 +277,11 @@ const handelWrapperMove = (_this, e) => {
   if (!_this.currentTarget) return
   const currentTargetName = _this.currentTarget.dataset.elementName
 
+  if (currentTargetName.indexOf('e_dot-') > -1) {
+    handleDotMove(_this, e)
+    return
+  }
+
   switch (currentTargetName) {
     case TemplateDragArea:
       handleTemplateDropAreaMove(_this, e)
@@ -203,12 +290,6 @@ const handelWrapperMove = (_this, e) => {
       // 指导 Item 拖拽维护
       handleGuideDragItemMove(_this, e)
       break
-    // case BorderDivName:
-    //   divMouseMove(e)
-    //   break
-    // case DivDotName:
-    //   dotMouseMove(e)
-    //   break
     default:
   }
 }
@@ -220,6 +301,10 @@ const handelWrapperUp = (_this, e) => {
   if (!_this.currentTarget) return
   const currentTargetName = _this.currentTarget.dataset.elementName
 
+  if (currentTargetName.indexOf('e_dot-') > -1) {
+    handleDotUp(_this, e)
+  }
+
   switch (currentTargetName) {
     case TemplateDragArea:
       handleTemplateDropAreaUp(_this, e)
@@ -228,12 +313,6 @@ const handelWrapperUp = (_this, e) => {
       // 指导 Item 拖拽维护
       handleGuideDragItemUp(_this, e)
       break
-    // case BorderDivName:
-    //   divMouseUp(e)
-    //   break
-    // case DivDotName:
-    //   dotMouseUp(e)
-    //   break
     default:
   }
   _this.currentTarget = null
