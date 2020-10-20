@@ -39,6 +39,7 @@ body {
   left: calc(50vw - 100px);
   z-index: 99999;
   cursor: move;
+  box-shadow: 0 0 0 1px #ff8a2b;
 }
 #EasyGuideDivContainerId .e_guide-item .e_dot-common {
   position: absolute;
@@ -46,7 +47,7 @@ body {
   height: 6px;
   border-radius: 50%;
   background-color: white;
-  border: 2px solid #58a;
+  border: 1px solid #ff8a2b;
   cursor: row-resize;
 }
 .e_dot-common::after {
@@ -59,20 +60,20 @@ body {
   background: transparent;
 }
 #EasyGuideDivContainerId .e_guide-item .e_dot-top {
-  top: -6px;
+  top: -5px;
   left: calc(50% - 6px);
 }
 #EasyGuideDivContainerId .e_guide-item .e_dot-right {
-  right: -6px;
+  right: -5px;
   top: calc(50% - 6px);
   cursor: col-resize;
 }
 #EasyGuideDivContainerId .e_guide-item .e_dot-bottom {
-  bottom: -6px;
+  bottom: -5px;
   left: calc(50% - 6px);
 }
 #EasyGuideDivContainerId .e_guide-item .e_dot-left {
-  left: -6px;
+  left: -5px;
   top: calc(50% - 6px);
   cursor: col-resize;
 }
@@ -95,6 +96,27 @@ body {
   position: absolute;
   bottom: 10px;
   right: 10px;
+}
+#EasyGuideDivContainerId .e_guide-item .e_guide-content .e_guide-content-btn button {
+  outline: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  border-radius: 2px;
+  padding: 1px 6px;
+}
+#EasyGuideDivContainerId .e_guide-item .e_guide-content .e_guide-content-btn button:focus {
+  outline: none;
+}
+#EasyGuideDivContainerId .e_guide-item .e_guide-content .e_guide-content-btn .e_edit-btn {
+  background: #ff8a2b;
+  color: white;
+}
+#EasyGuideDivContainerId .e_guide-item .e_guide-content .e_guide-content-btn .e_delete-btn {
+  margin-right: 8px;
+  border: 1px solid #d9d9d9;
+  color: rgba(0,0,0,.65);
 }
 .e_guide-content::before {
   content: '';
