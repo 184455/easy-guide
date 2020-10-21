@@ -6,7 +6,6 @@ body {
 
 /* ------------要求他们的父元素高度撑开，并且是有相对定位 ------------------------------------ */
 #EasyGuideWrap {
-  position: relative;
   position: absolute;
   top: 0;
   left: 0;
@@ -203,6 +202,69 @@ body {
 #EasyGuideTemplateId .e_template-close-btn {} */
 
 
+/* ------------ 查看模式样式 --------------------------------------------------------------- */
+.bar-lib-common {
+  position: absolute;
+  height: auto;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 100002;
+}
+.bar-lib-top {
+  top: 0;
+  left: 0;
+  right: 0;
+}
+.bar-lib-left {
+  left: 0;
+}
+.bar-lib-right {
+  right: 0;
+}
+.bar-lib-bottom {
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.e_step-content-box {
+  position: absolute;
+  /* visibility: hidden; */
+  min-width: 340px;
+  background: #eff6ff;
+  border-radius: 2px;
+  padding: 12px;
+  z-index: 100003;
+}
+.e_step-content-box .box-content {
+  min-height: 60px;
+  width: 100%;
+}
+.content-footer {
+  text-align: right;
+}
+.content-footer .box-pre-btn {
+  margin-right: 7px;
+  background: #fff;
+  border: 1px solid #4f7de7;
+  border-radius: 2px;
+  color: #4f7de7;
+  transition: all 0.2s;
+}
+.content-footer .box-next-btn {
+  background: #4f7de7;
+  border: 1px solid #4f7de7;
+  outline: none;
+  border-radius: 2px;
+  color: white;
+  transition: all 0.2s;
+}
+.content-footer .box-pre-btn button:focus {
+  outline: none;
+}
+.content-footer .box-pre-btn button:hover {
+  transform: scale(1.02);
+  transition: all 0.2s;
+}
+
 /* ------------ 业务小样式 --------------------------------------------------------------- */
 .e_disable-body-selected {
   -webkit-user-select: none;
@@ -211,4 +273,8 @@ body {
 
 .e_lock-scroll {
   position: fixed;
+}
+
+.e_position-relative {
+  position: relative !important;
 }

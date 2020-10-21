@@ -18,7 +18,7 @@
     <div>这个页面提供指导开发的时候测试用。</div>
     <div>
       <button id="showMaintainGuide">显示：维护模式</button>
-      <button>显示：只读模式</button>
+      <button id="showReadOnlyGuide">显示：只读模式</button>
     </div>
   </div>
 
@@ -27,18 +27,27 @@
 
     const Guide = new EasyGuide({
       scrollAble: true,
-      mode: 'MAINTAIN',
+      mode: 'READ',
+      guideList: [{ top: 100, left: 700, width: 300, height: 100 }],
+      viewClose: function () {
+        Guide.destroy()
+      },
       onGuideListChange: (action, data, list) => {
         console.log({ action, data, list })
       }
     })
 
     function showMaintainGuide () {
-      Guide._showGuideMainTain()
+      Guide.show()
+      Guide.initEvents()
+    }
+    function showReadOnlyGuide () {
+      Guide.show()
       Guide.initEvents()
     }
 
     document.getElementById('showMaintainGuide').addEventListener('click', showMaintainGuide)
+    document.getElementById('showReadOnlyGuide').addEventListener('click', showReadOnlyGuide)
   </script>
 </body>
 </html>
