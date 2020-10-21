@@ -129,6 +129,7 @@ const handleGuideDragItemDown = (_this, event) => {
   _this.onMouseDownPositionImage = {
     deltaX: event[tagX] - offsetLeft,
     deltaY: event[tagY] - offsetTop,
+    isActive: false, // 标记是否移动过距离
     clientWidth, clientHeight,
     id
   }
@@ -146,10 +147,14 @@ const handleGuideDragItemMove = (_this, event) => {
   const excludeItem = guideList.filter(o => o.id !== id)
   utilsMoveDiv(currentTarget, left, top)
   canvasPainting(EasyGuideCanvasContext, { left, top, width, height }, { windowWidth, windowHeight }, excludeItem)
-  Object.assign(onMouseDownPositionImage, { left, top, width, height })
+  Object.assign(onMouseDownPositionImage, { left, top, width, height, isActive: true })
 }
 const handleGuideDragItemUp = (_this, event) => {
-  const { left, top, width, height, id } = _this.onMouseDownPositionImage
+  const { left, top, width, height, id, isActive } = _this.onMouseDownPositionImage
+  if (!isActive) {
+    return
+  }
+
   _this.dispatch('modify', { left, top, width, height, id })
   _this.onMouseDownPositionImage = null
 }
@@ -202,15 +207,21 @@ const handleDotMove = (_this, event) => {
     return
   }
 
+  _this.onMouseDownPositionImage.newPosition = Object.assign({ id }, position, canvasPosition)
+
   editElementStyle(currentTarget.parentElement, newPosition)
   canvasPainting(
     EasyGuideCanvasContext,
-    Object.assign({}, position, canvasPosition),
+    _this.onMouseDownPositionImage.newPosition,
     { windowWidth, windowHeight },
     guideList.filter(o => o.id !== id)
   )
 }
 const handleDotUp = (_this, event) => {
+  const { onMouseDownPositionImage } = _this
+  const { newPosition } = onMouseDownPositionImage
+
+  _this.dispatch('modify', newPosition)
   _this.onMouseDownPositionImage = null
 }
 
@@ -224,9 +235,9 @@ const handelWrapperClick = (_this, e) => {
   // 支持事件的元素列表
   const eventElementNameList = [
     TemplateItemTop, TemplateItemRight, TemplateItemBottom,
-    TemplateItemLeft, GuideDragItem, CloseButton, DeleteBtn
+    TemplateItemLeft, CloseButton, DeleteBtn
   ]
-  if (eventElementNameList.indexOf(elementName) < 0) return
+  if (eventElementNameList.indexOf(elementName) === -1) return
 
   const { windowWidth, windowHeight } = _this
 

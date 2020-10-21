@@ -10,11 +10,11 @@ export default function initDataInterface (EasyGuide) {
   }
   EasyGuide.prototype.guideListChange = function (action, data) {
     const { onGuideListChange = () => {} } = this.Options
-    const { windowWidth, windowHeight, guideList, EasyGuideCanvasContext } = this
 
     onGuideListChange(action, data, this.guideList)
-    canvasPainting(EasyGuideCanvasContext, undefined, { windowWidth, windowHeight }, guideList)
     if (action === 'delete') {
+      const { windowWidth, windowHeight, guideList, EasyGuideCanvasContext } = this
+      canvasPainting(EasyGuideCanvasContext, undefined, { windowWidth, windowHeight }, guideList)
       const deleteElement = document.getElementById(data.id)
       deleteElement.parentElement.removeChild(deleteElement)
     }
