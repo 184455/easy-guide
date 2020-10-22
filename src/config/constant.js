@@ -28,6 +28,15 @@ export const EasyGuideDivContainerId = 'EasyGuideDivContainerId'
 // EasyGuide 放置用户可以选用的模版
 export const EasyGuideTemplateId = 'EasyGuideTemplateId'
 
+// EasyGuide 内容编辑 modal 框
+export const EGEditModal = 'EGEditModal'
+
+// modal 取消按钮
+export const ModalCancelBtnId = 'modalCancelBtn'
+
+// modal 确认按钮
+export const ModalConfirmBtnId = 'modalConfirmBtn'
+
 // ------------------ 元素 DataSet --------------------------
 
 // 元素 dataset 的 key
@@ -59,6 +68,9 @@ export const DotLeft = 'e_dot-left'
 
 // 删除按钮
 export const DeleteBtn = 'deleteButton'
+
+// 编辑按钮
+export const EditBtn = 'editBtn'
 
 // ------------------ 事件 --------------------------
 

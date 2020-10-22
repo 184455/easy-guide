@@ -1,3 +1,4 @@
+import guideModal from './guide-modal'
 import Config from '../config/index'
 import {
   MODE,
@@ -135,6 +136,11 @@ export default function initMixin (EasyGuide) {
       document.body.insertBefore(this.EasyGuideWrap, document.body.childNodes[0])
       return
     }
+
+    // 这里的代码只有第一次初始化的时候会执行
+
+    // 初始化指导信息编辑框
+    guideModal(EasyGuide)
 
     // 创建 Canvas 画板
     const tempFragment = document.createDocumentFragment()

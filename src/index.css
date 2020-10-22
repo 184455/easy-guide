@@ -265,6 +265,116 @@ body {
   transition: all 0.2s;
 }
 
+/* ------------ 编辑框样式 --------------------------------------------------------------- */
+.e_modal-mast {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 9999999;
+  height: 100%;
+  background-color: rgba(0,0,0,.45);
+}
+.e_modal-content-wrap {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 99999990;
+  overflow: auto;
+  outline: 0;
+}
+.e_modal-content-wrap .e_modal-inner-content {
+  position: relative;
+  color: rgba(0,0,0,.65);
+  font-size: 14px;
+  line-height: 1.5;
+  list-style: none;
+  top: 100px;
+  width: 520px;
+  margin: 0 auto;
+  border-radius: 4px;
+  background-color: white;
+  z-index: 99999991;
+}
+.e_modal-content-wrap .e_modal-inner-content .modal-header {
+  padding: 16px 24px;
+  background: #fff;
+  border-bottom: 1px solid #e8e8e8;
+  border-radius: 4px 4px 0 0;
+  margin: 0;
+  color: rgba(0,0,0,.85);
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 22px;
+}
+.e_modal-content-wrap .e_modal-inner-content .modal-content {
+  padding: 24px;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100px;
+}
+.e_modal-content-wrap .e_modal-inner-content .modal-footer {
+  padding: 10px 16px;
+  text-align: right;
+  background: transparent;
+  border-top: 1px solid #e8e8e8;
+  border-radius: 0 0 4px 4px;
+}
+.e_modal-content-wrap .e_modal-inner-content .modal-footer button {
+  outline: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  border-radius: 2px;
+  padding: 1px 6px;
+}
+.e_modal-content-wrap .e_modal-inner-content .modal-footer button:focus {
+  outline: none;
+}
+
+.e_modal-content-wrap .e_modal-inner-content .modal-footer .e_cancel-btn {
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  height: 32px;
+  padding: 0 15px;
+  font-size: 14px;
+  color: rgba(0,0,0,.65);
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+  margin-right: 10px;
+}
+.e_modal-content-wrap .e_modal-inner-content .modal-footer .e_confirm-btn {
+  background: #ff8a2b;
+  color: white;
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  height: 32px;
+  padding: 0 15px;
+  font-size: 14px;
+}
+
+.modal-content .form-item {
+  display: flex;
+}
+.modal-content .form-item .item-left {
+  flex: 0 0 120px;
+  width: 120px;
+  text-align: right;
+}
+.modal-content .form-item .item-right {
+  flex: 1;
+}
+
 /* ------------ 业务小样式 --------------------------------------------------------------- */
 .e_disable-body-selected {
   -webkit-user-select: none;
