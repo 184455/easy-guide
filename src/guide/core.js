@@ -70,6 +70,9 @@ export default function initMixin (EasyGuide) {
     // 用户指导列表
     this.guideList = (this.Options.guideList || []).slice(0)
 
+    // 模式
+    this.mode = this.Options.mode
+
     // 创建最 EasyGuide 最外层容器
     this.EasyGuideWrap = utilsCreateElement('div', { id: EasyGuideWrapId })
 
@@ -104,7 +107,6 @@ export default function initMixin (EasyGuide) {
     })
 
     const currentItem = this.guideList[0] || {}
-
     setBarLibPosition(this.BarList, currentItem)
 
     // 生成内容框
@@ -126,6 +128,13 @@ export default function initMixin (EasyGuide) {
   // 展示-编辑模式
   EasyGuide.prototype._showGuideMainTain = function () {
     const { windowWidth, windowHeight, Options } = this
+
+    const root = document.getElementById(EasyGuideWrapId)
+    if (!root) {
+      // 如果根节点不在，重新插入
+      document.body.insertBefore(this.EasyGuideWrap, document.body.childNodes[0])
+      return
+    }
 
     // 创建 Canvas 画板
     const tempFragment = document.createDocumentFragment()
@@ -180,19 +189,11 @@ export default function initMixin (EasyGuide) {
 
   // 展示
   EasyGuide.prototype.show = function () {
-    const { mode } = this.Options
+    const { mode } = this
 
     // 处理 body 样式
     handleBodyClassName()
-
     editElementStyle(this.EasyGuideWrap, { width: `${this.windowWidth}px`, height: `${this.windowHeight}px` })
-
-    const root = document.getElementById(EasyGuideWrapId)
-    if (!root) {
-      // 如果根节点不在，重新插入
-      document.body.insertBefore(this.EasyGuideWrap, document.body.childNodes[0])
-      return
-    }
 
     // 给根节点插入元素
     if (mode === MODE.MAINTAIN) {
@@ -204,9 +205,14 @@ export default function initMixin (EasyGuide) {
     }
   }
 
+  // 改变模式
+  EasyGuide.prototype.setMode = function (newMode) {
+    this.mode = newMode
+  }
+
   // 销毁指导，数据，事件清理
   EasyGuide.prototype.destroy = function () {
-    if (this.Options.mode === MODE.READ) {
+    if (this.mode === MODE.READ) {
       handleRemoveBodyClassName()
       document.body.removeChild(this.ViewGuideWrap)
       return

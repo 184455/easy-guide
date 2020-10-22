@@ -28,7 +28,7 @@
     const Guide = new EasyGuide({
       scrollAble: true,
       mode: 'READ',
-      guideList: [{ top: 100, left: 700, width: 300, height: 100 }],
+      guideList: [],
       viewClose: function () {
         Guide.destroy()
       },
@@ -38,10 +38,12 @@
     })
 
     function showMaintainGuide () {
+      Guide.setMode("MAINTAIN")
       Guide.show()
       Guide.initEvents()
     }
     function showReadOnlyGuide () {
+      Guide.setMode("READ")
       Guide.show()
       Guide.initEvents()
     }

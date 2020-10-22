@@ -32,7 +32,7 @@ const defaultPosition = (windowWidth) => ({
 
 // 创建指导的小框
 const createGuideItem = (EG, elementName, { top, left, width, height, id }) => {
-  const { Options } = EG
+  const { mode } = EG
   const tempFragment = document.createDocumentFragment()
   const topStep = utilsCreateElement('div', { class: 'e_top-step-number' })
   topStep.innerHTML = 1
@@ -44,7 +44,7 @@ const createGuideItem = (EG, elementName, { top, left, width, height, id }) => {
   guideContent.appendChild(contentText)
   const guideContentBtn = utilsCreateElement('div', { class: 'e_guide-content-btn' })
 
-  if (Options.mode === MODE.READ) {
+  if (mode === MODE.READ) {
     // 只读模式
     const closeBtn = utilsCreateElement('button', { class: 'e_close-btn' })
     closeBtn.innerHTML = '关闭'
@@ -56,7 +56,7 @@ const createGuideItem = (EG, elementName, { top, left, width, height, id }) => {
     guideContentBtn.appendChild(closeBtn)
     guideContentBtn.appendChild(prevBtn)
     guideContentBtn.appendChild(nextBtn)
-  } else if (Options.mode === MODE.MAINTAIN) {
+  } else if (mode === MODE.MAINTAIN) {
     // 维护编辑模式
     const deleteBtn = utilsCreateElement('button', {
       class: 'e_delete-btn',
