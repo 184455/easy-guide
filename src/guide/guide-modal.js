@@ -7,9 +7,36 @@ import {
 } from '../config/constant'
 import { utilsCreateElement } from '../utils/dom'
 
+// 创建一个 select 元素
+const createSelect = (list) => {
+  const optionList = document.createDocumentFragment()
+  if (Array.isArray(list)) {
+    list.map(item => {
+      const { value, showText } = item
+      const temp = utilsCreateElement('option', { value })
+      temp.innerHTML = showText
+      optionList.appendChild(temp)
+    })
+  }
+  const res = utilsCreateElement('select', { class: 'e_select' })
+  res.appendChild(optionList)
+  return res
+}
+
+// 创建带头信息的 select 框
+const prefixSelect = (prefixContent, list) => {
+  const res = utilsCreateElement('div', { class: 'prefix-select' })
+  const leftContent = utilsCreateElement('div', { class: 'select-left' })
+  leftContent.innerHTML = prefixContent
+  res.appendChild(leftContent)
+  res.appendChild(createSelect(list))
+
+  return res
+}
+
 // 创建单个item
 const createFromItem = itemData => {
-  const { title, isRequired = false, elementType } = itemData
+  const { title, isRequired = false, elementType, className, fileName } = itemData
   const requireElement = utilsCreateElement('span', { style: 'color: red;' })
   requireElement.innerHTML = '* '
 
@@ -27,7 +54,64 @@ const createFromItem = itemData => {
 
   // 右边
   const itemRight = utilsCreateElement('div', { class: 'item-right' })
-  itemRight.appendChild(utilsCreateElement(elementType))
+  switch (fileName) {
+    case 'orderNumber':
+      itemRight.appendChild(utilsCreateElement(
+        elementType, {
+          class: className,
+          style: 'width: 50px;',
+          type: 'number',
+          min: 1
+        }
+      ))
+      break
+    case 'guideContent':
+      itemRight.appendChild(utilsCreateElement(
+        elementType,
+        { class: className }
+      ))
+      break
+    case 'verticalDistance':
+      itemRight.appendChild(prefixSelect('300', [
+        { showText: '百分比', value: '%' },
+        { showText: '像素', value: 'px' }
+      ]))
+      break
+    case 'horizontalDistance':
+      itemRight.appendChild(prefixSelect('300', [
+        { showText: '百分比', value: '%' },
+        { showText: '像素', value: 'px' }
+      ]))
+      break
+    case 'boxWidth':
+      itemRight.appendChild(prefixSelect('300', [
+        { showText: '百分比', value: '%' },
+        { showText: '像素', value: 'px' }
+      ]))
+      break
+    case 'boxHeight':
+      itemRight.appendChild(prefixSelect('300', [
+        { showText: '百分比', value: '%' },
+        { showText: '像素', value: 'px' }
+      ]))
+      break
+    case 'positionReference':
+      itemRight.appendChild(createSelect([
+        { showText: '左上角', value: 'LeftTop' },
+        { showText: '右上角', value: 'RightTop' },
+        { showText: '右下角', value: 'RightBottom' },
+        { showText: '左下角', value: 'LeftBottom' }
+      ]))
+      break
+    case 'scrollAble':
+      itemRight.appendChild(createSelect([
+        { showText: '是', value: '1' },
+        { showText: '否', value: '0' }
+      ]))
+      break
+    default:
+      itemRight.appendChild(utilsCreateElement(elementType, { class: className }))
+  }
 
   wrap.appendChild(itemLeft)
   wrap.appendChild(itemRight)
@@ -48,12 +132,20 @@ const createFromItems = (itemList) => {
 const createFrom = () => {
   const form = utilsCreateElement('form', { method: 'POST', url: '' })
   form.appendChild(createFromItems([
-    { title: '序号', isRequired: true, elementType: 'input' },
-    { title: '指导信息', isRequired: true, elementType: 'textarea' },
-    { title: '定位参考', elementType: 'input' },
-    { title: '左/右边距', elementType: 'input' },
-    { title: '上/下边距', elementType: 'input' },
-    { title: '是否随页面滚动', elementType: 'select' }
+    { title: '序号', isRequired: true, elementType: 'input', className: 'e_input', fileName: 'orderNumber' },
+    {
+      title: '指导信息',
+      isRequired: true,
+      elementType: 'textarea',
+      className: 'e_input e_textarea',
+      fileName: 'guideContent'
+    },
+    { title: '左/右边距', elementType: 'select', fileName: 'verticalDistance' },
+    { title: '上/下边距', elementType: 'select', fileName: 'horizontalDistance' },
+    { title: '选框宽度', elementType: 'select', fileName: 'boxWidth' },
+    { title: '选框高度', elementType: 'select', fileName: 'boxHeight' },
+    { title: '定位参考', elementType: 'select', fileName: 'positionReference' },
+    { title: '是否随页面滚动', elementType: 'select', fileName: 'scrollAble' }
   ]))
 
   return form
