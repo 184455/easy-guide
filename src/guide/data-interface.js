@@ -26,14 +26,15 @@ export default function initDataInterface (EasyGuide) {
         this.guideList.push(data)
         break
       case 'delete':
-        this.guideList = this.guideList.filter(i => i.id !== data.id)
+        this.guideList = this.guideList.filter(i => String(i.id) !== String(data.id))
         break
       case 'modify':
         this.guideList = this.guideList.map(o => {
-          if (o.id === data.id) {
-            return data
+          if (String(o.id) === String(data.id)) {
+            return Object.assign({}, o, data)
+          } else {
+            return o
           }
-          return o
         })
         break
       default:

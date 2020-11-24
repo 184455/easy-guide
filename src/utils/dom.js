@@ -1,5 +1,10 @@
 // 工具方法
-import { DefaultFillStyle } from '../config/constant'
+import {
+  DefaultFillStyle,
+  ElementDataSetName,
+  MODE, DeleteBtn,
+  EditBtn, GuideDragItem
+} from '../config/constant'
 
 /**
  * 创建一个 div 元素
@@ -120,4 +125,72 @@ export function getPosition (el) {
     res[item] = parseInt(el.style[item], 10)
   })
   return res
+}
+
+// 创建指导的小框
+export function createGuideItem(EG, elementName, { top, left, width, height, id, content, orderNumber }) {
+  const { mode } = EG
+  const tempFragment = document.createDocumentFragment()
+  const topStep = utilsCreateElement('div', { class: 'e_top-step-number' })
+  topStep.innerHTML = orderNumber || 1
+
+  const guideContent = utilsCreateElement('div', { class: 'e_guide-content' })
+  // editElementStyle(guideContent, { bottom: `${height + 12}px` })
+  const contentText = utilsCreateElement('div', { class: 'e_guide-content-text' })
+  contentText.innerHTML = content || '请输入指导内容！'
+  guideContent.appendChild(contentText)
+  const guideContentBtn = utilsCreateElement('div', { class: 'e_guide-content-btn' })
+
+  if (mode === MODE.READ) {
+    // 只读模式
+    const closeBtn = utilsCreateElement('button', { class: 'e_close-btn' })
+    closeBtn.innerHTML = '关闭'
+    const prevBtn = utilsCreateElement('button', { class: 'e_prev-btn' })
+    prevBtn.innerHTML = '上一步'
+    const nextBtn = utilsCreateElement('button', { class: 'e_next-btn' })
+    nextBtn.innerHTML = '下一步'
+
+    guideContentBtn.appendChild(closeBtn)
+    guideContentBtn.appendChild(prevBtn)
+    guideContentBtn.appendChild(nextBtn)
+  } else if (mode === MODE.MAINTAIN) {
+    // 维护编辑模式
+    const deleteBtn = utilsCreateElement('button', {
+      class: 'e_delete-btn',
+      [ElementDataSetName]: DeleteBtn
+    })
+    deleteBtn.innerHTML = '删除'
+    const editBtn = utilsCreateElement('button', {
+      class: 'e_edit-btn',
+      [ElementDataSetName]: EditBtn
+    })
+    editBtn.innerHTML = '编辑'
+
+    guideContentBtn.appendChild(deleteBtn)
+    guideContentBtn.appendChild(editBtn)
+  }
+
+  //  创建 dot 拖动调整宽度的元素
+  const dotFrag = document.createDocumentFragment();
+  (['top', 'right', 'bottom', 'left']).map(item => {
+    dotFrag.appendChild(utilsCreateElement('div', {
+      class: `e_dot-${item} e_dot-common`,
+      [ElementDataSetName]: `e_dot-${item}`
+    }))
+  })
+
+  guideContent.appendChild(guideContentBtn)
+
+  tempFragment.appendChild(dotFrag)
+  tempFragment.appendChild(topStep)
+  tempFragment.appendChild(guideContent)
+  const temp = utilsCreateElement('div', {
+    id,
+    class: `e_guide-item ${elementName}`,
+    [ElementDataSetName]: GuideDragItem
+  })
+  temp.appendChild(tempFragment)
+
+  editElementStyle(temp, { top: `${top}px`, left: `${left}px`, width: `${width}px`, height: `${height}px` })
+  EG.EasyGuideDivContainer.appendChild(temp)
 }

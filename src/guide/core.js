@@ -11,7 +11,14 @@ import {
   CloseButton,
   TemplateDragArea
 } from '../config/constant'
-import { utilsCreateElement, addClass, deleteClass, editElementStyle } from '../utils/dom'
+import { createGuideItemData } from '../utils/index'
+import {
+  utilsCreateElement,
+  addClass, deleteClass,
+  editElementStyle,
+  createGuideItem,
+  canvasPainting
+} from '../utils/dom'
 
 function handleBodyClassName () {
   addClass(document.body, 'e_disable-body-selected')
@@ -52,6 +59,16 @@ const createContentBox = (props, viewClose) => {
   contentBox.appendChild(footerBtn)
 
   return contentBox
+}
+
+const renderGuideList = (_this) => {
+  const { windowWidth, windowHeight, guideList } = _this
+  if (Array.isArray(guideList)) {
+    guideList.forEach((position) => {
+      createGuideItem(_this, 'template-item-top', createGuideItemData(position))
+      canvasPainting(_this.EasyGuideCanvasContext, position, { windowWidth, windowHeight })
+    })
+  }
 }
 
 /**
@@ -205,6 +222,8 @@ export default function initMixin (EasyGuide) {
     if (mode === MODE.MAINTAIN) {
       // 维护模式
       this._showGuideMainTain()
+      const that = this
+      renderGuideList(that)
     } else if (mode === MODE.READ) {
       // 查看模式
       this._showGuide()

@@ -1,11 +1,10 @@
 import {
   TemplateDragArea,
-  tagX, tagY, MODE,
+  tagX, tagY,
   TemplateItemTop,
   TemplateItemRight,
   TemplateItemBottom,
   TemplateItemLeft,
-  ElementDataSetName,
   GuideDragItem,
   CloseButton,
   DotTop,
@@ -17,87 +16,12 @@ import {
   DeleteBtn,
   EditBtn
 } from '../config/constant'
+import { createGuideItemData, defaultPosition, getMaxNumber } from '../utils/index'
 import {
-  utilsMoveDiv, utilsCreateElement,
+  utilsMoveDiv,
   editElementStyle, canvasPainting,
-  getPosition
+  getPosition, createGuideItem
 } from '../utils/dom'
-
-const defaultPosition = (windowWidth) => ({
-  left: (windowWidth / 2 - 150) | 0,
-  top: 200,
-  width: 300,
-  height: 120,
-  id: String((new Date()).getTime())
-})
-
-// 创建指导的小框
-const createGuideItem = (EG, elementName, { top, left, width, height, id }) => {
-  const { mode } = EG
-  const tempFragment = document.createDocumentFragment()
-  const topStep = utilsCreateElement('div', { class: 'e_top-step-number' })
-  topStep.innerHTML = 1
-
-  const guideContent = utilsCreateElement('div', { class: 'e_guide-content' })
-  // editElementStyle(guideContent, { bottom: `${height + 12}px` })
-  const contentText = utilsCreateElement('div', { class: 'e_guide-content-text' })
-  contentText.innerHTML = 'I am content!'
-  guideContent.appendChild(contentText)
-  const guideContentBtn = utilsCreateElement('div', { class: 'e_guide-content-btn' })
-
-  if (mode === MODE.READ) {
-    // 只读模式
-    const closeBtn = utilsCreateElement('button', { class: 'e_close-btn' })
-    closeBtn.innerHTML = '关闭'
-    const prevBtn = utilsCreateElement('button', { class: 'e_prev-btn' })
-    prevBtn.innerHTML = '上一步'
-    const nextBtn = utilsCreateElement('button', { class: 'e_next-btn' })
-    nextBtn.innerHTML = '下一步'
-
-    guideContentBtn.appendChild(closeBtn)
-    guideContentBtn.appendChild(prevBtn)
-    guideContentBtn.appendChild(nextBtn)
-  } else if (mode === MODE.MAINTAIN) {
-    // 维护编辑模式
-    const deleteBtn = utilsCreateElement('button', {
-      class: 'e_delete-btn',
-      [ElementDataSetName]: DeleteBtn
-    })
-    deleteBtn.innerHTML = '删除'
-    const editBtn = utilsCreateElement('button', {
-      class: 'e_edit-btn',
-      [ElementDataSetName]: EditBtn
-    })
-    editBtn.innerHTML = '编辑'
-
-    guideContentBtn.appendChild(deleteBtn)
-    guideContentBtn.appendChild(editBtn)
-  }
-
-  //  创建 dot 拖动调整宽度的元素
-  const dotFrag = document.createDocumentFragment();
-  (['top', 'right', 'bottom', 'left']).map(item => {
-    dotFrag.appendChild(utilsCreateElement('div', {
-      class: `e_dot-${item} e_dot-common`,
-      [ElementDataSetName]: `e_dot-${item}`
-    }))
-  })
-
-  guideContent.appendChild(guideContentBtn)
-
-  tempFragment.appendChild(dotFrag)
-  tempFragment.appendChild(topStep)
-  tempFragment.appendChild(guideContent)
-  const temp = utilsCreateElement('div', {
-    id,
-    class: `e_guide-item ${elementName}`,
-    [ElementDataSetName]: GuideDragItem
-  })
-  temp.appendChild(tempFragment)
-
-  editElementStyle(temp, { top: `${top}px`, left: `${left}px`, width: `${width}px`, height: `${height}px` })
-  EG.EasyGuideDivContainer.appendChild(temp)
-}
 
 // 关闭按钮
 const handleClickCloseButton = (_this, event) => {
@@ -108,13 +32,13 @@ const handleClickCloseButton = (_this, event) => {
 const handleDeleteItem = (_this, event) => {
   const { guideList } = _this
   const deleteId = event.target.parentElement.parentElement.parentElement.id
-  _this.dispatch('delete', guideList.find(i => i.id === deleteId) || {})
+  _this.dispatch('delete', guideList.find(i => String(i.id) === String(deleteId)) || {})
 }
 
 // 维护模式下，编辑某个用户指导
 const handleEditItem = (_this, event) => {
   const editId = event.target.parentElement.parentElement.parentElement.id
-  _this.showEditModal(_this.guideList.find(o => o.id === editId))
+  _this.showEditModal(_this.guideList.find(o => String(o.id) === String(editId)))
 }
 
 // 拖动模版框
@@ -154,7 +78,7 @@ const handleGuideDragItemMove = (_this, event) => {
   const left = event[tagX] - deltaX
   const top = event[tagY] - deltaY
 
-  const excludeItem = guideList.filter(o => o.id !== id)
+  const excludeItem = guideList.filter(o => String(o.id) !== String(id))
   utilsMoveDiv(currentTarget, left, top)
   canvasPainting(EasyGuideCanvasContext, { left, top, width, height }, { windowWidth, windowHeight }, excludeItem)
   Object.assign(onMouseDownPositionImage, { left, top, width, height, isActive: true })
@@ -224,7 +148,7 @@ const handleDotMove = (_this, event) => {
     EasyGuideCanvasContext,
     _this.onMouseDownPositionImage.newPosition,
     { windowWidth, windowHeight },
-    guideList.filter(o => o.id !== id)
+    guideList.filter(o => String(o.id) !== String(id))
   )
 }
 const handleDotUp = (_this, event) => {
@@ -254,7 +178,13 @@ const handelWrapperClick = (_this, e) => {
   if (elementName.indexOf('template-item-') > -1) {
     // 点击模版添加
     const position = defaultPosition(_this.windowWidth)
-    createGuideItem(_this, elementName, position)
+    createGuideItem(
+      _this,
+      elementName,
+      createGuideItemData(
+        Object.assign(position, { orderNumber: getMaxNumber(_this.guideList, 'orderNumber') + 1 })
+      )
+    )
     canvasPainting(_this.EasyGuideCanvasContext, position, { windowWidth, windowHeight }, _this.guideList)
     _this.dispatch('create', position)
     return

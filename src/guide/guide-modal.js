@@ -7,8 +7,17 @@ import {
 } from '../config/constant'
 import { utilsCreateElement } from '../utils/dom'
 
+// 用户点击确认，更新对编辑对应的 dom
+const refreshEditDom = (id, { content, orderNumber }) => {
+  const editItemDom = document.getElementById(String(id))
+  const contentBox = editItemDom.getElementsByClassName('e_guide-content-text')[0]
+  const orderNumberBox = editItemDom.getElementsByClassName('e_top-step-number')[0]
+  contentBox.innerHTML = content
+  orderNumberBox.innerHTML = orderNumber
+}
+
 // 创建一个 select 元素
-const createSelect = (list) => {
+const createSelect = (list, value, fileName) => {
   const optionList = document.createDocumentFragment()
   if (Array.isArray(list)) {
     list.map(item => {
@@ -18,25 +27,26 @@ const createSelect = (list) => {
       optionList.appendChild(temp)
     })
   }
-  const res = utilsCreateElement('select', { class: 'e_select' })
+  const res = utilsCreateElement('select', { class: 'e_select e_edit_class', name: fileName })
   res.appendChild(optionList)
+  res.value = value
   return res
 }
 
 // 创建带头信息的 select 框
-const prefixSelect = (prefixContent, list) => {
+const prefixSelect = (prefixContent, value, fileName, list) => {
   const res = utilsCreateElement('div', { class: 'prefix-select' })
   const leftContent = utilsCreateElement('div', { class: 'select-left' })
   leftContent.innerHTML = prefixContent
   res.appendChild(leftContent)
-  res.appendChild(createSelect(list))
+  res.appendChild(createSelect(list, value, fileName))
 
   return res
 }
 
 // 创建单个item
 const createFromItem = itemData => {
-  const { title, isRequired = false, elementType, className, fileName } = itemData
+  const { title, isRequired = false, elementType, className, fileName, value, suffixValue } = itemData
   const requireElement = utilsCreateElement('span', { style: 'color: red;' })
   requireElement.innerHTML = '* '
 
@@ -58,6 +68,8 @@ const createFromItem = itemData => {
     case 'orderNumber':
       itemRight.appendChild(utilsCreateElement(
         elementType, {
+          value,
+          name: fileName,
           class: className,
           style: 'width: 50px;',
           type: 'number',
@@ -65,32 +77,34 @@ const createFromItem = itemData => {
         }
       ))
       break
-    case 'guideContent':
-      itemRight.appendChild(utilsCreateElement(
+    case 'content':
+      const contentBox = utilsCreateElement(
         elementType,
-        { class: className }
-      ))
+        { class: className, name: fileName }
+      )
+      contentBox.value = value
+      itemRight.appendChild(contentBox)
       break
     case 'verticalDistance':
-      itemRight.appendChild(prefixSelect('300', [
+      itemRight.appendChild(prefixSelect(value, suffixValue, fileName, [
         { showText: '百分比', value: '%' },
         { showText: '像素', value: 'px' }
       ]))
       break
     case 'horizontalDistance':
-      itemRight.appendChild(prefixSelect('300', [
+      itemRight.appendChild(prefixSelect(value, suffixValue, fileName, [
         { showText: '百分比', value: '%' },
         { showText: '像素', value: 'px' }
       ]))
       break
     case 'boxWidth':
-      itemRight.appendChild(prefixSelect('300', [
+      itemRight.appendChild(prefixSelect(value, suffixValue, fileName, [
         { showText: '百分比', value: '%' },
         { showText: '像素', value: 'px' }
       ]))
       break
     case 'boxHeight':
-      itemRight.appendChild(prefixSelect('300', [
+      itemRight.appendChild(prefixSelect(value, suffixValue, fileName, [
         { showText: '百分比', value: '%' },
         { showText: '像素', value: 'px' }
       ]))
@@ -101,16 +115,16 @@ const createFromItem = itemData => {
         { showText: '右上角', value: 'RightTop' },
         { showText: '右下角', value: 'RightBottom' },
         { showText: '左下角', value: 'LeftBottom' }
-      ]))
+      ], value, fileName))
       break
     case 'scrollAble':
       itemRight.appendChild(createSelect([
         { showText: '是', value: '1' },
         { showText: '否', value: '0' }
-      ]))
+      ], value, fileName))
       break
     default:
-      itemRight.appendChild(utilsCreateElement(elementType, { class: className }))
+      itemRight.appendChild(utilsCreateElement(elementType, { class: className, value }))
   }
 
   wrap.appendChild(itemLeft)
@@ -129,23 +143,32 @@ const createFromItems = (itemList) => {
 }
 
 // 创建表单
-const createFrom = () => {
+const createFrom = (initData) => {
+  const { orderNumber, content, left, top, width, height } = initData
   const form = utilsCreateElement('form', { method: 'POST', url: '' })
   form.appendChild(createFromItems([
-    { title: '序号', isRequired: true, elementType: 'input', className: 'e_input', fileName: 'orderNumber' },
+    {
+      title: '序号',
+      isRequired: true,
+      elementType: 'input',
+      className: 'e_input e_edit_class',
+      fileName: 'orderNumber',
+      value: orderNumber || 1
+    },
     {
       title: '指导信息',
       isRequired: true,
       elementType: 'textarea',
-      className: 'e_input e_textarea',
-      fileName: 'guideContent'
+      className: 'e_input e_textarea e_edit_class',
+      fileName: 'content',
+      value: content || ''
     },
-    { title: '左/右边距', elementType: 'select', fileName: 'verticalDistance' },
-    { title: '上/下边距', elementType: 'select', fileName: 'horizontalDistance' },
-    { title: '选框宽度', elementType: 'select', fileName: 'boxWidth' },
-    { title: '选框高度', elementType: 'select', fileName: 'boxHeight' },
-    { title: '定位参考', elementType: 'select', fileName: 'positionReference' },
-    { title: '是否随页面滚动', elementType: 'select', fileName: 'scrollAble' }
+    { title: '左/右边距', elementType: 'select', fileName: 'verticalDistance', value: left, suffixValue: '%' },
+    { title: '上/下边距', elementType: 'select', fileName: 'horizontalDistance', value: top, suffixValue: '%' },
+    { title: '选框宽度', elementType: 'select', fileName: 'boxWidth', value: width, suffixValue: '%' },
+    { title: '选框高度', elementType: 'select', fileName: 'boxHeight', value: height, suffixValue: '%' },
+    { title: '定位参考', elementType: 'select', fileName: 'positionReference', value: 'LeftTop' },
+    { title: '是否随页面滚动', elementType: 'select', fileName: 'scrollAble', value: '1' }
   ]))
 
   return form
@@ -156,9 +179,15 @@ const handleClickCancel = _this => {
   _this.hiddenEditModal()
 }
 
-// 处理点击取消按钮
-const handleClickConfirm = _this => {
-  console.log('Click Confirm')
+// 处理点击确认按钮
+const handleClickConfirm = (_this, editInfo) => {
+  const inputElements = document.getElementsByClassName('e_edit_class')
+  const values = Array.from(inputElements).reduce((prev, ele) => {
+    const { name, value } = ele
+    return Object.assign(prev, { [name]: value })
+  }, {})
+  _this.dispatch('modify', Object.assign(values, { id: editInfo.id }))
+  refreshEditDom(editInfo.id, values)
   _this.hiddenEditModal()
 }
 
@@ -191,7 +220,7 @@ export default function guideModal (EasyGuide) {
     innerContentElement.appendChild(headerContent)
 
     const content = utilsCreateElement('div', { class: 'modal-content' })
-    content.appendChild(createFrom())
+    content.appendChild(createFrom(editInfo))
     innerContentElement.appendChild(content)
 
     const footerContent = utilsCreateElement('div', { class: 'modal-footer' })
@@ -209,7 +238,7 @@ export default function guideModal (EasyGuide) {
     })
     confirmBtn.innerHTML = '确定'
     confirmBtn.onclick = () => {
-      handleClickConfirm(_this)
+      handleClickConfirm(_this, editInfo)
     }
     footerContent.appendChild(cancelBtn)
     footerContent.appendChild(confirmBtn)
