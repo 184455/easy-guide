@@ -182,7 +182,10 @@ const handelWrapperClick = (_this, e) => {
       _this,
       elementName,
       createGuideItemData(
-        Object.assign(position, { orderNumber: getMaxNumber(_this.guideList, 'orderNumber') + 1 })
+        Object.assign(position, {
+          orderNumber: getMaxNumber(_this.guideList, 'orderNumber') + 1,
+          relativePosition: elementName
+        })
       )
     )
     canvasPainting(_this.EasyGuideCanvasContext, position, { windowWidth, windowHeight }, _this.guideList)

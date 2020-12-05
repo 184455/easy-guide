@@ -78,8 +78,6 @@ body {
 }
 #EasyGuideDivContainerId .e_guide-item .e_guide-content {
   position: absolute;
-  left: 15px;
-  bottom: calc(100% + 12px);;
   min-width: 220px;
   max-width: 320px;
   min-height: 90px;
@@ -117,7 +115,13 @@ body {
   border: 1px solid #d9d9d9;
   color: rgba(0,0,0,.65);
 }
-.e_guide-content::before {
+
+/* top */
+#EasyGuideDivContainerId .e_guide-item .template-item-top {
+  left: 15px;
+  bottom: calc(100% + 12px);
+}
+.template-item-top::before {
   content: '';
   position: absolute;
   bottom: -10px;
@@ -127,6 +131,58 @@ body {
   border-bottom-color: transparent;
   border-left-color: transparent
 }
+/* right */
+#EasyGuideDivContainerId .e_guide-item .template-item-right {
+  left: calc(100% + 12px);
+  bottom: unset;
+}
+.template-item-right::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  bottom: unset;
+  left: -10px;
+  border: 5px solid white;
+  border-top-color: transparent;
+  border-right-color: white;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+}
+/* left */
+#EasyGuideDivContainerId .e_guide-item .template-item-left {
+  left: -251px;
+  top: 15px;
+  bottom: unset;
+}
+.template-item-left::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  right: -10px;
+  border: 5px solid white;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: white;
+}
+/* bottom */
+#EasyGuideDivContainerId .e_guide-item .template-item-bottom {
+  bottom: unset;
+  left: 0;
+  top: calc(100% + 12px);
+}
+.template-item-bottom::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  bottom: unset;
+  border: 5px solid white;
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: white;
+  border-left-color: transparent;
+}
+
 #EasyGuideDivContainerId .e_top-step-number {
   box-sizing: content-box;
     position: absolute;

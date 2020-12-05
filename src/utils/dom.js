@@ -128,13 +128,15 @@ export function getPosition (el) {
 }
 
 // 创建指导的小框
-export function createGuideItem(EG, elementName, { top, left, width, height, id, content, orderNumber }) {
+export function createGuideItem(EG, elementName, {
+  top, left, width, height, id, content, orderNumber, relativePosition
+}) {
   const { mode } = EG
   const tempFragment = document.createDocumentFragment()
   const topStep = utilsCreateElement('div', { class: 'e_top-step-number' })
   topStep.innerHTML = orderNumber || 1
 
-  const guideContent = utilsCreateElement('div', { class: 'e_guide-content' })
+  const guideContent = utilsCreateElement('div', { class: `e_guide-content ${relativePosition}` })
   // editElementStyle(guideContent, { bottom: `${height + 12}px` })
   const contentText = utilsCreateElement('div', { class: 'e_guide-content-text' })
   contentText.innerHTML = content || '请输入指导内容！'
@@ -186,7 +188,7 @@ export function createGuideItem(EG, elementName, { top, left, width, height, id,
   tempFragment.appendChild(guideContent)
   const temp = utilsCreateElement('div', {
     id,
-    class: `e_guide-item ${elementName}`,
+    class: 'e_guide-item',
     [ElementDataSetName]: GuideDragItem
   })
   temp.appendChild(tempFragment)
