@@ -1,11 +1,5 @@
-// 维护指导信息的弹框
-import {
-  MODE,
-  ModalCancelBtnId,
-  ModalConfirmBtnId,
-  EGEditModal
-} from '../config/constant'
-import { utilsCreateElement } from '../utils/dom'
+import { utilsCreateElement } from '../../utils/dom'
+import { ModalConfirmBtnId, EGEditModal, ModalCancelBtnId } from '../../config/constant'
 
 // 用户点击确认，更新对编辑对应的 dom
 const refreshEditDom = (id, { content, orderNumber, fixFlag }) => {
@@ -197,62 +191,45 @@ const handleClickConfirm = (_this, editInfo) => {
   _this.hiddenEditModal()
 }
 
-export default function guideModal (EasyGuide) {
-  EasyGuide.prototype.hiddenEditModal = function () {
-    // 解绑事件
-    document.getElementById(ModalCancelBtnId).onclick = null
-    document.getElementById(ModalConfirmBtnId).onclick = null
+// 创建用户指导编辑框
+export function createGuideEditModal(_this, editInfo) {
+  const rootElement = utilsCreateElement('div', { class: 'e_edit-modal', id: EGEditModal })
+  const mastElement = utilsCreateElement('div', { class: 'e_modal-mast' })
+  const contentWrap = utilsCreateElement('div', { class: 'e_modal-content-wrap' })
+  const innerContentElement = utilsCreateElement('div', { class: 'e_modal-inner-content' })
 
-    const removeElement = document.getElementById(EGEditModal)
-    document.body.removeChild(removeElement)
+  // modal 里面的内容
+  const headerContent = utilsCreateElement('div', { class: 'modal-header' })
+  headerContent.innerHTML = '编辑指导信息'
+  innerContentElement.appendChild(headerContent)
+
+  const content = utilsCreateElement('div', { class: 'modal-content' })
+  content.appendChild(createFrom(editInfo))
+  innerContentElement.appendChild(content)
+
+  const footerContent = utilsCreateElement('div', { class: 'modal-footer' })
+  const cancelBtn = utilsCreateElement('button', {
+    class: 'e_cancel-btn',
+    id: ModalCancelBtnId
+  })
+  cancelBtn.innerHTML = '取消'
+  cancelBtn.onclick = () => {
+    handleClickCancel(_this)
   }
-  EasyGuide.prototype.showEditModal = function (editInfo) {
-    if (this.mode === MODE.READ) {
-      return
-    }
-
-    console.log(editInfo)
-
-    const _this = this
-
-    const rootElement = utilsCreateElement('div', { class: 'e_edit-modal', id: EGEditModal })
-    const mastElement = utilsCreateElement('div', { class: 'e_modal-mast' })
-    const contentWrap = utilsCreateElement('div', { class: 'e_modal-content-wrap' })
-    const innerContentElement = utilsCreateElement('div', { class: 'e_modal-inner-content' })
-
-    // modal 里面的内容
-    const headerContent = utilsCreateElement('div', { class: 'modal-header' })
-    headerContent.innerHTML = '编辑指导信息'
-    innerContentElement.appendChild(headerContent)
-
-    const content = utilsCreateElement('div', { class: 'modal-content' })
-    content.appendChild(createFrom(editInfo))
-    innerContentElement.appendChild(content)
-
-    const footerContent = utilsCreateElement('div', { class: 'modal-footer' })
-    const cancelBtn = utilsCreateElement('button', {
-      class: 'e_cancel-btn',
-      id: ModalCancelBtnId
-    })
-    cancelBtn.innerHTML = '取消'
-    cancelBtn.onclick = () => {
-      handleClickCancel(_this)
-    }
-    const confirmBtn = utilsCreateElement('button', {
-      class: 'e_confirm-btn',
-      id: ModalConfirmBtnId
-    })
-    confirmBtn.innerHTML = '确定'
-    confirmBtn.onclick = () => {
-      handleClickConfirm(_this, editInfo)
-    }
-    footerContent.appendChild(cancelBtn)
-    footerContent.appendChild(confirmBtn)
-    innerContentElement.appendChild(footerContent)
-
-    rootElement.appendChild(mastElement)
-    contentWrap.appendChild(innerContentElement)
-    rootElement.appendChild(contentWrap)
-    document.body.appendChild(rootElement)
+  const confirmBtn = utilsCreateElement('button', {
+    class: 'e_confirm-btn',
+    id: ModalConfirmBtnId
+  })
+  confirmBtn.innerHTML = '确定'
+  confirmBtn.onclick = () => {
+    handleClickConfirm(_this, editInfo)
   }
+  footerContent.appendChild(cancelBtn)
+  footerContent.appendChild(confirmBtn)
+  innerContentElement.appendChild(footerContent)
+
+  rootElement.appendChild(mastElement)
+  contentWrap.appendChild(innerContentElement)
+  rootElement.appendChild(contentWrap)
+  document.body.appendChild(rootElement)
 }

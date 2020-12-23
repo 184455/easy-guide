@@ -5,7 +5,8 @@
  */
 export const MODE = {
   READ: 'READ',           // 只展示
-  MAINTAIN: 'MAINTAIN'    // 编辑模式
+  MAINTAIN: 'MAINTAIN',    // 只编辑
+  MIX: 'MIX'    // 可以切换展示和编辑模式
 }
 
 // 选区最小高度，宽度

@@ -1,8 +1,8 @@
 // 工具方法
 import {
   ElementDataSetName,
-  MODE, DeleteBtn,
-  EditBtn, GuideDragItem
+  MODE, DeleteBtn, CloseButton, TemplateDragArea,
+  EditBtn, GuideDragItem, EasyGuideWrapId, EasyGuideTemplateId
 } from '../config/constant'
 
 /**
@@ -116,7 +116,6 @@ export function createGuideItem(EG, elementName, {
   topStep.innerHTML = orderNumber || 1
 
   const guideContent = utilsCreateElement('div', { class: `e_guide-content ${templatePosition}` })
-  // editElementStyle(guideContent, { bottom: `${height + 12}px` })
   const contentText = utilsCreateElement('div', { class: 'e_guide-content-text' })
   contentText.innerHTML = content || '请输入指导内容！'
   guideContent.appendChild(contentText)
@@ -174,5 +173,66 @@ export function createGuideItem(EG, elementName, {
   temp.appendChild(tempFragment)
 
   editElementStyle(temp, { top: `${top}px`, left: `${left}px`, width: `${width}px`, height: `${height}px` })
-  EG.EasyGuideWrap.appendChild(temp)
+  getEasyGuideWrap().appendChild(temp)
+}
+
+// 获取模板元素
+export function getEasyGuideTemplate () {
+  return document.getElementById(EasyGuideTemplateId)
+}
+
+// 是否有维护模式的根节点元素
+export function hasMaintainGuideRoot () {
+  return !!document.getElementById(EasyGuideWrapId)
+}
+
+// 获取最外层元素
+export function getEasyGuideWrap () {
+  return document.getElementById(EasyGuideWrapId)
+}
+
+// 创建维护模式的根节点元素
+export function createEasyGuideWrap () {
+  document.body.appendChild(utilsCreateElement('div', { id: EasyGuideWrapId }))
+}
+
+// 创建指导模板
+export function createTemplateElement () {
+  const tempFragment = document.createDocumentFragment()
+
+  // 生成气泡模版
+  const EasyGuideTemplate = utilsCreateElement('div', { id: EasyGuideTemplateId })
+  const templateCloseBtn = utilsCreateElement('div', {
+    class: 'e_template-close-btn',
+    [ElementDataSetName]: CloseButton
+  })
+  templateCloseBtn.innerHTML = 'x'
+  EasyGuideTemplate.appendChild(templateCloseBtn)
+  const templateTopText = utilsCreateElement('div', {
+    class: 'e_template-top-text',
+    title: '按下拖动',
+    [ElementDataSetName]: TemplateDragArea
+  })
+  templateTopText.innerHTML = '点击以下组件添加指导'
+  EasyGuideTemplate.appendChild(templateTopText)
+  const templateList = utilsCreateElement('div', { class: 'e_template-list' })
+  const templateElement = ['top', 'right', 'bottom', 'left']
+  templateElement.forEach(item => {
+    const temp = utilsCreateElement('div', {
+      class: `e_template-item-${item}`,
+      [ElementDataSetName]: `template-item-${item}`
+    })
+    temp.innerHTML = item
+    templateList.appendChild(temp)
+  })
+  EasyGuideTemplate.appendChild(templateList)
+
+  // 把元素插入
+  tempFragment.appendChild(EasyGuideTemplate)
+  getEasyGuideWrap().appendChild(tempFragment)
+}
+
+// Dom 界面移除子元素
+export function removeChild(rootEle, child) {
+  rootEle.removeChild(child)
 }

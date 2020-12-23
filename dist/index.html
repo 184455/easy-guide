@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="./guide.css">
   <style>
     .text-content {
-      height: 1000px;
       padding-top: 100px;
       text-align: center;
     }
@@ -15,41 +14,53 @@
 </head>
 <body>
   <div class="text-content">
-    <div>这个页面提供指导开发的时候测试用。</div>
+    <div style="margin-bottom: 24px;">这个页面提供指导开发的时候测试用。</div>
     <div>
       <button id="showMaintainGuide">显示：维护模式</button>
       <button id="showReadOnlyGuide">显示：只读模式</button>
+    </div>
+    <div>
+      <img
+        style="width: 100%;"
+        src="./introjs.com.png"
+        alt=""
+      >
     </div>
   </div>
 
   <script type="module">
     import EasyGuide from './guide.esm.js'
+    const tempGuideList = [{
+      id: String((new Date()).getTime()),
+      content: '我是内容，哈哈哈哈',
+      height: 149,
+      left: 485,
+      top: 341,
+      width: 750,
+      orderNumber: 1,
+      referencePosition: 'left-top',
+      scrollAble: true
+    }]
 
     const Guide = new EasyGuide({
-      scrollAble: true,
-      mode: 'READ',
-      guideList: [],
-      viewClose: function () {
-        Guide.destroy()
-      },
       onGuideListChange: (action, data, list) => {
-        console.log({ action, data, list })
+        console.log({ action, modifyItem: data, guideList: list })
       }
     })
 
     function showMaintainGuide () {
       Guide.setMode("MAINTAIN")
       Guide.show()
-      Guide.initEvents()
     }
     function showReadOnlyGuide () {
       Guide.setMode("READ")
       Guide.show()
-      Guide.initEvents()
     }
 
+    // 监听页面按钮
     document.getElementById('showMaintainGuide').addEventListener('click', showMaintainGuide)
     document.getElementById('showReadOnlyGuide').addEventListener('click', showReadOnlyGuide)
+    console.log(Guide);
   </script>
 </body>
 </html>
