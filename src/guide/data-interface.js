@@ -1,5 +1,3 @@
-import { canvasPainting } from '../utils/dom'
-
 export default function initDataInterface (EasyGuide) {
   EasyGuide.prototype.getGuideList = function () {
     return this.guideList
@@ -13,8 +11,6 @@ export default function initDataInterface (EasyGuide) {
 
     onGuideListChange(action, data, this.guideList)
     if (action === 'delete') {
-      const { windowWidth, windowHeight, guideList, EasyGuideCanvasContext } = this
-      canvasPainting(EasyGuideCanvasContext, undefined, { windowWidth, windowHeight }, guideList)
       const deleteElement = document.getElementById(data.id)
       deleteElement.parentElement.removeChild(deleteElement)
     }

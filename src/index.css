@@ -10,6 +10,7 @@ body {
   top: 0;
   left: 0;
   z-index: 100001;
+  background-color: rgba(0, 0, 0, 0.5);
   overflow: hidden;
 }
 #EasyGuideWrap .div-show-exit {
@@ -27,20 +28,18 @@ body {
 #EasyGuideCanvasId {
   display: block;
 }
-#EasyGuideDivContainerId {
-  height: 0;
-}
-#EasyGuideDivContainerId .e_guide-item {
+.e_guide-item {
   position: absolute;
   top: 300px;
   width: 200px;
   height: 100px;
   left: calc(50vw - 100px);
-  z-index: 99999;
+  z-index: 100002;
   cursor: move;
   box-shadow: 0 0 0 1px #ff8a2b;
+  background-color: rgba(255, 255, 255, 0.6);
 }
-#EasyGuideDivContainerId .e_guide-item .e_dot-common {
+.e_guide-item .e_dot-common {
   position: absolute;
   width: 6px;
   height: 6px;
@@ -58,25 +57,25 @@ body {
   left: -10px;
   background: transparent;
 }
-#EasyGuideDivContainerId .e_guide-item .e_dot-top {
+.e_guide-item .e_dot-top {
   top: -5px;
   left: calc(50% - 6px);
 }
-#EasyGuideDivContainerId .e_guide-item .e_dot-right {
+.e_guide-item .e_dot-right {
   right: -5px;
   top: calc(50% - 6px);
   cursor: col-resize;
 }
-#EasyGuideDivContainerId .e_guide-item .e_dot-bottom {
+.e_guide-item .e_dot-bottom {
   bottom: -5px;
   left: calc(50% - 6px);
 }
-#EasyGuideDivContainerId .e_guide-item .e_dot-left {
+.e_guide-item .e_dot-left {
   left: -5px;
   top: calc(50% - 6px);
   cursor: col-resize;
 }
-#EasyGuideDivContainerId .e_guide-item .e_guide-content {
+.e_guide-item .e_guide-content {
   position: absolute;
   min-width: 220px;
   max-width: 320px;
@@ -89,12 +88,12 @@ body {
   z-index: 99999;
   cursor: default;
 }
-#EasyGuideDivContainerId .e_guide-item .e_guide-content .e_guide-content-btn {
+.e_guide-item .e_guide-content .e_guide-content-btn {
   position: absolute;
   bottom: 10px;
   right: 10px;
 }
-#EasyGuideDivContainerId .e_guide-item .e_guide-content .e_guide-content-btn button {
+.e_guide-item .e_guide-content .e_guide-content-btn button {
   outline: none;
   border: none;
   margin: 0;
@@ -103,21 +102,21 @@ body {
   border-radius: 2px;
   padding: 1px 6px;
 }
-#EasyGuideDivContainerId .e_guide-item .e_guide-content .e_guide-content-btn button:focus {
+.e_guide-item .e_guide-content .e_guide-content-btn button:focus {
   outline: none;
 }
-#EasyGuideDivContainerId .e_guide-item .e_guide-content .e_guide-content-btn .e_edit-btn {
+.e_guide-item .e_guide-content .e_guide-content-btn .e_edit-btn {
   background: #ff8a2b;
   color: white;
 }
-#EasyGuideDivContainerId .e_guide-item .e_guide-content .e_guide-content-btn .e_delete-btn {
+.e_guide-item .e_guide-content .e_guide-content-btn .e_delete-btn {
   margin-right: 8px;
   border: 1px solid #d9d9d9;
   color: rgba(0,0,0,.65);
 }
 
 /* top */
-#EasyGuideDivContainerId .e_guide-item .template-item-top {
+.e_guide-item .template-item-top {
   left: 15px;
   bottom: calc(100% + 12px);
 }
@@ -132,7 +131,7 @@ body {
   border-left-color: transparent
 }
 /* right */
-#EasyGuideDivContainerId .e_guide-item .template-item-right {
+.e_guide-item .template-item-right {
   left: calc(100% + 12px);
   bottom: unset;
 }
@@ -149,7 +148,7 @@ body {
   border-left-color: transparent;
 }
 /* left */
-#EasyGuideDivContainerId .e_guide-item .template-item-left {
+.e_guide-item .template-item-left {
   left: -251px;
   top: 15px;
   bottom: unset;
@@ -166,7 +165,7 @@ body {
   border-left-color: white;
 }
 /* bottom */
-#EasyGuideDivContainerId .e_guide-item .template-item-bottom {
+.e_guide-item .template-item-bottom {
   bottom: unset;
   left: 0;
   top: calc(100% + 12px);
@@ -183,7 +182,7 @@ body {
   border-left-color: transparent;
 }
 
-#EasyGuideDivContainerId .e_top-step-number {
+.e_top-step-number {
   box-sizing: content-box;
     position: absolute;
     top: -16px;

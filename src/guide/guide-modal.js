@@ -8,8 +8,9 @@ import {
 import { utilsCreateElement } from '../utils/dom'
 
 // 用户点击确认，更新对编辑对应的 dom
-const refreshEditDom = (id, { content, orderNumber }) => {
+const refreshEditDom = (id, { content, orderNumber, fixFlag }) => {
   const editItemDom = document.getElementById(String(id))
+  editItemDom.style.position = fixFlag === 'Y' ? 'fixed' : 'absolute'
   const contentBox = editItemDom.getElementsByClassName('e_guide-content-text')[0]
   const orderNumberBox = editItemDom.getElementsByClassName('e_top-step-number')[0]
   contentBox.innerHTML = content
@@ -17,20 +18,24 @@ const refreshEditDom = (id, { content, orderNumber }) => {
 }
 
 // 创建一个 select 元素
-const createSelect = (list, value, fileName) => {
+const createSelect = (list, selectedValue, fileName) => {
   const optionList = document.createDocumentFragment()
   if (Array.isArray(list)) {
     list.map(item => {
-      const { value, showText } = item
-      const temp = utilsCreateElement('option', { value })
+      const { optionValue, showText } = item
+      const temp = utilsCreateElement('option', { value: optionValue })
       temp.innerHTML = showText
       optionList.appendChild(temp)
     })
   }
-  const res = utilsCreateElement('select', { class: 'e_select e_edit_class', name: fileName })
-  res.appendChild(optionList)
-  res.value = value
-  return res
+
+  console.log(selectedValue)
+  const SelectEle = utilsCreateElement('select', {
+    class: 'e_select e_edit_class', name: fileName
+  })
+  SelectEle.appendChild(optionList)
+  SelectEle.value = selectedValue
+  return SelectEle
 }
 
 // 创建带头信息的 select 框
@@ -111,16 +116,16 @@ const createFromItem = itemData => {
       break
     case 'positionReference':
       itemRight.appendChild(createSelect([
-        { showText: '左上角', value: 'LeftTop' },
-        { showText: '右上角', value: 'RightTop' },
-        { showText: '右下角', value: 'RightBottom' },
-        { showText: '左下角', value: 'LeftBottom' }
+        { showText: '左上角', optionValue: 'LeftTop' },
+        { showText: '右上角', optionValue: 'RightTop' },
+        { showText: '右下角', optionValue: 'RightBottom' },
+        { showText: '左下角', optionValue: 'LeftBottom' }
       ], value, fileName))
       break
-    case 'scrollAble':
+    case 'fixFlag':
       itemRight.appendChild(createSelect([
-        { showText: '是', value: '1' },
-        { showText: '否', value: '0' }
+        { showText: '是', optionValue: 'Y' },
+        { showText: '否', optionValue: 'N' }
       ], value, fileName))
       break
     default:
@@ -144,7 +149,7 @@ const createFromItems = (itemList) => {
 
 // 创建表单
 const createFrom = (initData) => {
-  const { orderNumber, content, left, top, width, height } = initData
+  const { orderNumber, content, left, top, width, height, fixFlag } = initData
   const form = utilsCreateElement('form', { method: 'POST', url: '' })
   form.appendChild(createFromItems([
     {
@@ -168,7 +173,7 @@ const createFrom = (initData) => {
     { title: '选框宽度', elementType: 'select', fileName: 'boxWidth', value: width, suffixValue: '%' },
     { title: '选框高度', elementType: 'select', fileName: 'boxHeight', value: height, suffixValue: '%' },
     { title: '定位参考', elementType: 'select', fileName: 'positionReference', value: 'LeftTop' },
-    { title: '是否随页面滚动', elementType: 'select', fileName: 'scrollAble', value: '1' }
+    { title: '是否固定位置', elementType: 'select', fileName: 'fixFlag', value: fixFlag }
   ]))
 
   return form
@@ -186,6 +191,7 @@ const handleClickConfirm = (_this, editInfo) => {
     const { name, value } = ele
     return Object.assign(prev, { [name]: value })
   }, {})
+
   _this.dispatch('modify', Object.assign(values, { id: editInfo.id }))
   refreshEditDom(editInfo.id, values)
   _this.hiddenEditModal()

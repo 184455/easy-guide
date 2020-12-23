@@ -22,9 +22,6 @@ export const EasyGuideWrapId = 'EasyGuideWrap'
 // EasyGuide 画板
 export const EasyGuideCanvasId = 'EasyGuideCanvasId'
 
-// EasyGuide 存放用户维护的指导 div 数据
-export const EasyGuideDivContainerId = 'EasyGuideDivContainerId'
-
 // EasyGuide 放置用户可以选用的模版
 export const EasyGuideTemplateId = 'EasyGuideTemplateId'
 

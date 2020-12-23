@@ -19,7 +19,7 @@ import {
 import { createGuideItemData, defaultPosition, getMaxNumber } from '../utils/index'
 import {
   utilsMoveDiv,
-  editElementStyle, canvasPainting,
+  editElementStyle,
   getPosition, createGuideItem
 } from '../utils/dom'
 
@@ -70,17 +70,13 @@ const handleGuideDragItemDown = (_this, event) => {
 }
 const handleGuideDragItemMove = (_this, event) => {
   const {
-    windowWidth, windowHeight,
-    onMouseDownPositionImage, currentTarget,
-    EasyGuideCanvasContext, guideList
+    onMouseDownPositionImage, currentTarget
   } = _this
-  const { deltaX, deltaY, clientWidth: width, clientHeight: height, id } = onMouseDownPositionImage // 鼠标落点和元素的边距，需要减去，保持移动前不抖动
+  const { deltaX, deltaY, clientWidth: width, clientHeight: height } = onMouseDownPositionImage // 鼠标落点和元素的边距，需要减去，保持移动前不抖动
   const left = event[tagX] - deltaX
   const top = event[tagY] - deltaY
 
-  const excludeItem = guideList.filter(o => String(o.id) !== String(id))
   utilsMoveDiv(currentTarget, left, top)
-  canvasPainting(EasyGuideCanvasContext, { left, top, width, height }, { windowWidth, windowHeight }, excludeItem)
   Object.assign(onMouseDownPositionImage, { left, top, width, height, isActive: true })
 }
 const handleGuideDragItemUp = (_this, event) => {
@@ -109,7 +105,7 @@ const handleDotDown = (_this, event) => {
 }
 const handleDotMove = (_this, event) => {
   const { startX, startY, clientWidth, clientHeight, position, id, elementName } = _this.onMouseDownPositionImage
-  const { windowWidth, windowHeight, currentTarget, EasyGuideCanvasContext, guideList } = _this
+  const { currentTarget } = _this
   const { top, left } = position
 
   let newPosition = {}
@@ -144,12 +140,6 @@ const handleDotMove = (_this, event) => {
   _this.onMouseDownPositionImage.newPosition = Object.assign({ id }, position, canvasPosition)
 
   editElementStyle(currentTarget.parentElement, newPosition)
-  canvasPainting(
-    EasyGuideCanvasContext,
-    _this.onMouseDownPositionImage.newPosition,
-    { windowWidth, windowHeight },
-    guideList.filter(o => String(o.id) !== String(id))
-  )
 }
 const handleDotUp = (_this, event) => {
   const { onMouseDownPositionImage } = _this
@@ -173,23 +163,16 @@ const handelWrapperClick = (_this, e) => {
   ]
   if (eventElementNameList.indexOf(elementName) === -1) return
 
-  const { windowWidth, windowHeight } = _this
-
   if (elementName.indexOf('template-item-') > -1) {
-    // 点击模版添加
-    const position = defaultPosition(_this.windowWidth)
-    createGuideItem(
-      _this,
-      elementName,
-      createGuideItemData(
-        Object.assign(position, {
-          orderNumber: getMaxNumber(_this.guideList, 'orderNumber') + 1,
-          relativePosition: elementName
-        })
-      )
-    )
-    canvasPainting(_this.EasyGuideCanvasContext, position, { windowWidth, windowHeight }, _this.guideList)
-    _this.dispatch('create', position)
+    // 点击模版添加，创建元素
+    const positionInfo = defaultPosition(_this.windowWidth)
+    const itemProps = createGuideItemData(Object.assign(positionInfo, {
+      orderNumber: getMaxNumber(_this.guideList, 'orderNumber') + 1,
+      templatePosition: elementName
+    }))
+
+    createGuideItem(_this, elementName, itemProps)
+    _this.dispatch('create', itemProps)
     return
   }
 

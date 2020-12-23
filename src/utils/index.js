@@ -14,7 +14,7 @@ export function createGuideItemData (initVal) {
     height: '',
     orderNumber: 1,
     referencePosition: '',
-    scrollAble: ''
+    fixFlag: 'N'
   }, initVal)
 }
 

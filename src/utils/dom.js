@@ -1,6 +1,5 @@
 // 工具方法
 import {
-  DefaultFillStyle,
   ElementDataSetName,
   MODE, DeleteBtn,
   EditBtn, GuideDragItem
@@ -95,26 +94,6 @@ export function editElementStyle (ele, props) {
   })
 }
 
-// canvas 画布
-export function canvasPainting (ctx, next, windowArea, guideList = [], _DefaultFillStyle = DefaultFillStyle) {
-  const { windowWidth, windowHeight } = windowArea
-
-  ctx.save()
-  ctx.clearRect(0, 0, windowWidth, windowHeight)
-  ctx.fillStyle = _DefaultFillStyle
-  ctx.fillRect(0, 0, windowWidth, windowHeight)
-  if (Array.isArray(guideList) && guideList.length) {
-    guideList.forEach(item => {
-      ctx.clearRect(item.left, item.top, item.width, item.height)
-    })
-  }
-  if (typeof next === 'object') {
-    const { left, top, width, height } = next
-    ctx.clearRect(left, top, width, height)
-  }
-  ctx.restore()
-}
-
 /**
  * 获取元素的：左 上 宽 高
  * @param {dom} el 目标元素
@@ -129,14 +108,14 @@ export function getPosition (el) {
 
 // 创建指导的小框
 export function createGuideItem(EG, elementName, {
-  top, left, width, height, id, content, orderNumber, relativePosition
+  top, left, width, height, id, content, orderNumber, templatePosition, fixFlag
 }) {
   const { mode } = EG
   const tempFragment = document.createDocumentFragment()
   const topStep = utilsCreateElement('div', { class: 'e_top-step-number' })
   topStep.innerHTML = orderNumber || 1
 
-  const guideContent = utilsCreateElement('div', { class: `e_guide-content ${relativePosition}` })
+  const guideContent = utilsCreateElement('div', { class: `e_guide-content ${templatePosition}` })
   // editElementStyle(guideContent, { bottom: `${height + 12}px` })
   const contentText = utilsCreateElement('div', { class: 'e_guide-content-text' })
   contentText.innerHTML = content || '请输入指导内容！'
@@ -191,8 +170,9 @@ export function createGuideItem(EG, elementName, {
     class: 'e_guide-item',
     [ElementDataSetName]: GuideDragItem
   })
+  temp.style.position = fixFlag === 'Y' ? 'fixed' : 'absolute'
   temp.appendChild(tempFragment)
 
   editElementStyle(temp, { top: `${top}px`, left: `${left}px`, width: `${width}px`, height: `${height}px` })
-  EG.EasyGuideDivContainer.appendChild(temp)
+  EG.EasyGuideWrap.appendChild(temp)
 }

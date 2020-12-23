@@ -3,11 +3,8 @@ import Config from '../config/index'
 import {
   MODE,
   EasyGuideWrapId,
-  EasyGuideCanvasId,
-  EasyGuideDivContainerId,
   EasyGuideTemplateId,
   ElementDataSetName,
-  CanvasName,
   CloseButton,
   TemplateDragArea
 } from '../config/constant'
@@ -16,8 +13,7 @@ import {
   utilsCreateElement,
   addClass, deleteClass,
   editElementStyle,
-  createGuideItem,
-  canvasPainting
+  createGuideItem
 } from '../utils/dom'
 
 function handleBodyClassName () {
@@ -62,11 +58,10 @@ const createContentBox = (props, viewClose) => {
 }
 
 const renderGuideList = (_this) => {
-  const { windowWidth, windowHeight, guideList } = _this
+  const { guideList } = _this
   if (Array.isArray(guideList)) {
     guideList.forEach((position) => {
       createGuideItem(_this, 'template-item-top', createGuideItemData(position))
-      canvasPainting(_this.EasyGuideCanvasContext, position, { windowWidth, windowHeight })
     })
   }
 }
@@ -83,19 +78,16 @@ export default function initMixin (EasyGuide) {
   EasyGuide.prototype.init = function (_options) {
     // 处理 Options
     this.Options = Object.assign({}, Config, _options)
-    const { scrollAble } = this.Options
+    const { scrollAble, mode, guideList } = this.Options
 
     // 用户指导列表
-    this.guideList = (this.Options.guideList || []).slice(0)
+    this.guideList = (guideList || []).slice(0)
 
     // 模式
-    this.mode = this.Options.mode
+    this.mode = mode
 
     // 创建最 EasyGuide 最外层容器
     this.EasyGuideWrap = utilsCreateElement('div', { id: EasyGuideWrapId })
-
-    // EasyGuide 画板
-    this.EasyGuideCanvasContext = null
 
     // EasyGuide 气泡模版
     this.EasyGuideTemplate = null
@@ -111,7 +103,8 @@ export default function initMixin (EasyGuide) {
     this.windowHeight = scrollAble ? document.body.scrollHeight : window.innerHeight
 
     // 把根节点插入文档
-    document.body.insertBefore(this.EasyGuideWrap, document.body.childNodes[0])
+    // document.body.insertBefore(this.EasyGuideWrap, document.body.childNodes[0])
+    document.body.appendChild(this.EasyGuideWrap)
   }
 
   // 展示-只读模式
@@ -145,36 +138,14 @@ export default function initMixin (EasyGuide) {
 
   // 展示-编辑模式
   EasyGuide.prototype._showGuideMainTain = function () {
-    const { windowWidth, windowHeight, Options } = this
-
-    const root = document.getElementById(EasyGuideWrapId)
-    if (!root) {
-      // 如果根节点不在，重新插入
-      document.body.insertBefore(this.EasyGuideWrap, document.body.childNodes[0])
-      return
-    }
-
-    // 这里的代码只有第一次初始化的时候会执行
+    const { windowWidth, windowHeight } = this
+    this.EasyGuideWrap.style.height = windowHeight + 'px'
+    this.EasyGuideWrap.style.width = windowWidth + 'px'
 
     // 初始化指导信息编辑框
     guideModal(EasyGuide)
 
-    // 创建 Canvas 画板
     const tempFragment = document.createDocumentFragment()
-
-    const tempCanvas = utilsCreateElement('canvas', {
-      id: EasyGuideCanvasId,
-      width: windowWidth,
-      height: windowHeight,
-      [ElementDataSetName]: CanvasName
-    })
-    this.EasyGuideCanvasContext = tempCanvas.getContext('2d')
-    this.EasyGuideCanvasContext.fillStyle = Options.defaultFillStyle
-    this.EasyGuideCanvasContext.fillRect(0, 0, windowWidth, windowHeight)
-    this.EasyGuideCanvasContext.restore()
-
-    // 创建容纳用户维护的指导数据的容器
-    this.EasyGuideDivContainer = utilsCreateElement('div', { id: EasyGuideDivContainerId })
 
     // 生成气泡模版
     this.EasyGuideTemplate = utilsCreateElement('div', { id: EasyGuideTemplateId })
@@ -204,8 +175,6 @@ export default function initMixin (EasyGuide) {
     this.EasyGuideTemplate.appendChild(templateList)
 
     // 把元素插入
-    tempFragment.appendChild(tempCanvas)
-    tempFragment.appendChild(this.EasyGuideDivContainer)
     tempFragment.appendChild(this.EasyGuideTemplate)
     this.EasyGuideWrap.appendChild(tempFragment)
   }
