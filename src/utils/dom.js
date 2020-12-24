@@ -1,7 +1,7 @@
 // 工具方法
 import {
   ElementDataSetName,
-  MODE, DeleteBtn, CloseButton, TemplateDragArea,
+  MODE, DeleteBtn, CloseButton, TemplateDragArea, ViewEasyGuideWrapId,
   EditBtn, GuideDragItem, EasyGuideWrapId, EasyGuideTemplateId
 } from '../config/constant'
 
@@ -194,6 +194,26 @@ export function getEasyGuideWrap () {
 // 创建维护模式的根节点元素
 export function createEasyGuideWrap () {
   document.body.appendChild(utilsCreateElement('div', { id: EasyGuideWrapId }))
+}
+
+// 是否有查看模式的根节点元素
+export function hasViewGuideRoot () {
+  return !!document.getElementById(ViewEasyGuideWrapId)
+}
+
+// 获取查看模式的最外层元素
+export function getViewGuideRoot () {
+  return document.getElementById(ViewEasyGuideWrapId)
+}
+
+// 创建查看模式的根节点元素
+export function createViewGuideRoot () {
+  return utilsCreateElement('div', { style: 'height: 1px; width: 1px;', id: ViewEasyGuideWrapId })
+}
+
+// 插入查看模式的根节点元素
+export function insertViewGuideRoot (ele) {
+  document.body.insertBefore(ele, document.body.childNodes[0])
 }
 
 // 创建指导模板

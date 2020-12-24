@@ -1,5 +1,5 @@
 import { MODE } from '../../config/constant'
-import { getEasyGuideWrap, createEasyGuideWrap, removeChild } from '../../utils/dom'
+import { getEasyGuideWrap, createEasyGuideWrap, removeChild, getViewGuideRoot } from '../../utils/dom'
 import {
   handleBodyClassName,
   handleRemoveBodyClassName,
@@ -30,12 +30,6 @@ export default function InitMixin (EasyGuide) {
     // 模式
     this.mode = mode
 
-    // 查看模式下的根节点
-    this.ViewGuideWrap = null
-
-    // 查看模式下的遮罩元素
-    this.BarList = null
-
     // 确定浏览器可视窗口的宽高
     initWindowWidthAndHeight(this)
 
@@ -58,7 +52,7 @@ export default function InitMixin (EasyGuide) {
       showGuideMainTain(this)
     } else if (mode === MODE.READ) {
       // 查看模式
-      showGuide()
+      showGuide(this)
     }
   }
 
@@ -71,7 +65,7 @@ export default function InitMixin (EasyGuide) {
   EasyGuide.prototype.destroy = function () {
     if (this.mode === MODE.READ) {
       handleRemoveBodyClassName()
-      removeChild(document.body, this.ViewGuideWrap)
+      removeChild(document.body, getViewGuideRoot())
       return
     }
 

@@ -20,6 +20,9 @@ export const DefaultFillStyle = 'rgba(0, 0, 0, 0.5)'
 // EasyGuide 最外层 div 容器 ID
 export const EasyGuideWrapId = 'EasyGuideWrap'
 
+// EasyGuide 浏览模式 最外层 div 容器 ID
+export const ViewEasyGuideWrapId = 'ViewEasyGuideWrapId'
+
 // EasyGuide 画板
 export const EasyGuideCanvasId = 'EasyGuideCanvasId'
 

@@ -10,7 +10,9 @@ import {
   utilsCreateElement,
   hasMaintainGuideRoot,
   createEasyGuideWrap,
-  createTemplateElement
+  createTemplateElement,
+  createViewGuideRoot,
+  insertViewGuideRoot
 } from '../../utils/dom'
 
 export function handleBodyClassName () {
@@ -40,6 +42,7 @@ export function createContentBox(props, viewClose) {
   contentBox.appendChild(content)
 
   const preBtn = utilsCreateElement('button', { class: 'box-pre-btn' })
+  preBtn.onclick = viewClose
   preBtn.textContent = '上一步'
   footerBtn.appendChild(preBtn)
 
@@ -84,17 +87,22 @@ export function showGuideMainTain(_this) {
 }
 // 展示-只读模式
 export function showGuide(_this) {
+  const currentItem = _this.guideList[0]
+  if (!currentItem || !Object.keys(currentItem).length) {
+    return
+  }
+
   // 生成上左右下四个遮罩元素
   const barElement = document.createDocumentFragment()
-  _this.BarList = ['bar-lib-top', 'bar-lib-left', 'bar-lib-right', 'bar-lib-bottom'].map((item) => {
+  const barElementList = (['bar-lib-top', 'bar-lib-left', 'bar-lib-right', 'bar-lib-bottom']).map((item) => {
     const temp = utilsCreateElement('div', { class: `${item} bar-lib-common` })
     barElement.appendChild(temp)
     return temp
   })
 
-  const currentItem = _this.guideList[0] || {}
-  setBarLibPosition(_this.BarList, currentItem)
+  setBarLibPosition(barElementList, currentItem)
 
+  // 默认关闭函数
   let viewCloseFun = () => {
     _this.destroy()
   }
@@ -109,13 +117,15 @@ export function showGuide(_this) {
     left: `${currentItem.left}px`
   })
 
-  _this.ViewGuideWrap = utilsCreateElement('div', { style: 'height: 1px; width: 1px;' })
-  _this.ViewGuideWrap.appendChild(barElement)
-  _this.ViewGuideWrap.appendChild(contentBox)
+  const tempRootEle = createViewGuideRoot()
+  tempRootEle.appendChild(barElement)
+  tempRootEle.appendChild(contentBox)
 
-  editElementStyle(getEasyGuideWrap(), { width: '1px', height: '1px' })
+  if (hasMaintainGuideRoot()) {
+    editElementStyle(getEasyGuideWrap(), { width: '1px', height: '1px' })
+  }
   addClass(document.body, 'e_position-relative')
-  document.body.insertBefore(_this.ViewGuideWrap, document.body.childNodes[0])
+  insertViewGuideRoot(tempRootEle)
 }
 
 // 处理options
