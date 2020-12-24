@@ -30,14 +30,13 @@ export default function InitMixin (EasyGuide) {
     // 模式
     this.mode = mode
 
+    this.currentIndex = 0
+
     // 确定浏览器可视窗口的宽高
     initWindowWidthAndHeight(this)
 
     // 把根节点插入文档
     createEasyGuideWrap()
-
-    // 初始化事件
-    this.initEvents()
   }
 
   // 展示
@@ -54,6 +53,9 @@ export default function InitMixin (EasyGuide) {
       // 查看模式
       showGuide(this)
     }
+
+    // 初始化事件
+    this.initEvents()
   }
 
   // 改变模式

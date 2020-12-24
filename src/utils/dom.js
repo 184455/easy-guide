@@ -256,3 +256,52 @@ export function createTemplateElement () {
 export function removeChild(rootEle, child) {
   rootEle.removeChild(child)
 }
+
+export function setBarLibPosition(barList, { top, left, width, height }) {
+  const temp = [
+    `height:${top}px`,
+    `height:${height}px; width:${left}px; top:${top}px`,
+    `height:${height}px; left:${left + width}px; top:${top}px`,
+    `top: ${top + height}px`
+  ]
+  temp.forEach((item, index) => {
+    barList[index].setAttribute('style', item)
+  })
+}
+
+export function getBarElementList (rootEle) {
+  return Array.from(rootEle.getElementsByClassName('bar-lib-common'))
+}
+export function getElementsByClassName (rootEle, className) {
+  return rootEle.getElementsByClassName(className)[0]
+}
+
+// 更新上一步下一步 dom 内容
+export function updateStepDom(showItemData, rootEle) {
+  if (!rootEle) {
+    rootEle = getViewGuideRoot()
+  }
+  const barElementList = getBarElementList(rootEle)
+  const contentBox = getElementsByClassName(rootEle, 'e_step-content-box')
+  const prevBtn = getElementsByClassName(rootEle, 'box-pre-btn')
+  const nextBtn = getElementsByClassName(rootEle, 'box-next-btn')
+
+  const { top, left, height, finalFlag, firstFlag } = showItemData
+  setBarLibPosition(barElementList, showItemData)
+  // 生成内容框
+  editElementStyle(contentBox, {
+    top: `${top + height + 20}px`,
+    left: `${left}px`
+  })
+  if (finalFlag) {
+    nextBtn.innerHTML = '关闭'
+  } else {
+    nextBtn.innerHTML = '下一步'
+  }
+
+  if (firstFlag) {
+    prevBtn.style.visibility = 'hidden'
+  } else {
+    prevBtn.style.visibility = 'unset'
+  }
+}

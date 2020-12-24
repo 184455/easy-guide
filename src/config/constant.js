@@ -73,6 +73,10 @@ export const DeleteBtn = 'deleteButton'
 // 编辑按钮
 export const EditBtn = 'editBtn'
 
+// 查看上一步下一步
+export const PrevBtnName = 'PrevBtnName'
+export const NextBtnName = 'NextBtnName'
+
 // ------------------ 事件 --------------------------
 
 // 事件 X 轴取值字段
