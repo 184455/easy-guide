@@ -6,25 +6,145 @@
   <title>EasyGuide 开发测试页面</title>
   <link rel="stylesheet" href="./guide.css">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      padding-bottom: 100px;
+    }
+    h1 {
+      color: rgba(0, 0, 0, 0.7);
+      margin-bottom: 24px;
+    }
+    p {
+      color: rgba(0, 0, 0, 0.7);
+      margin-bottom: 14px;
+    }
     .text-content {
       padding-top: 100px;
       text-align: center;
+    }
+    #showMaintainGuide, #showReadOnlyGuide {
+      outline: none;
+      border: none;
+      padding: 3px 5px;
+      border-radius: 2px;
+      background: rgb(150 187 247);
+      color: rgba(0, 0, 0, 0.7);
+    }
+    .feater-list {
+      display: flex;
+      justify-content: center;
+      padding-top: 100px;
+    }
+    .feater-list > div {
+      flex: 0 0 25%;
+      width: 25%;
+    }
+    .feater-list h3 {
+      margin: 12px 0;
+    }
+    .feater-list p {
+      margin: 0 auto;
+      max-width: 350px;
+    }
+    .intro {
+      width: 75%;
+      margin: 50px auto 0;
+      padding-top: 50px;
+      text-align: left;
+      border-top: 1px solid #eee;
+    }
+    .intro > h3 {
+      margin-bottom: 18px;
+    }
+    .bask-use {
+      display: flex;
+      justify-content: center;
+      margin: 100px auto 0;
+      width: 75%;
+      background: #d4e6e6;
+      padding: 50px 10%;
+      box-sizing: border-box;
+    }
+    .bask-use > div {
+      flex: 1;
+    }
+    .bask-use h3 {
+      margin: 12px 0;
+    }
+    .bask-use p {
+      max-width: 350px;
+      margin: 0 auto;
+    }
+    .user {
+      text-align: center;
+      padding: 100px 0 0;
+    }
+    .user > h2 {
+      margin-bottom: 12px;
     }
   </style>
 </head>
 <body>
   <div class="text-content">
-    <div style="margin-bottom: 24px;">这个页面提供指导开发的时候测试用。</div>
+    <h1>EasyGuide.js</h1>
+    <p>一个简单，便捷，可维护的用户指导。</p>
     <div>
-      <button id="showMaintainGuide">显示：维护模式</button>
-      <button id="showReadOnlyGuide">显示：只读模式</button>
+      <button style="background: white; border: 1px solid #999;" id="showMaintainGuide">维护模式</button>
+      <button style="margin-left: 12px;" id="showReadOnlyGuide">只读模式</button>
     </div>
-    <div>
-      <img
-        style="width: 100%;"
-        src="./introjs.com.png"
-        alt=""
-      >
+
+    <div class="feater-list">
+      <div>
+        <h2>&#9889;</h2>
+        <h3>更快</h3>
+        <p>原生JS，让我们的执行速度更快！</p>
+      </div>
+      <div>
+        <h2 style="color: green;">&#9851;</h2>
+        <h3>零依赖</h3>
+        <p>纯 JS 实现，没有依赖其他第三方类库，让你的应用更安全。</p>
+      </div>
+      <div>
+        <h2 style="color: rgb(216 50 50);">&#9786;</h2>
+        <h3>更小</h3>
+        <p>更小的体积！让你的加载速度更快！</p>
+      </div>
+    </div>
+
+    <div class="intro">
+      <h3>Why ? 在什么时候应该使用我们？</h3>
+      <p>
+        我想很多时候你可能都不需要 EasyGuide.js。<br/>
+        因为市场上已经有很好用用户指导的组件了，比如：<a target="_blank" href="https://introjs.com/">intro.js</a>，而且它足够优秀！<br/>
+        但是为什么我还要写这个组件库？<br/>
+        这是当你尝试了市场上的其他用户指导的组件以后，你会发现有一种试用场景：在不能更改需要指导的对象前提下，它们没有办法实现。我写这个框架的目的也是基于这个初衷！<br/>
+        没错，EasyGuide.js 不会入侵需要指导对象的目标代码。<br/>
+        这个特性，对于我们嵌入不属于我们自己的页面，或者需要有大量的代码需要更改，还需要做引导的时候有着非常重要的意义！
+      </p>
+    </div>
+
+    <div class="bask-use">
+      <div>
+        <h2>&#9997;</h2>
+        <h3>编辑模式</h3>
+        <p>管理员视角：在这个模式你可以编辑你想要指导的地方。</p>
+      </div>
+      <div>
+        <h2 style="color: #ff6000;">&#9728;</h2>
+        <h3>查看模式</h3>
+        <p>用户视角：在这个模式你可以看到管理员给你维护的指导数据。</p>
+      </div>
+    </div>
+
+    <div class="user">
+      <h2>WHO USES EasyGuide.js</h2>
+      <p>
+        除了我自己，目前还没有任何人尝试使用！
+        但是我相信，它一定能赢得用户的喜爱！
+      </p>
     </div>
   </div>
 
