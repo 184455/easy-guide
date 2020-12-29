@@ -88,6 +88,9 @@ body {
   z-index: 99999;
   cursor: default;
 }
+.e_guide-item .e_guide-content .e_guide-content-text {
+  color: rgba(0,0,0,.75);
+}
 .e_guide-item .e_guide-content .e_guide-content-btn {
   position: absolute;
   bottom: 10px;
@@ -464,6 +467,7 @@ body {
   border: 1px solid #d9d9d9;
   border-right: none;
   height: 30px;
+  width: 58px;
   box-sizing: border-box;
   padding: 4px 11px;
   border-top-left-radius: 4px;

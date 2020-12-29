@@ -31,18 +31,23 @@
   <script type="module">
     import EasyGuide from './guide.esm.js'
     const tempGuideList = [{
-      id: String((new Date()).getTime()),
-      content: '我是内容，哈哈哈哈',
-      height: 149,
-      left: 485,
-      top: 341,
-      width: 750,
-      orderNumber: 1,
-      referencePosition: 'left-top',
-      scrollAble: true
+      content: "我是默认的内容",
+      contentPosition: "template-item-top",
+      fixFlag: "N",
+      height: 100,
+      heightUtil: "%",
+      id: "1609220134322",
+      left: 504,
+      leftUtil: "%",
+      orderNumber: "1",
+      top: 327,
+      topUtil: "%",
+      width: 656,
+      widthUtil: "%",
     }]
 
     const Guide = new EasyGuide({
+      guideList: tempGuideList,
       onGuideListChange: (action, data, list) => {
         console.log({ action, modifyItem: data, guideList: list })
       }

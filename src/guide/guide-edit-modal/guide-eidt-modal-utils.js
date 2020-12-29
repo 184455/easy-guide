@@ -7,7 +7,7 @@ const refreshEditDom = (id, { content, orderNumber, fixFlag }) => {
   editItemDom.style.position = fixFlag === 'Y' ? 'fixed' : 'absolute'
   const contentBox = editItemDom.getElementsByClassName('e_guide-content-text')[0]
   const orderNumberBox = editItemDom.getElementsByClassName('e_top-step-number')[0]
-  contentBox.innerHTML = content
+  contentBox.innerHTML = content || '请维护用户指导内容！'
   orderNumberBox.innerHTML = orderNumber
 }
 
@@ -23,7 +23,6 @@ const createSelect = (list, selectedValue, fileName) => {
     })
   }
 
-  console.log(selectedValue)
   const SelectEle = utilsCreateElement('select', {
     class: 'e_select e_edit_class', name: fileName
   })
@@ -79,42 +78,34 @@ const createFromItem = itemData => {
     case 'content':
       const contentBox = utilsCreateElement(
         elementType,
-        { class: className, name: fileName }
+        { class: className, name: fileName, placeholder: '请输入指导内容' }
       )
       contentBox.value = value
       itemRight.appendChild(contentBox)
       break
-    case 'verticalDistance':
+    case 'leftUtil':
       itemRight.appendChild(prefixSelect(value, suffixValue, fileName, [
-        { showText: '百分比', value: '%' },
-        { showText: '像素', value: 'px' }
+        { showText: '百分比', optionValue: '%' },
+        { showText: '像素', optionValue: 'px' }
       ]))
       break
-    case 'horizontalDistance':
+    case 'topUtil':
       itemRight.appendChild(prefixSelect(value, suffixValue, fileName, [
-        { showText: '百分比', value: '%' },
-        { showText: '像素', value: 'px' }
+        { showText: '百分比', optionValue: '%' },
+        { showText: '像素', optionValue: 'px' }
       ]))
       break
-    case 'boxWidth':
+    case 'widthUtil':
       itemRight.appendChild(prefixSelect(value, suffixValue, fileName, [
-        { showText: '百分比', value: '%' },
-        { showText: '像素', value: 'px' }
+        { showText: '百分比', optionValue: '%' },
+        { showText: '像素', optionValue: 'px' }
       ]))
       break
-    case 'boxHeight':
+    case 'heightUtil':
       itemRight.appendChild(prefixSelect(value, suffixValue, fileName, [
-        { showText: '百分比', value: '%' },
-        { showText: '像素', value: 'px' }
+        { showText: '百分比', optionValue: '%' },
+        { showText: '像素', optionValue: 'px' }
       ]))
-      break
-    case 'positionReference':
-      itemRight.appendChild(createSelect([
-        { showText: '左上角', optionValue: 'LeftTop' },
-        { showText: '右上角', optionValue: 'RightTop' },
-        { showText: '右下角', optionValue: 'RightBottom' },
-        { showText: '左下角', optionValue: 'LeftBottom' }
-      ], value, fileName))
       break
     case 'fixFlag':
       itemRight.appendChild(createSelect([
@@ -143,7 +134,13 @@ const createFromItems = (itemList) => {
 
 // 创建表单
 const createFrom = (initData) => {
-  const { orderNumber, content, left, top, width, height, fixFlag } = initData
+  const {
+    orderNumber, content,
+    width, widthUtil,
+    height, heightUtil,
+    left, leftUtil,
+    top, topUtil,
+    fixFlag } = initData
   const form = utilsCreateElement('form', { method: 'POST', url: '' })
   form.appendChild(createFromItems([
     {
@@ -162,11 +159,10 @@ const createFrom = (initData) => {
       fileName: 'content',
       value: content || ''
     },
-    { title: '左/右边距', elementType: 'select', fileName: 'verticalDistance', value: left, suffixValue: '%' },
-    { title: '上/下边距', elementType: 'select', fileName: 'horizontalDistance', value: top, suffixValue: '%' },
-    { title: '选框宽度', elementType: 'select', fileName: 'boxWidth', value: width, suffixValue: '%' },
-    { title: '选框高度', elementType: 'select', fileName: 'boxHeight', value: height, suffixValue: '%' },
-    { title: '定位参考', elementType: 'select', fileName: 'positionReference', value: 'LeftTop' },
+    { title: '选框宽度', elementType: 'select', fileName: 'widthUtil', value: width, suffixValue: widthUtil },
+    { title: '选框高度', elementType: 'select', fileName: 'heightUtil', value: height, suffixValue: heightUtil },
+    { title: '左/右边距', elementType: 'select', fileName: 'leftUtil', value: left, suffixValue: leftUtil },
+    { title: '上/下边距', elementType: 'select', fileName: 'topUtil', value: top, suffixValue: topUtil },
     { title: '是否固定位置', elementType: 'select', fileName: 'fixFlag', value: fixFlag }
   ]))
 
@@ -186,7 +182,7 @@ const handleClickConfirm = (_this, editInfo) => {
     return Object.assign(prev, { [name]: value })
   }, {})
 
-  _this.dispatch('modify', Object.assign(values, { id: editInfo.id }))
+  _this.dispatch('modify', Object.assign(editInfo, values, { id: editInfo.id }))
   refreshEditDom(editInfo.id, values)
   _this.hiddenEditModal()
 }

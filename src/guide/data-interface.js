@@ -10,8 +10,10 @@ export default function InitDataInterface (EasyGuide) {
   }
   EasyGuide.prototype.guideListChange = function (action, data) {
     const { onGuideListChange = () => {} } = this.Options
+    const { guideList } = this
 
-    onGuideListChange(action, data, this.guideList)
+    const editItem = guideList.find(i => i.id === data.id) || {}
+    onGuideListChange(action, Object.assign(editItem, data), guideList)
     if (action === 'delete') {
       const deleteElement = document.getElementById(data.id)
       removeChild(deleteElement.parentElement, deleteElement)

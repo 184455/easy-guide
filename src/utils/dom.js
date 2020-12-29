@@ -108,16 +108,16 @@ export function getPosition (el) {
 
 // 创建指导的小框
 export function createGuideItem(EG, elementName, {
-  top, left, width, height, id, content, orderNumber, templatePosition, fixFlag
+  top, left, width, height, id, content, orderNumber, contentPosition, fixFlag
 }) {
   const { mode } = EG
   const tempFragment = document.createDocumentFragment()
   const topStep = utilsCreateElement('div', { class: 'e_top-step-number' })
   topStep.innerHTML = orderNumber || 1
 
-  const guideContent = utilsCreateElement('div', { class: `e_guide-content ${templatePosition}` })
+  const guideContent = utilsCreateElement('div', { class: `e_guide-content ${contentPosition}` })
   const contentText = utilsCreateElement('div', { class: 'e_guide-content-text' })
-  contentText.innerHTML = content || '请输入指导内容！'
+  contentText.innerHTML = content || '请维护用户指导内容！'
   guideContent.appendChild(contentText)
   const guideContentBtn = utilsCreateElement('div', { class: 'e_guide-content-btn' })
 

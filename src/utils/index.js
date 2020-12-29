@@ -8,12 +8,15 @@ export function createGuideItemData (initVal) {
   return Object.assign({
     id: (new Date()).getTime(),
     content: '',
-    left: '',
-    top: '',
     width: '',
+    widthUtil: '%',
     height: '',
+    heightUtil: '%',
+    left: '',
+    leftUtil: '%',
+    top: '',
+    topUtil: '%',
     orderNumber: 1,
-    referencePosition: '',
     fixFlag: 'N'
   }, initVal)
 }
