@@ -23,8 +23,17 @@ export function handleBodyClassName () {
 export function handleRemoveBodyClassName () {
   deleteClass(document.body, 'e_disable-body-selected')
 }
-export function createContentBox(props) {
-  const contentBox = utilsCreateElement('div', props)
+export function createBar() {
+  const barElement = document.createDocumentFragment();
+  (['bar-lib-top', 'bar-lib-left', 'bar-lib-right', 'bar-lib-bottom']).map((item) => {
+    const temp = utilsCreateElement('div', { class: `${item} bar-lib-common` })
+    barElement.appendChild(temp)
+  })
+
+  return barElement
+}
+export function createContentBox() {
+  const contentBox = utilsCreateElement('div', { class: 'e_step-content-box' })
 
   const content = utilsCreateElement('div', { class: 'box-content' })
   contentBox.appendChild(content)
@@ -83,19 +92,10 @@ export function showGuide(_this) {
     firstFlag: true
   })
 
-  // 生成上左右下四个遮罩元素
-  const barElement = document.createDocumentFragment();
-  (['bar-lib-top', 'bar-lib-left', 'bar-lib-right', 'bar-lib-bottom']).map((item) => {
-    const temp = utilsCreateElement('div', { class: `${item} bar-lib-common` })
-    barElement.appendChild(temp)
-  })
-  const contentBox = createContentBox({ class: 'e_step-content-box' })
-  const tempRootEle = createViewGuideRoot()
-
-  tempRootEle.appendChild(barElement)
-  tempRootEle.appendChild(contentBox)
-
   addClass(document.body, 'e_position-relative')
+  const tempRootEle = createViewGuideRoot()
+  tempRootEle.appendChild(createBar())
+  tempRootEle.appendChild(createContentBox())
   updateStepDom(currentItem, tempRootEle)
   insertViewGuideRoot(tempRootEle)
 }

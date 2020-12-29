@@ -295,6 +295,8 @@ body {
 .e_step-content-box .box-content {
   min-height: 60px;
   width: 100%;
+  color: rgba(0,0,0,.75);
+  font-size: 14px;
 }
 .content-footer {
   text-align: right;

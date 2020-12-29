@@ -2,7 +2,8 @@
 import {
   ElementDataSetName,
   MODE, DeleteBtn, CloseButton, TemplateDragArea, ViewEasyGuideWrapId,
-  EditBtn, GuideDragItem, EasyGuideWrapId, EasyGuideTemplateId
+  EditBtn, GuideDragItem, EasyGuideWrapId, EasyGuideTemplateId,
+  TemplateItemTop, TemplateItemRight, TemplateItemBottom, TemplateItemLeft
 } from '../config/constant'
 
 /**
@@ -257,15 +258,16 @@ export function removeChild(rootEle, child) {
   rootEle.removeChild(child)
 }
 
-export function setBarLibPosition(barList, { top, left, width, height }) {
+export function setBarLibPosition(barList, { top, left, width, height, fixFlag }) {
+  const position = `position:${fixFlag === 'Y' ? 'fixed' : 'absolute'};`
   const temp = [
-    `height:${top}px`,
-    `height:${height}px; width:${left}px; top:${top}px`,
-    `height:${height}px; left:${left + width}px; top:${top}px`,
-    `top: ${top + height}px`
+    `height:${top}px;`,
+    `height:${height}px; width:${left}px; top:${top}px;`,
+    `height:${height}px; left:${left + width}px; top:${top}px;`,
+    `top: ${top + height}px;`
   ]
   temp.forEach((item, index) => {
-    barList[index].setAttribute('style', item)
+    barList[index].setAttribute('style', item + position)
   })
 }
 
@@ -276,23 +278,48 @@ export function getElementsByClassName (rootEle, className) {
   return rootEle.getElementsByClassName(className)[0]
 }
 
+function calcGuidePosition ({ top, left, height, width, fixFlag, contentPosition }) {
+  const styleJoin = (top, left, transform = 'none') => {
+    return {
+      position: fixFlag === 'Y' ? 'fixed' : 'absolute',
+      top: `${top}px`,
+      left: `${left}px`,
+      transform
+    }
+  }
+
+  switch (contentPosition) {
+    case TemplateItemTop:
+      return styleJoin(top - 20, left, 'translateY(-100%)')
+    case TemplateItemRight:
+      return styleJoin(top, left + width + 20)
+    case TemplateItemBottom:
+      return styleJoin(top + height + 20, left)
+    case TemplateItemLeft:
+      return styleJoin(top, left - 20, 'translateX(-100%)')
+    default:
+  }
+}
+
 // 更新上一步下一步 dom 内容
 export function updateStepDom(showItemData, rootEle) {
   if (!rootEle) {
     rootEle = getViewGuideRoot()
   }
+
   const barElementList = getBarElementList(rootEle)
-  const contentBox = getElementsByClassName(rootEle, 'e_step-content-box')
+  const contentWrap = getElementsByClassName(rootEle, 'e_step-content-box')
   const prevBtn = getElementsByClassName(rootEle, 'box-pre-btn')
   const nextBtn = getElementsByClassName(rootEle, 'box-next-btn')
+  const content = getElementsByClassName(rootEle, 'box-content')
+  content.innerHTML = showItemData.content
 
-  const { top, left, height, finalFlag, firstFlag } = showItemData
+  const { finalFlag, firstFlag } = showItemData
   setBarLibPosition(barElementList, showItemData)
+
   // 生成内容框
-  editElementStyle(contentBox, {
-    top: `${top + height + 20}px`,
-    left: `${left}px`
-  })
+  editElementStyle(contentWrap, calcGuidePosition(showItemData))
+
   if (finalFlag) {
     nextBtn.innerHTML = '关闭'
   } else {
