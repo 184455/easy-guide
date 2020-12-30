@@ -17,37 +17,31 @@ export const DefaultFillStyle = 'rgba(0, 0, 0, 0.5)'
 
 // ------------------ 元素ID --------------------------
 
-// EasyGuide 最外层 div 容器 ID
-export const EasyGuideWrapId = 'EasyGuideWrap'
+// 维护模式最外层容器 ID
+export const RootId = '_eG_root'
 
-// EasyGuide 浏览模式 最外层 div 容器 ID
-export const ViewEasyGuideWrapId = 'ViewEasyGuideWrapId'
-
-// EasyGuide 画板
-export const EasyGuideCanvasId = 'EasyGuideCanvasId'
+// 查看模式最外层容器 ID
+export const ViewRootId = '_eG_viewRoot'
 
 // EasyGuide 放置用户可以选用的模版
-export const EasyGuideTemplateId = 'EasyGuideTemplateId'
+export const DragTemplate = '_eG_template'
 
 // EasyGuide 内容编辑 modal 框
-export const EGEditModal = 'EGEditModal'
+export const EGEditModal = '_eG_editModal'
 
 // modal 取消按钮
-export const ModalCancelBtnId = 'modalCancelBtn'
+export const ModalCancelBtn = '_eG_modalCancel'
 
 // modal 确认按钮
-export const ModalConfirmBtnId = 'modalConfirmBtn'
+export const ModalConfirmBtn = '_eG_modalConfirm'
 
 // ------------------ 元素 DataSet --------------------------
 
 // 元素 dataset 的 key
-export const ElementDataSetName = 'data-element-name'
+export const DataSetName = 'data-eg'
 
 // 元素 close button 的 key
-export const CloseButton = 'data-element-name'
-
-// canvas 元素 dataset 名字
-export const CanvasName = 'canvas'
+export const CloseButton = 'guide-close-btn'
 
 // template 元素 顶部拖拽区域
 export const TemplateDragArea = 'template-drag-area'

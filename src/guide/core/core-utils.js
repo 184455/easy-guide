@@ -1,78 +1,48 @@
 // core 模块的工具方法
-import Config from '../../config/index'
-import { ElementDataSetName, PrevBtnName, NextBtnName } from '../../config/constant'
-import { createGuideItemData } from '../../utils/index'
+import { DataSetName, PrevBtnName, NextBtnName } from '../../config/constant'
+import { createGuideItemData, isEmptyArray } from '../../utils/index'
 import {
+  ele,
   addClass,
   deleteClass,
-  editElementStyle,
+  setStyles,
   createGuideItem,
-  getEasyGuideWrap,
-  utilsCreateElement,
-  hasMaintainGuideRoot,
-  createEasyGuideWrap,
+  getRootElement,
+  hasRootElement,
+  createRootElement,
   createTemplateElement,
-  createViewGuideRoot,
-  insertViewGuideRoot,
-  updateStepDom
+  createViewRoot,
+  insertViewRoot,
+  refreshDom,
+  hasViewRoot
 } from '../../utils/dom'
 
-export function handleBodyClassName () {
-  addClass(document.body, 'e_disable-body-selected')
-}
-export function handleRemoveBodyClassName () {
-  deleteClass(document.body, 'e_disable-body-selected')
-}
-export function createBar() {
-  const barElement = document.createDocumentFragment();
-  (['bar-lib-top', 'bar-lib-left', 'bar-lib-right', 'bar-lib-bottom']).map((item) => {
-    const temp = utilsCreateElement('div', { class: `${item} bar-lib-common` })
-    barElement.appendChild(temp)
-  })
-
-  return barElement
-}
-export function createContentBox() {
-  const contentBox = utilsCreateElement('div', { class: 'e_step-content-box' })
-
-  const content = utilsCreateElement('div', { class: 'box-content' })
-  contentBox.appendChild(content)
-
-  const footerBtn = utilsCreateElement('div', { class: 'content-footer' })
-  contentBox.appendChild(content)
-
-  const preBtn = utilsCreateElement('button', { class: 'box-pre-btn', [ElementDataSetName]: PrevBtnName })
-  preBtn.textContent = '上一步'
-  footerBtn.appendChild(preBtn)
-
-  const nextBtn = utilsCreateElement('button', { class: 'box-next-btn', [ElementDataSetName]: NextBtnName })
-  nextBtn.textContent = '下一步'
-  footerBtn.appendChild(nextBtn)
-
-  contentBox.appendChild(footerBtn)
-
-  return contentBox
-}
-export function renderGuideList(_this) {
-  const { guideList } = _this
-  if (Array.isArray(guideList)) {
+function renderGuideList({ guideList }) {
+  if (!isEmptyArray(guideList)) {
     guideList.forEach((position) => {
-      createGuideItem(_this, 'template-item-top', createGuideItemData(position))
+      createGuideItem(createGuideItemData(position))
     })
   }
 }
+
+export function handleBodyClassName () {
+  addClass(document.body, '_eG_body')
+}
+
+export function handleRemoveBodyClassName () {
+  deleteClass(document.body, '_eG_body')
+}
+
 // 展示-编辑模式
 export function showGuideMainTain(_this) {
-  const { windowWidth, windowHeight } = _this
-
   // 检查根结点
-  if (!hasMaintainGuideRoot()) {
-    createEasyGuideWrap()
+  if (!hasRootElement()) {
+    createRootElement()
   }
 
   // 设置蒙板宽高
-  const EasyGuideWrap = getEasyGuideWrap()
-  editElementStyle(EasyGuideWrap, { height: windowHeight + 'px', width: windowWidth + 'px' })
+  const { windowWidth, windowHeight } = _this
+  setStyles(getRootElement(), { height: windowHeight + 'px', width: windowWidth + 'px' })
 
   // 渲染用户指导
   renderGuideList(_this)
@@ -80,29 +50,46 @@ export function showGuideMainTain(_this) {
   // 创建指导模板
   createTemplateElement()
 }
-// 展示-只读模式
-export function showGuide(_this) {
-  let currentItem = _this.guideList[0]
-  if (!currentItem || !Object.keys(currentItem).length) {
+
+// 展示-查看模式
+export function showGuideView(_this) {
+  const { guideList } = _this
+  if (isEmptyArray(guideList) || hasViewRoot()) {
     return
   }
 
-  currentItem = Object.assign({}, _this.guideList[0], {
-    finalFlag: _this.guideList.length === 1,
+  const currentItem = Object.assign({}, guideList[0], {
+    finalFlag: guideList.length === 1,
     firstFlag: true
   })
 
-  addClass(document.body, 'e_position-relative')
-  const tempRootEle = createViewGuideRoot()
-  tempRootEle.appendChild(createBar())
-  tempRootEle.appendChild(createContentBox())
-  updateStepDom(currentItem, tempRootEle)
-  insertViewGuideRoot(tempRootEle)
+  const barList = (['top', 'left', 'right', 'bottom'])
+    .map(i => `<div class="bar-lib-${i} bar-lib-common"></div>`)
+    .join('')
+
+  const domText = `
+    ${barList}
+    <div class="e_step-content-box">
+      <div class="box-content"></div>
+      <div class="content-footer">
+        <button class="box-pre-btn" ${DataSetName}="${PrevBtnName}">上一步</button>
+        <button class="box-next-btn" ${DataSetName}="${NextBtnName}">关闭</button>
+      </div>
+    </div>
+  `
+
+  const tempRootEle = createViewRoot()
+  tempRootEle.innerHTML = domText
+  refreshDom(currentItem, tempRootEle)
+  insertViewRoot(tempRootEle)
 }
 
-// 处理options
-export function handleOptions(options) {
-  return Object.assign({}, Config, options)
+// 初始化默认的数据项
+export function initDefaultData (_this) {
+  const { mode, guideList } = _this.Options
+  _this.guideList = (guideList || []).slice(0)
+  _this.mode = mode
+  _this.currentIndex = 0
 }
 
 // 初始化面板的宽高

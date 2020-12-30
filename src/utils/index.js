@@ -1,4 +1,5 @@
 // 全局公共方法
+import Config from '../config/index'
 
 /**
  * 创建一个 guide 所必须拥有的字段
@@ -6,7 +7,7 @@
  */
 export function createGuideItemData (initVal) {
   return Object.assign({
-    id: (new Date()).getTime(),
+    id: String((new Date()).getTime()),
     content: '',
     width: '',
     widthUtil: '%',
@@ -46,4 +47,24 @@ export function getMaxNumber(list, field) {
     }
   })
   return res
+}
+
+/**
+ * 检测是否是非空数组
+ * @param {array} arr - 检测数组
+ * @returns {boolean}
+ */
+export function isEmptyArray(arr) {
+  if (!Array.isArray(arr)) {
+    return true
+  }
+  return arr.length === 0
+}
+
+/**
+ * 合同用户的配置
+ * @param {object} options 用户传入的配置项
+ */
+export function mergeCustomOptions(options) {
+  return Object.assign({}, Config, options)
 }

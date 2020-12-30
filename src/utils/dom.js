@@ -1,8 +1,8 @@
 // 工具方法
 import {
-  ElementDataSetName,
-  MODE, DeleteBtn, CloseButton, TemplateDragArea, ViewEasyGuideWrapId,
-  EditBtn, GuideDragItem, EasyGuideWrapId, EasyGuideTemplateId,
+  DataSetName,
+  DeleteBtn, CloseButton, TemplateDragArea, ViewRootId,
+  EditBtn, GuideDragItem, RootId, DragTemplate,
   TemplateItemTop, TemplateItemRight, TemplateItemBottom, TemplateItemLeft
 } from '../config/constant'
 
@@ -11,13 +11,13 @@ import {
  * @param {object} props 能够被 setAttribute 识别的参数列表
  * @returns {Element} 返回 创建好的 div 元素
  */
-export function utilsCreateElement(eleType = 'div', props = {}) {
-  const ele = document.createElement(eleType)
+export function ele(eleType = 'div', props = {}) {
+  const el = document.createElement(eleType)
   Object.keys(props).forEach((propKey) => {
-    ele.setAttribute(propKey, props[propKey])
+    el.setAttribute(propKey, props[propKey])
   })
 
-  return ele
+  return el
 }
 
 /**
@@ -65,7 +65,7 @@ export function deleteClass(el, className) {
  * @param {string} key dataset 的 key
  * @param {string} value dataset 的 value
  */
-export function writeElementDataSet (el, key, value) {
+export function setDataSet (el, key, value) {
   if (el.dataset) {
     el.dataset[key] = value
   } else {
@@ -74,24 +74,13 @@ export function writeElementDataSet (el, key, value) {
 }
 
 /**
- * 设置dom元素绝对定位的左和上边距
- * @param ele {dom}
- * @param left {number}
- * @param top {number}
- */
-export function utilsMoveDiv (ele, left, top) {
-  ele.style.left = left + 'px'
-  ele.style.top = top + 'px'
-}
-
-/**
  * 设置dom元素的 style 属性
- * @param ele {dom}
+ * @param el {dom}
  * @param props {object} 设置的属性
  */
-export function editElementStyle (ele, props) {
+export function setStyles (el, props) {
   Object.keys(props).forEach(key => {
-    ele.style[key] = props[key]
+    el.style[key] = props[key]
   })
 }
 
@@ -107,154 +96,102 @@ export function getPosition (el) {
   return res
 }
 
-// 创建指导的小框
-export function createGuideItem(EG, elementName, {
-  top, left, width, height, id, content, orderNumber, contentPosition, fixFlag
-}) {
-  const { mode } = EG
-  const tempFragment = document.createDocumentFragment()
-  const topStep = utilsCreateElement('div', { class: 'e_top-step-number' })
-  topStep.innerHTML = orderNumber || 1
+// 创建一项为维护的指导内容
+export function createGuideItem(renderData) {
+  const { top, left, width, height, id, content, orderNumber, contentPosition, fixFlag } = renderData
+  const dots = (['top', 'right', 'bottom', 'left'])
+    .map(item => `<div class="e_dot-${item} e_dot-common" ${DataSetName}="e_dot-${item}"></div>`)
+    .join('')
 
-  const guideContent = utilsCreateElement('div', { class: `e_guide-content ${contentPosition}` })
-  const contentText = utilsCreateElement('div', { class: 'e_guide-content-text' })
-  contentText.innerHTML = content || '请维护用户指导内容！'
-  guideContent.appendChild(contentText)
-  const guideContentBtn = utilsCreateElement('div', { class: 'e_guide-content-btn' })
+  const stringDom = `
+    ${dots}
+    <div class="e_top-step-number">${orderNumber || 1}</div>
+    <div class="e_guide-content ${contentPosition}">
+      <div class="e_guide-content-text">${content || '请维护用户指导内容！'}</div>
+      <div class="e_guide-content-btn">
+        <button class="e_delete-btn" ${DataSetName}="${DeleteBtn}">删除</button>
+        <button class="e_edit-btn" ${DataSetName}="${EditBtn}">编辑</button>
+      </div>
+    </div>
+  `
 
-  if (mode === MODE.READ) {
-    // 只读模式
-    const closeBtn = utilsCreateElement('button', { class: 'e_close-btn' })
-    closeBtn.innerHTML = '关闭'
-    const prevBtn = utilsCreateElement('button', { class: 'e_prev-btn' })
-    prevBtn.innerHTML = '上一步'
-    const nextBtn = utilsCreateElement('button', { class: 'e_next-btn' })
-    nextBtn.innerHTML = '下一步'
-
-    guideContentBtn.appendChild(closeBtn)
-    guideContentBtn.appendChild(prevBtn)
-    guideContentBtn.appendChild(nextBtn)
-  } else if (mode === MODE.MAINTAIN) {
-    // 维护编辑模式
-    const deleteBtn = utilsCreateElement('button', {
-      class: 'e_delete-btn',
-      [ElementDataSetName]: DeleteBtn
-    })
-    deleteBtn.innerHTML = '删除'
-    const editBtn = utilsCreateElement('button', {
-      class: 'e_edit-btn',
-      [ElementDataSetName]: EditBtn
-    })
-    editBtn.innerHTML = '编辑'
-
-    guideContentBtn.appendChild(deleteBtn)
-    guideContentBtn.appendChild(editBtn)
-  }
-
-  //  创建 dot 拖动调整宽度的元素
-  const dotFrag = document.createDocumentFragment();
-  (['top', 'right', 'bottom', 'left']).map(item => {
-    dotFrag.appendChild(utilsCreateElement('div', {
-      class: `e_dot-${item} e_dot-common`,
-      [ElementDataSetName]: `e_dot-${item}`
-    }))
+  const guideItemDom = ele('div', { id, class: 'e_guide-item', [DataSetName]: GuideDragItem })
+  setStyles(guideItemDom, {
+    position: fixFlag === 'Y' ? 'fixed' : 'absolute',
+    top: `${top}px`,
+    left: `${left}px`,
+    width: `${width}px`,
+    height: `${height}px`
   })
 
-  guideContent.appendChild(guideContentBtn)
-
-  tempFragment.appendChild(dotFrag)
-  tempFragment.appendChild(topStep)
-  tempFragment.appendChild(guideContent)
-  const temp = utilsCreateElement('div', {
-    id,
-    class: 'e_guide-item',
-    [ElementDataSetName]: GuideDragItem
-  })
-  temp.style.position = fixFlag === 'Y' ? 'fixed' : 'absolute'
-  temp.appendChild(tempFragment)
-
-  editElementStyle(temp, { top: `${top}px`, left: `${left}px`, width: `${width}px`, height: `${height}px` })
-  getEasyGuideWrap().appendChild(temp)
+  guideItemDom.innerHTML = stringDom
+  getRootElement().appendChild(guideItemDom)
 }
 
 // 获取模板元素
 export function getEasyGuideTemplate () {
-  return document.getElementById(EasyGuideTemplateId)
+  return getElementById(DragTemplate)
 }
 
 // 是否有维护模式的根节点元素
-export function hasMaintainGuideRoot () {
-  return !!document.getElementById(EasyGuideWrapId)
+export function hasRootElement () {
+  return !!getRootElement()
 }
 
 // 获取最外层元素
-export function getEasyGuideWrap () {
-  return document.getElementById(EasyGuideWrapId)
+export function getRootElement () {
+  return getElementById(RootId)
 }
 
 // 创建维护模式的根节点元素
-export function createEasyGuideWrap () {
-  document.body.appendChild(utilsCreateElement('div', { id: EasyGuideWrapId }))
-}
-
-// 是否有查看模式的根节点元素
-export function hasViewGuideRoot () {
-  return !!document.getElementById(ViewEasyGuideWrapId)
+export function createRootElement () {
+  document.body.appendChild(ele('div', { id: RootId }))
 }
 
 // 获取查看模式的最外层元素
-export function getViewGuideRoot () {
-  return document.getElementById(ViewEasyGuideWrapId)
+export function getViewRoot () {
+  return getElementById(ViewRootId)
+}
+
+// 是否有查看模式的根节点元素
+export function hasViewRoot () {
+  return !!getViewRoot()
 }
 
 // 创建查看模式的根节点元素
-export function createViewGuideRoot () {
-  return utilsCreateElement('div', { style: 'height: 1px; width: 1px;', id: ViewEasyGuideWrapId })
+export function createViewRoot () {
+  return ele('div', { style: 'height: 1px; width: 1px;', id: ViewRootId })
 }
 
 // 插入查看模式的根节点元素
-export function insertViewGuideRoot (ele) {
-  document.body.insertBefore(ele, document.body.childNodes[0])
+export function insertViewRoot (el) {
+  document.body.insertBefore(el, document.body.childNodes[0])
 }
 
 // 创建指导模板
 export function createTemplateElement () {
-  const tempFragment = document.createDocumentFragment()
+  const templateList = (['top', 'right', 'bottom', 'left'])
+    .map(i => `<div class="e_template-item-${i}" ${DataSetName}="template-item-${i}">top</div>`)
+    .join('')
 
-  // 生成气泡模版
-  const EasyGuideTemplate = utilsCreateElement('div', { id: EasyGuideTemplateId })
-  const templateCloseBtn = utilsCreateElement('div', {
-    class: 'e_template-close-btn',
-    [ElementDataSetName]: CloseButton
-  })
-  templateCloseBtn.innerHTML = 'x'
-  EasyGuideTemplate.appendChild(templateCloseBtn)
-  const templateTopText = utilsCreateElement('div', {
-    class: 'e_template-top-text',
-    title: '按下拖动',
-    [ElementDataSetName]: TemplateDragArea
-  })
-  templateTopText.innerHTML = '点击以下组件添加指导'
-  EasyGuideTemplate.appendChild(templateTopText)
-  const templateList = utilsCreateElement('div', { class: 'e_template-list' })
-  const templateElement = ['top', 'right', 'bottom', 'left']
-  templateElement.forEach(item => {
-    const temp = utilsCreateElement('div', {
-      class: `e_template-item-${item}`,
-      [ElementDataSetName]: `template-item-${item}`
-    })
-    temp.innerHTML = item
-    templateList.appendChild(temp)
-  })
-  EasyGuideTemplate.appendChild(templateList)
+  const templateDomText = `
+    <div class="e_template-close-btn" ${DataSetName}="${CloseButton}">x</div>
+    <div class="e_template-top-text" title="按下拖动" ${DataSetName}="${TemplateDragArea}">
+      点击以下组件添加指导
+    </div>
+    <div class="e_template-list">${templateList}</div>
+  `
 
-  // 把元素插入
-  tempFragment.appendChild(EasyGuideTemplate)
-  getEasyGuideWrap().appendChild(tempFragment)
+  const template = ele('div', { id: DragTemplate })
+  template.innerHTML = templateDomText
+  getRootElement().appendChild(template)
 }
 
 // Dom 界面移除子元素
 export function removeChild(rootEle, child) {
+  if (!isElement(rootEle) || !isElement(child)) {
+    return
+  }
   rootEle.removeChild(child)
 }
 
@@ -302,9 +239,9 @@ function calcGuidePosition ({ top, left, height, width, fixFlag, contentPosition
 }
 
 // 更新上一步下一步 dom 内容
-export function updateStepDom(showItemData, rootEle) {
+export function refreshDom(showItemData, rootEle) {
   if (!rootEle) {
-    rootEle = getViewGuideRoot()
+    rootEle = getViewRoot()
   }
 
   const barElementList = getBarElementList(rootEle)
@@ -314,12 +251,12 @@ export function updateStepDom(showItemData, rootEle) {
   const content = getElementsByClassName(rootEle, 'box-content')
   content.innerHTML = showItemData.content
 
-  const { finalFlag, firstFlag } = showItemData
   setBarLibPosition(barElementList, showItemData)
 
   // 生成内容框
-  editElementStyle(contentWrap, calcGuidePosition(showItemData))
+  setStyles(contentWrap, calcGuidePosition(showItemData))
 
+  const { finalFlag, firstFlag } = showItemData
   if (finalFlag) {
     nextBtn.innerHTML = '关闭'
   } else {
@@ -331,4 +268,26 @@ export function updateStepDom(showItemData, rootEle) {
   } else {
     prevBtn.style.visibility = 'unset'
   }
+}
+
+/**
+ * 判断一个对象是否是 dom 元素
+ * @param {*} obj 被检测对象
+ */
+export function isElement(obj) {
+  try {
+    return obj instanceof HTMLElement
+  } catch (e) {
+    return (typeof obj === 'object') &&
+      (obj.nodeType === 1) && (typeof obj.style === 'object') &&
+      (typeof obj.ownerDocument === 'object')
+  }
+}
+
+/**
+ * 通过ID 获取元素
+ * @param {string} id 元素ID
+ */
+export function getElementById (id) {
+  return document.getElementById(id)
 }

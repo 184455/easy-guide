@@ -15,7 +15,7 @@ import { createGuideItem } from '../../utils/dom'
  * @param e
  */
 export default function handelWrapperClick(_this, e) {
-  const elementName = e.target.dataset.elementName
+  const elementName = e.target.dataset.eg
   // 支持事件的元素列表
   const eventElementNameList = [
     TemplateItemTop, TemplateItemRight, TemplateItemBottom,
@@ -31,7 +31,7 @@ export default function handelWrapperClick(_this, e) {
       contentPosition: elementName
     }))
 
-    createGuideItem(_this, elementName, itemProps)
+    createGuideItem(itemProps)
     _this.dispatch('create', itemProps)
     return
   }

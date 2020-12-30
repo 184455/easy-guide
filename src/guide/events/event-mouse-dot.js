@@ -8,13 +8,10 @@ import {
   MinHeight,
   MinWidth
 } from '../../config/constant'
-import {
-  editElementStyle,
-  getPosition
-} from '../../utils/dom'
+import { setStyles, getPosition } from '../../utils/dom'
 
 export function handleDotDown(_this, event) {
-  const elementName = event.target.dataset.elementName
+  const elementName = event.target.dataset.eg
   const { clientWidth, clientHeight, id } = _this.currentTarget.parentElement
   _this.onMouseDownPositionImage = {
     id,
@@ -62,7 +59,7 @@ export function handleDotMove(_this, event) {
 
   _this.onMouseDownPositionImage.newPosition = Object.assign({ id }, position, canvasPosition)
 
-  editElementStyle(currentTarget.parentElement, newPosition)
+  setStyles(currentTarget.parentElement, newPosition)
 }
 export function handleDotUp(_this, event) {
   const { onMouseDownPositionImage } = _this

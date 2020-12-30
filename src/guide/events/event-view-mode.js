@@ -1,12 +1,12 @@
 import { PrevBtnName, NextBtnName } from '../../config/constant'
-import { updateStepDom } from '../../utils/dom'
+import { refreshDom } from '../../utils/dom'
 
 /**
  * 只读模式下的点击事件代理
  * @param e
  */
 export default function handelViewModeWrapClick(_this, e) {
-  const elementName = e.target.dataset.elementName
+  const elementName = e.target.dataset.eg
   // 支持事件的元素列表
   const eventElementNameList = [PrevBtnName, NextBtnName]
   if (eventElementNameList.indexOf(elementName) === -1) return
@@ -38,7 +38,7 @@ function handleClickPrevBtn(_this, e) {
       firstFlag: newIndex === 0
     })
     _this.currentIndex = newIndex
-    updateStepDom(currentItem)
+    refreshDom(currentItem)
   }
 }
 
@@ -60,6 +60,6 @@ function handleClickNextBtn(_this, e) {
       firstFlag: false
     })
     _this.currentIndex = newIndex
-    updateStepDom(currentItem)
+    refreshDom(currentItem)
   }
 }

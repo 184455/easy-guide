@@ -1,4 +1,4 @@
-import { getEasyGuideWrap, getViewGuideRoot } from '../../utils/dom'
+import { getRootElement, getViewRoot } from '../../utils/dom'
 import { handelMouseDown, handelMouseMove, handelMouseUp } from './event-mouse'
 import handelWrapperClick from './event-click'
 import handelViewModeWrapClick from './event-view-mode'
@@ -6,7 +6,7 @@ import handelViewModeWrapClick from './event-view-mode'
 export default function InitEvents (EasyGuide) {
   EasyGuide.prototype.initEvents = function () {
     // 在根节点代理所有的事件
-    const listenerTarget = getEasyGuideWrap()
+    const listenerTarget = getRootElement()
     if (listenerTarget) {
       listenerTarget.onclick = e => handelWrapperClick(this, e)
       listenerTarget.onmousedown = e => handelMouseDown(this, e)
@@ -14,7 +14,7 @@ export default function InitEvents (EasyGuide) {
       listenerTarget.onmouseup = e => handelMouseUp(this, e)
     }
 
-    const viewModeListen = getViewGuideRoot()
+    const viewModeListen = getViewRoot()
     if (viewModeListen) {
       viewModeListen.onclick = e => handelViewModeWrapClick(this, e)
     }
@@ -22,7 +22,7 @@ export default function InitEvents (EasyGuide) {
 
   // 解绑所有事件
   EasyGuide.prototype.eventsDestroy = function () {
-    const listenerTarget = getEasyGuideWrap()
+    const listenerTarget = getRootElement()
     if (listenerTarget) {
       listenerTarget.onclick = null
       listenerTarget.onmousedown = null
@@ -30,7 +30,7 @@ export default function InitEvents (EasyGuide) {
       listenerTarget.onmouseup = null
     }
 
-    const viewModeListen = getViewGuideRoot()
+    const viewModeListen = getViewRoot()
     if (viewModeListen) {
       viewModeListen.onclick = null
     }

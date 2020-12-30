@@ -9,7 +9,7 @@ import { handleDotDown, handleDotMove, handleDotUp } from './event-mouse-dot'
  * @param e
  */
 export function handelMouseDown(_this, e) {
-  const elementName = e.target.dataset.elementName
+  const elementName = e.target.dataset.eg
   const eventElementNameList = [
     TemplateDragArea, GuideDragItem,
     DotTop, DotRight, DotBottom, DotLeft
@@ -44,7 +44,7 @@ export function handelMouseDown(_this, e) {
  */
 export function handelMouseMove(_this, e) {
   if (!_this.currentTarget) return
-  const currentTargetName = _this.currentTarget.dataset.elementName
+  const currentTargetName = _this.currentTarget.dataset.eg
 
   if (currentTargetName.indexOf('e_dot-') > -1) {
     handleDotMove(_this, e)
@@ -69,7 +69,7 @@ export function handelMouseMove(_this, e) {
  */
 export function handelMouseUp(_this, e) {
   if (!_this.currentTarget) return
-  const currentTargetName = _this.currentTarget.dataset.elementName
+  const currentTargetName = _this.currentTarget.dataset.eg
 
   if (currentTargetName.indexOf('e_dot-') > -1) {
     handleDotUp(_this, e)

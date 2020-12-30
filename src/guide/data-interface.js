@@ -1,4 +1,4 @@
-import { removeChild } from '../utils/dom'
+import { removeChild, getElementById } from '../utils/dom'
 
 export default function InitDataInterface (EasyGuide) {
   EasyGuide.prototype.getGuideList = function () {
@@ -15,11 +15,10 @@ export default function InitDataInterface (EasyGuide) {
     const editItem = guideList.find(i => i.id === data.id) || {}
     onGuideListChange(action, Object.assign(editItem, data), guideList)
     if (action === 'delete') {
-      const deleteElement = document.getElementById(data.id)
+      const deleteElement = getElementById(data.id)
       removeChild(deleteElement.parentElement, deleteElement)
     }
   }
-  EasyGuide.prototype.refresh = function () {}
   EasyGuide.prototype.dispatch = function (action, data) {
     switch (action) {
       case 'create':
