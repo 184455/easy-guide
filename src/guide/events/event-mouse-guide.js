@@ -1,6 +1,7 @@
 // 拖拽用户指导Item
 import { tagX, tagY } from '../../config/constant'
 import { setStyles } from '../../utils/dom'
+import { mergeObj } from '../../utils/index'
 
 export function handleGuideDown(_this, event) {
   const { offsetLeft, offsetTop, clientWidth, clientHeight, id } = _this.currentTarget // 从父元素取距离屏幕的位置
@@ -19,7 +20,7 @@ export function handleGuideMove(_this, event) {
   const top = event[tagY] - deltaY
 
   setStyles(currentTarget, { left: `${left}px`, top: `${top}px` })
-  Object.assign(onMouseDownPositionImage, { left, top, width, height, isActive: true })
+  mergeObj(onMouseDownPositionImage, { left, top, width, height, isActive: true })
 }
 export function handleGuideUp(_this, event) {
   const { left, top, width, height, id, isActive } = _this.onMouseDownPositionImage

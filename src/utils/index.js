@@ -6,31 +6,20 @@ import Config from '../config/index'
  * @param {object} data 初始化数据
  */
 export function createGuideItemData (initVal) {
-  return Object.assign({
+  return mergeObj({
     id: String((new Date()).getTime()),
     content: '',
-    width: '',
+    width: 300,
     widthUtil: '%',
-    height: '',
+    height: 120,
     heightUtil: '%',
-    left: '',
+    left: 500,
     leftUtil: '%',
-    top: '',
+    top: 200,
     topUtil: '%',
     orderNumber: 1,
     fixFlag: 'N'
   }, initVal)
-}
-
-// 生成一个默认的选项
-export function defaultPosition (windowWidth) {
-  return {
-    left: (windowWidth / 2 - 150) | 0,
-    top: 200,
-    width: 300,
-    height: 120,
-    id: String((new Date()).getTime())
-  }
 }
 
 /**
@@ -66,5 +55,12 @@ export function isEmptyArray(arr) {
  * @param {object} options 用户传入的配置项
  */
 export function mergeCustomOptions(options) {
-  return Object.assign({}, Config, options)
+  return mergeObj({}, Config, options)
+}
+
+/**
+ * 对象合并
+ */
+export function mergeObj() {
+  return Object.assign.apply(this, arguments)
 }

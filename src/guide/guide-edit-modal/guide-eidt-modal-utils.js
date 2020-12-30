@@ -1,5 +1,6 @@
-import { ele, getElementById, getElementsByClassName, setStyles } from '../../utils/dom'
+import { ele, getElementById, getElement, setStyles } from '../../utils/dom'
 import { ModalConfirmBtn, EGEditModal, ModalCancelBtn } from '../../config/constant'
+import { mergeObj } from '../../utils/index'
 
 // 创建用户指导编辑框
 export function createGuideEditModal(_this, editInfo) {
@@ -8,16 +9,16 @@ export function createGuideEditModal(_this, editInfo) {
   document.body.appendChild(rootElement)
 
   setTimeout(() => {
-    getElementsByClassName(rootElement, 'e_cancel-btn').onclick = () => handleClickCancel(_this)
-    getElementsByClassName(rootElement, 'e_confirm-btn').onclick = () => handleClickConfirm(_this, editInfo)
+    getElement(rootElement, 'e_cancel-btn').onclick = () => handleClickCancel(_this)
+    getElement(rootElement, 'e_confirm-btn').onclick = () => handleClickConfirm(_this, editInfo)
   })
 }
 
 // 用户点击确认，更新对编辑对应的 dom
 const refreshEditDom = (id, { content, orderNumber, fixFlag }) => {
   const editItemDom = getElementById(String(id))
-  const contentBox = getElementsByClassName(editItemDom, 'e_guide-content-text')
-  const orderNumberBox = getElementsByClassName(editItemDom, 'e_top-step-number')
+  const contentBox = getElement(editItemDom, 'e_guide-content-text')
+  const orderNumberBox = getElement(editItemDom, 'e_top-step-number')
 
   setStyles(editItemDom, { position: fixFlag === 'Y' ? 'fixed' : 'absolute' })
   contentBox.innerHTML = content || '请维护用户指导内容！'
@@ -34,10 +35,10 @@ const handleClickConfirm = (_this, editInfo) => {
   const inputElements = document.getElementsByClassName('e_edit_class')
   const values = Array.from(inputElements).reduce((prev, inputEle) => {
     const { name, value } = inputEle
-    return Object.assign(prev, { [name]: value })
+    return mergeObj(prev, { [name]: value })
   }, {})
 
-  _this.dispatch('modify', Object.assign(editInfo, values, { id: editInfo.id }))
+  _this.dispatch('modify', mergeObj(editInfo, values, { id: editInfo.id }))
   _this.hiddenEditModal()
   refreshEditDom(editInfo.id, values)
 }

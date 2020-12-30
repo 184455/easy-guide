@@ -1,5 +1,6 @@
 import { PrevBtnName, NextBtnName } from '../../config/constant'
 import { refreshDom } from '../../utils/dom'
+import { mergeObj } from '../../utils/index'
 
 /**
  * 只读模式下的点击事件代理
@@ -33,7 +34,7 @@ function handleClickPrevBtn(_this, e) {
     // 第一条，不做任何事情
   } else {
     newIndex = oldIndex - 1
-    const currentItem = Object.assign({}, guideList[newIndex], {
+    const currentItem = mergeObj({}, guideList[newIndex], {
       finalFlag: (newIndex + 1) === guideList.length,
       firstFlag: newIndex === 0
     })
@@ -55,7 +56,7 @@ function handleClickNextBtn(_this, e) {
     _this.destroy()
   } else {
     newIndex = oldIndex + 1
-    const currentItem = Object.assign({}, guideList[newIndex], {
+    const currentItem = mergeObj({}, guideList[newIndex], {
       finalFlag: (oldIndex + 2) === guideList.length,
       firstFlag: false
     })

@@ -1,4 +1,5 @@
 import { removeChild, getElementById } from '../utils/dom'
+import { mergeObj } from '../utils/index'
 
 export default function InitDataInterface (EasyGuide) {
   EasyGuide.prototype.getGuideList = function () {
@@ -13,7 +14,7 @@ export default function InitDataInterface (EasyGuide) {
     const { guideList } = this
 
     const editItem = guideList.find(i => i.id === data.id) || {}
-    onGuideListChange(action, Object.assign(editItem, data), guideList)
+    onGuideListChange(action, mergeObj(editItem, data), guideList)
     if (action === 'delete') {
       const deleteElement = getElementById(data.id)
       removeChild(deleteElement.parentElement, deleteElement)
@@ -30,7 +31,7 @@ export default function InitDataInterface (EasyGuide) {
       case 'modify':
         this.guideList = this.guideList.map(o => {
           if (String(o.id) === String(data.id)) {
-            return Object.assign({}, o, data)
+            return mergeObj({}, o, data)
           } else {
             return o
           }

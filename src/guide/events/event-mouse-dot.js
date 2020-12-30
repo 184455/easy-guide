@@ -9,10 +9,12 @@ import {
   MinWidth
 } from '../../config/constant'
 import { setStyles, getPosition } from '../../utils/dom'
+import { mergeObj } from '../../utils/index'
 
 export function handleDotDown(_this, event) {
   const elementName = event.target.dataset.eg
-  const { clientWidth, clientHeight, id } = _this.currentTarget.parentElement
+  const parentEle = _this.currentTarget.parentElement
+  const { clientWidth, clientHeight, id } = parentEle
   _this.onMouseDownPositionImage = {
     id,
     clientWidth,
@@ -20,7 +22,7 @@ export function handleDotDown(_this, event) {
     elementName,
     startX: event[tagX],
     startY: event[tagY],
-    position: getPosition(_this.currentTarget.parentElement)
+    position: getPosition(parentEle)
   }
 }
 export function handleDotMove(_this, event) {
@@ -57,7 +59,7 @@ export function handleDotMove(_this, event) {
     return
   }
 
-  _this.onMouseDownPositionImage.newPosition = Object.assign({ id }, position, canvasPosition)
+  _this.onMouseDownPositionImage.newPosition = mergeObj({ id }, position, canvasPosition)
 
   setStyles(currentTarget.parentElement, newPosition)
 }

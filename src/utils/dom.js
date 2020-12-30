@@ -5,6 +5,9 @@ import {
   EditBtn, GuideDragItem, RootId, DragTemplate,
   TemplateItemTop, TemplateItemRight, TemplateItemBottom, TemplateItemLeft
 } from '../config/constant'
+import { mergeObj } from './index'
+
+const POS = ['top', 'right', 'bottom', 'left']
 
 /**
  * 创建一个 div 元素
@@ -60,20 +63,6 @@ export function deleteClass(el, className) {
 }
 
 /**
- * 向元素中写入一个dataset 属性
- * @param {dom} el 写入的元素
- * @param {string} key dataset 的 key
- * @param {string} value dataset 的 value
- */
-export function setDataSet (el, key, value) {
-  if (el.dataset) {
-    el.dataset[key] = value
-  } else {
-    el.setAttribute(`data-${key}`, value)
-  }
-}
-
-/**
  * 设置dom元素的 style 属性
  * @param el {dom}
  * @param props {object} 设置的属性
@@ -85,21 +74,89 @@ export function setStyles (el, props) {
 }
 
 /**
+ * 通过ID 获取元素
+ * @param {string} id 元素ID
+ */
+export function getElementById (id) {
+  return document.getElementById(id)
+}
+
+/**
+ * 根据样式名称获取指定元素 - 只获取第一个
+ * @param {dom} rootEle 目标元素根节点
+ * @param {string} className 样式名称
+ */
+export function getElement (rootEle, className) {
+  return rootEle.getElementsByClassName(className)[0]
+}
+
+// 获取模板根元素
+export function getEasyGuideTemplate () {
+  return getElementById(DragTemplate)
+}
+
+// 是否有维护模式的根节点元素
+export function hasRootElement () {
+  return !!getRootElement()
+}
+
+// 获取最外层元素
+export function getRootElement () {
+  return getElementById(RootId)
+}
+
+// 获取查看模式的最外层元素
+export function getViewRoot () {
+  return getElementById(ViewRootId)
+}
+
+// 是否有查看模式的根节点元素
+export function hasViewRoot () {
+  return !!getViewRoot()
+}
+
+/**
+ * 移除子元素
+ * @param {dom} rootEle 容器元素
+ * @param {dom} child 需要移除的元素
+ */
+export function removeChild(rootEle, child) {
+  if (!isElement(rootEle) || !isElement(child)) {
+    return
+  }
+  rootEle.removeChild(child)
+}
+
+/**
+ * 判断一个对象是否是 dom 元素
+ * @param {*} obj 被检测对象
+ */
+export function isElement(obj) {
+  try {
+    return obj instanceof HTMLElement
+  } catch (e) {
+    return (typeof obj === 'object') &&
+      (obj.nodeType === 1) && (typeof obj.style === 'object') &&
+      (typeof obj.ownerDocument === 'object')
+  }
+}
+
+/**
  * 获取元素的：左 上 宽 高
  * @param {dom} el 目标元素
  */
 export function getPosition (el) {
-  const res = {};
-  (['top', 'left', 'width', 'height']).map(item => {
-    res[item] = parseInt(el.style[item], 10)
-  })
-  return res
+  return (['top', 'left', 'width', 'height']).reduce((prev, current) => {
+    return mergeObj({}, prev, { [current]: parseInt(el.style[current], 10) })
+  }, {})
 }
+
+// --------------------------------------------- 分割线 -----------------------------------------------------
 
 // 创建一项为维护的指导内容
 export function createGuideItem(renderData) {
   const { top, left, width, height, id, content, orderNumber, contentPosition, fixFlag } = renderData
-  const dots = (['top', 'right', 'bottom', 'left'])
+  const dots = POS
     .map(item => `<div class="e_dot-${item} e_dot-common" ${DataSetName}="e_dot-${item}"></div>`)
     .join('')
 
@@ -128,34 +185,9 @@ export function createGuideItem(renderData) {
   getRootElement().appendChild(guideItemDom)
 }
 
-// 获取模板元素
-export function getEasyGuideTemplate () {
-  return getElementById(DragTemplate)
-}
-
-// 是否有维护模式的根节点元素
-export function hasRootElement () {
-  return !!getRootElement()
-}
-
-// 获取最外层元素
-export function getRootElement () {
-  return getElementById(RootId)
-}
-
 // 创建维护模式的根节点元素
 export function createRootElement () {
   document.body.appendChild(ele('div', { id: RootId }))
-}
-
-// 获取查看模式的最外层元素
-export function getViewRoot () {
-  return getElementById(ViewRootId)
-}
-
-// 是否有查看模式的根节点元素
-export function hasViewRoot () {
-  return !!getViewRoot()
 }
 
 // 创建查看模式的根节点元素
@@ -170,7 +202,7 @@ export function insertViewRoot (el) {
 
 // 创建指导模板
 export function createTemplateElement () {
-  const templateList = (['top', 'right', 'bottom', 'left'])
+  const templateList = POS
     .map(i => `<div class="e_template-item-${i}" ${DataSetName}="template-item-${i}">top</div>`)
     .join('')
 
@@ -187,14 +219,6 @@ export function createTemplateElement () {
   getRootElement().appendChild(template)
 }
 
-// Dom 界面移除子元素
-export function removeChild(rootEle, child) {
-  if (!isElement(rootEle) || !isElement(child)) {
-    return
-  }
-  rootEle.removeChild(child)
-}
-
 export function setBarLibPosition(barList, { top, left, width, height, fixFlag }) {
   const position = `position:${fixFlag === 'Y' ? 'fixed' : 'absolute'};`
   const temp = [
@@ -206,13 +230,6 @@ export function setBarLibPosition(barList, { top, left, width, height, fixFlag }
   temp.forEach((item, index) => {
     barList[index].setAttribute('style', item + position)
   })
-}
-
-export function getBarElementList (rootEle) {
-  return Array.from(rootEle.getElementsByClassName('bar-lib-common'))
-}
-export function getElementsByClassName (rootEle, className) {
-  return rootEle.getElementsByClassName(className)[0]
 }
 
 function calcGuidePosition ({ top, left, height, width, fixFlag, contentPosition }) {
@@ -244,17 +261,12 @@ export function refreshDom(showItemData, rootEle) {
     rootEle = getViewRoot()
   }
 
-  const barElementList = getBarElementList(rootEle)
-  const contentWrap = getElementsByClassName(rootEle, 'e_step-content-box')
-  const prevBtn = getElementsByClassName(rootEle, 'box-pre-btn')
-  const nextBtn = getElementsByClassName(rootEle, 'box-next-btn')
-  const content = getElementsByClassName(rootEle, 'box-content')
+  const barElementList = Array.from(rootEle.getElementsByClassName('bar-lib-common'))
+  const contentWrap = getElement(rootEle, 'e_step-content-box')
+  const prevBtn = getElement(rootEle, 'box-pre-btn')
+  const nextBtn = getElement(rootEle, 'box-next-btn')
+  const content = getElement(rootEle, 'box-content')
   content.innerHTML = showItemData.content
-
-  setBarLibPosition(barElementList, showItemData)
-
-  // 生成内容框
-  setStyles(contentWrap, calcGuidePosition(showItemData))
 
   const { finalFlag, firstFlag } = showItemData
   if (finalFlag) {
@@ -268,26 +280,8 @@ export function refreshDom(showItemData, rootEle) {
   } else {
     prevBtn.style.visibility = 'unset'
   }
-}
 
-/**
- * 判断一个对象是否是 dom 元素
- * @param {*} obj 被检测对象
- */
-export function isElement(obj) {
-  try {
-    return obj instanceof HTMLElement
-  } catch (e) {
-    return (typeof obj === 'object') &&
-      (obj.nodeType === 1) && (typeof obj.style === 'object') &&
-      (typeof obj.ownerDocument === 'object')
-  }
-}
+  setBarLibPosition(barElementList, showItemData)
 
-/**
- * 通过ID 获取元素
- * @param {string} id 元素ID
- */
-export function getElementById (id) {
-  return document.getElementById(id)
+  setStyles(contentWrap, calcGuidePosition(showItemData))
 }

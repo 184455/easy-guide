@@ -7,7 +7,7 @@ import {
   DeleteBtn,
   EditBtn
 } from '../../config/constant'
-import { createGuideItemData, defaultPosition, getMaxNumber } from '../../utils/index'
+import { createGuideItemData, getMaxNumber } from '../../utils/index'
 import { createGuideItem } from '../../utils/dom'
 
 /**
@@ -16,20 +16,19 @@ import { createGuideItem } from '../../utils/dom'
  */
 export default function handelWrapperClick(_this, e) {
   const elementName = e.target.dataset.eg
-  // 支持事件的元素列表
   const eventElementNameList = [
     TemplateItemTop, TemplateItemRight, TemplateItemBottom,
     TemplateItemLeft, CloseButton, DeleteBtn, EditBtn
   ]
   if (eventElementNameList.indexOf(elementName) === -1) return
 
+  const { guideList, windowWidth } = _this
   if (elementName.indexOf('template-item-') > -1) {
-    // 点击模版添加，创建元素
-    const positionInfo = defaultPosition(_this.windowWidth)
-    const itemProps = createGuideItemData(Object.assign(positionInfo, {
-      orderNumber: getMaxNumber(_this.guideList, 'orderNumber') + 1,
-      contentPosition: elementName
-    }))
+    const itemProps = createGuideItemData({
+      orderNumber: getMaxNumber(guideList, 'orderNumber') + 1,
+      contentPosition: elementName,
+      left: (windowWidth / 2 - 150) | 0
+    })
 
     createGuideItem(itemProps)
     _this.dispatch('create', itemProps)

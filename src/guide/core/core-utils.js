@@ -1,8 +1,7 @@
 // core 模块的工具方法
 import { DataSetName, PrevBtnName, NextBtnName } from '../../config/constant'
-import { createGuideItemData, isEmptyArray } from '../../utils/index'
+import { createGuideItemData, isEmptyArray, mergeObj } from '../../utils/index'
 import {
-  ele,
   addClass,
   deleteClass,
   setStyles,
@@ -58,7 +57,7 @@ export function showGuideView(_this) {
     return
   }
 
-  const currentItem = Object.assign({}, guideList[0], {
+  const currentItem = mergeObj({}, guideList[0], {
     finalFlag: guideList.length === 1,
     firstFlag: true
   })
