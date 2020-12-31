@@ -72,28 +72,42 @@ body {
   top: calc(50% - 6px);
   cursor: col-resize;
 }
-.e_guide-item .e_guide-content {
+.e_guide-content {
   position: absolute;
-  min-width: 220px;
+  min-width: 262px;
   max-width: 320px;
   min-height: 90px;
-  padding: 10px;
   border-radius: 3px;
   font-size: 14px;
   box-shadow: 0 1px 10px rgba(0,0,0,.4);
   background-color: white;
-  z-index: 99999;
+  z-index: 9999999999;
   cursor: default;
-}
-.e_guide-item .e_guide-content .e_guide-content-text {
   color: rgba(0,0,0,.75);
 }
-.e_guide-item .e_guide-content .e_guide-content-btn {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
+.e_guide-content .e_guide-content-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 12px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+  font-weight: bold;
 }
-.e_guide-item .e_guide-content .e_guide-content-btn button {
+.e_guide-content .e_guide-content-title .e_guide-close {
+  opacity: 0;
+  cursor: not-allowed;
+  padding: 8px 12px 7px;
+}
+.e_guide-content .e_guide-content-text {
+  padding: 6px 12px;
+}
+.e_guide-content .e_guide-content-btn {
+  display: flex;
+  justify-content: flex-end;
+  padding: 5px 12px;
+}
+.e_guide-content .e_guide-content-btn button {
   outline: none;
   border: none;
   margin: 0;
@@ -102,14 +116,14 @@ body {
   border-radius: 2px;
   padding: 1px 6px;
 }
-.e_guide-item .e_guide-content .e_guide-content-btn button:focus {
+.e_guide-content .e_guide-content-btn button:focus {
   outline: none;
 }
-.e_guide-item .e_guide-content .e_guide-content-btn .e_edit-btn {
+.e_guide-content .e_guide-content-btn .e_next-btn {
   background: #ff8a2b;
   color: white;
 }
-.e_guide-item .e_guide-content .e_guide-content-btn .e_delete-btn {
+.e_guide-content .e_guide-content-btn .e_prev-btn {
   margin-right: 8px;
   border: 1px solid #d9d9d9;
   color: rgba(0,0,0,.65);
@@ -117,13 +131,14 @@ body {
 
 /* top */
 .e_guide-item .template-item-top {
-  left: 15px;
+  left: 0;
   bottom: calc(100% + 12px);
 }
 .template-item-top::before {
   content: '';
   position: absolute;
   bottom: -10px;
+  left: 7px;
   border: 5px solid white;
   border-top-color: white;
   border-right-color: transparent;
@@ -149,9 +164,8 @@ body {
 }
 /* left */
 .e_guide-item .template-item-left {
-  left: -251px;
-  top: 15px;
-  bottom: unset;
+  top: 0;
+  transform: translateX(calc(-100% - 12px));
 }
 .template-item-left::before {
   content: '';
@@ -174,6 +188,7 @@ body {
   content: '';
   position: absolute;
   top: -10px;
+  left: 7px;
   bottom: unset;
   border: 5px solid white;
   border-top-color: transparent;
@@ -182,26 +197,6 @@ body {
   border-left-color: transparent;
 }
 
-.e_top-step-number {
-  box-sizing: content-box;
-    position: absolute;
-    top: -16px;
-    left: -16px;
-    z-index: 9999999999 !important;
-    padding: 2px;
-    font-size: 13px;
-    font-weight: bold;
-    color: white;
-    text-align: center;
-    text-shadow: 1px 1px 1px rgba(0,0,0,.3);
-    background: #ff3019;
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
-    border: 3px solid white;
-    border-radius: 50%;
-    box-shadow: 0 2px 5px rgba(0,0,0,.4);
-}
 #_eG_template {
   position: fixed;
   left: calc(100vw - 250px);
@@ -279,47 +274,6 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-}
-.e_step-content-box {
-  position: absolute;
-  /* visibility: hidden; */
-  min-width: 340px;
-  background: #eff6ff;
-  border-radius: 2px;
-  padding: 12px;
-  z-index: 100003;
-}
-.e_step-content-box .box-content {
-  min-height: 60px;
-  width: 100%;
-  color: rgba(0,0,0,.75);
-  font-size: 14px;
-}
-.content-footer {
-  text-align: right;
-}
-.content-footer .box-pre-btn {
-  margin-right: 7px;
-  background: #fff;
-  border: 1px solid #4f7de7;
-  border-radius: 2px;
-  color: #4f7de7;
-  transition: all 0.2s;
-}
-.content-footer .box-next-btn {
-  background: #4f7de7;
-  border: 1px solid #4f7de7;
-  outline: none;
-  border-radius: 2px;
-  color: white;
-  transition: all 0.2s;
-}
-.content-footer .box-pre-btn button:focus {
-  outline: none;
-}
-.content-footer .box-pre-btn button:hover {
-  transform: scale(1.02);
-  transition: all 0.2s;
 }
 
 /* ------------ 编辑框样式 --------------------------------------------------------------- */

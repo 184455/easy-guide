@@ -1,5 +1,4 @@
 // core 模块的工具方法
-import { DataSetName, PrevBtnName, NextBtnName } from '../../config/constant'
 import { createGuideItemData, isEmptyArray, mergeObj } from '../../utils/index'
 import {
   addClass,
@@ -13,7 +12,8 @@ import {
   createViewRoot,
   insertViewRoot,
   refreshDom,
-  hasViewRoot
+  hasViewRoot,
+  guideContentBox
 } from '../../utils/dom'
 
 function renderGuideList({ guideList }) {
@@ -52,7 +52,7 @@ export function showGuideMainTain(_this) {
 
 // 展示-查看模式
 export function showGuideView(_this) {
-  const { guideList } = _this
+  const { guideList, mode } = _this
   if (isEmptyArray(guideList) || hasViewRoot()) {
     return
   }
@@ -66,19 +66,8 @@ export function showGuideView(_this) {
     .map(i => `<div class="bar-lib-${i} bar-lib-common"></div>`)
     .join('')
 
-  const domText = `
-    ${barList}
-    <div class="e_step-content-box">
-      <div class="box-content"></div>
-      <div class="content-footer">
-        <button class="box-pre-btn" ${DataSetName}="${PrevBtnName}">上一步</button>
-        <button class="box-next-btn" ${DataSetName}="${NextBtnName}">关闭</button>
-      </div>
-    </div>
-  `
-
   const tempRootEle = createViewRoot()
-  tempRootEle.innerHTML = domText
+  tempRootEle.innerHTML = barList + guideContentBox(currentItem, mode)
   refreshDom(currentItem, tempRootEle)
   insertViewRoot(tempRootEle)
 }

@@ -18,11 +18,9 @@ export function createGuideEditModal(_this, editInfo) {
 const refreshEditDom = (id, { content, orderNumber, fixFlag }) => {
   const editItemDom = getElementById(String(id))
   const contentBox = getElement(editItemDom, 'e_guide-content-text')
-  const orderNumberBox = getElement(editItemDom, 'e_top-step-number')
 
   setStyles(editItemDom, { position: fixFlag === 'Y' ? 'fixed' : 'absolute' })
   contentBox.innerHTML = content || '请维护用户指导内容！'
-  orderNumberBox.innerHTML = orderNumber
 }
 
 // 处理点击取消按钮

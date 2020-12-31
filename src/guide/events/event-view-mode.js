@@ -1,4 +1,4 @@
-import { PrevBtnName, NextBtnName } from '../../config/constant'
+import { PrevBtnName, NextBtnName, ViewCloseBtn } from '../../config/constant'
 import { refreshDom } from '../../utils/dom'
 import { mergeObj } from '../../utils/index'
 
@@ -9,7 +9,7 @@ import { mergeObj } from '../../utils/index'
 export default function handelViewModeWrapClick(_this, e) {
   const elementName = e.target.dataset.eg
   // 支持事件的元素列表
-  const eventElementNameList = [PrevBtnName, NextBtnName]
+  const eventElementNameList = [PrevBtnName, NextBtnName, ViewCloseBtn]
   if (eventElementNameList.indexOf(elementName) === -1) return
 
   switch (elementName) {
@@ -18,6 +18,9 @@ export default function handelViewModeWrapClick(_this, e) {
       break
     case NextBtnName:
       handleClickNextBtn(_this, e)
+      break
+    case ViewCloseBtn:
+      handleClickCloseBtn(_this, e)
       break
     default:
   }
@@ -52,8 +55,7 @@ function handleClickNextBtn(_this, e) {
   let newIndex
   if ((oldIndex + 1) === guideList.length) {
     // 关闭
-    _this.currentIndex = 0
-    _this.destroy()
+    handleClickCloseBtn(_this)
   } else {
     newIndex = oldIndex + 1
     const currentItem = mergeObj({}, guideList[newIndex], {
@@ -63,4 +65,10 @@ function handleClickNextBtn(_this, e) {
     _this.currentIndex = newIndex
     refreshDom(currentItem)
   }
+}
+
+function handleClickCloseBtn(_this) {
+  // 关闭
+  _this.currentIndex = 0
+  _this.destroy()
 }

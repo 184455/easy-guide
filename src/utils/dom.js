@@ -1,9 +1,9 @@
 // 工具方法
 import {
-  DataSetName,
+  DataSetName, PrevBtnName, NextBtnName, ViewCloseBtn,
   DeleteBtn, CloseButton, TemplateDragArea, ViewRootId,
   EditBtn, GuideDragItem, RootId, DragTemplate,
-  TemplateItemTop, TemplateItemRight, TemplateItemBottom, TemplateItemLeft
+  TemplateItemTop, TemplateItemRight, TemplateItemBottom, TemplateItemLeft, MODE
 } from '../config/constant'
 import { mergeObj } from './index'
 
@@ -168,24 +168,39 @@ export function getEasyGuideTemplate () {
   return getElementById(DragTemplate)
 }
 
+// 指导内容框
+export function guideContentBox ({ contentPosition, orderNumber, content }, mode) {
+  let buttonStr
+  if (mode === MODE.READ) {
+    buttonStr = `
+      <button class="e_prev-btn" ${DataSetName}="${PrevBtnName}">上一步</button>
+      <button class="e_next-btn" ${DataSetName}="${NextBtnName}">关闭</button>
+    `
+  } else {
+    buttonStr = `
+      <button class="e_prev-btn" ${DataSetName}="${DeleteBtn}">删除</button>
+      <button class="e_next-btn" ${DataSetName}="${EditBtn}">编辑</button>
+    `
+  }
+
+  return `
+    <div class="e_guide-content ${contentPosition}">
+      <div class="e_guide-content-title">
+        <div class="e_guide-title-text">步骤${orderNumber}</div>
+        <div class="e_guide-close" ${DataSetName}="${ViewCloseBtn}">&#10005;</div>
+      </div>
+      <div class="e_guide-content-text">${content || '请维护用户指导内容！'}</div>
+      <div class="e_guide-content-btn">${buttonStr}</div>
+    </div>
+  `
+}
+
 // 创建一项为维护的指导内容
 export function createGuideItem(renderData) {
-  const { top, left, width, height, id, content, orderNumber, contentPosition, fixFlag } = renderData
+  const { top, left, width, height, id, fixFlag } = renderData
   const dots = POS
     .map(item => `<div class="e_dot-${item} e_dot-common" ${DataSetName}="e_dot-${item}"></div>`)
     .join('')
-
-  const stringDom = `
-    ${dots}
-    <div class="e_top-step-number">${orderNumber || 1}</div>
-    <div class="e_guide-content ${contentPosition}">
-      <div class="e_guide-content-text">${content || '请维护用户指导内容！'}</div>
-      <div class="e_guide-content-btn">
-        <button class="e_delete-btn" ${DataSetName}="${DeleteBtn}">删除</button>
-        <button class="e_edit-btn" ${DataSetName}="${EditBtn}">编辑</button>
-      </div>
-    </div>
-  `
 
   const guideItemDom = ele('div', { id, class: 'e_guide-item', [DataSetName]: GuideDragItem })
   setStyles(guideItemDom, {
@@ -196,14 +211,14 @@ export function createGuideItem(renderData) {
     height: `${height}px`
   })
 
-  guideItemDom.innerHTML = stringDom
+  guideItemDom.innerHTML = dots + guideContentBox(renderData)
   getRootElement().appendChild(guideItemDom)
 }
 
 // 创建指导模板
 export function createTemplateElement () {
   const templateList = POS
-    .map(i => `<div class="e_template-item-${i}" ${DataSetName}="template-item-${i}">top</div>`)
+    .map(i => `<div class="e_template-item-${i}" ${DataSetName}="template-item-${i}">${i}</div>`)
     .join('')
 
   const templateDomText = `
@@ -242,15 +257,16 @@ function calcGuidePosition ({ top, left, height, width, fixFlag, contentPosition
     }
   }
 
+  const offset = 12
   switch (contentPosition) {
     case TemplateItemTop:
-      return styleJoin(top - 20, left, 'translateY(-100%)')
+      return styleJoin(top - offset, left, 'translateY(-100%)')
     case TemplateItemRight:
-      return styleJoin(top, left + width + 20)
+      return styleJoin(top, left + width + offset)
     case TemplateItemBottom:
-      return styleJoin(top + height + 20, left)
+      return styleJoin(top + height + offset, left)
     case TemplateItemLeft:
-      return styleJoin(top, left - 20, 'translateX(-100%)')
+      return styleJoin(top, left - offset, 'translateX(-100%)')
     default:
   }
 }
@@ -262,10 +278,12 @@ export function refreshDom(showItemData, rootEle) {
   }
 
   const barElementList = Array.from(rootEle.getElementsByClassName('bar-lib-common'))
-  const contentWrap = getElement(rootEle, 'e_step-content-box')
-  const prevBtn = getElement(rootEle, 'box-pre-btn')
-  const nextBtn = getElement(rootEle, 'box-next-btn')
-  const content = getElement(rootEle, 'box-content')
+  const contentWrap = getElement(rootEle, 'e_guide-content')
+  const content = getElement(rootEle, 'e_guide-content-text')
+  const closeTitle = getElement(rootEle, 'e_guide-title-text')
+  const closeBtn = getElement(rootEle, 'e_guide-close')
+  const prevBtn = getElement(rootEle, 'e_prev-btn')
+  const nextBtn = getElement(rootEle, 'e_next-btn')
   content.innerHTML = showItemData.content
 
   const { finalFlag, firstFlag } = showItemData
@@ -283,5 +301,9 @@ export function refreshDom(showItemData, rootEle) {
 
   setBarLibPosition(barElementList, showItemData)
 
+  const { contentPosition, orderNumber } = showItemData
+  closeTitle.innerHTML = `步骤${orderNumber}`
+  setStyles(closeBtn, { opacity: 1, cursor: 'pointer' })
+  contentWrap.className = `e_guide-content ${contentPosition}`
   setStyles(contentWrap, calcGuidePosition(showItemData))
 }

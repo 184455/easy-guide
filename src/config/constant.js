@@ -70,6 +70,7 @@ export const EditBtn = 'editBtn'
 // 查看上一步下一步
 export const PrevBtnName = 'PrevBtnName'
 export const NextBtnName = 'NextBtnName'
+export const ViewCloseBtn = 'ViewCloseBtn'
 
 // ------------------ 事件 --------------------------
 
