@@ -90,31 +90,6 @@ export function getElement (rootEle, className) {
   return rootEle.getElementsByClassName(className)[0]
 }
 
-// 获取模板根元素
-export function getEasyGuideTemplate () {
-  return getElementById(DragTemplate)
-}
-
-// 是否有维护模式的根节点元素
-export function hasRootElement () {
-  return !!getRootElement()
-}
-
-// 获取最外层元素
-export function getRootElement () {
-  return getElementById(RootId)
-}
-
-// 获取查看模式的最外层元素
-export function getViewRoot () {
-  return getElementById(ViewRootId)
-}
-
-// 是否有查看模式的根节点元素
-export function hasViewRoot () {
-  return !!getViewRoot()
-}
-
 /**
  * 移除子元素
  * @param {dom} rootEle 容器元素
@@ -153,6 +128,46 @@ export function getPosition (el) {
 
 // --------------------------------------------- 分割线 -----------------------------------------------------
 
+// 创建【维护模式】的根节点元素
+export function createRootElement () {
+  document.body.appendChild(ele('div', { id: RootId }))
+}
+
+// 是否有【维护模式】的根节点元素
+export function hasRootElement () {
+  return !!getRootElement()
+}
+
+// 获取【维护模式】的最外层元素
+export function getRootElement () {
+  return getElementById(RootId)
+}
+
+// 获取【查看模式】的最外层元素
+export function getViewRoot () {
+  return getElementById(ViewRootId)
+}
+
+// 是否有【查看模式】的根节点元素
+export function hasViewRoot () {
+  return !!getViewRoot()
+}
+
+// 创建【查看模式】的根节点元素
+export function createViewRoot () {
+  return ele('div', { style: 'height: 1px; width: 1px;', id: ViewRootId })
+}
+
+// 插入【查看模式】的根节点元素
+export function insertViewRoot (el) {
+  document.body.insertBefore(el, document.body.childNodes[0])
+}
+
+// 获取【模板】根元素
+export function getEasyGuideTemplate () {
+  return getElementById(DragTemplate)
+}
+
 // 创建一项为维护的指导内容
 export function createGuideItem(renderData) {
   const { top, left, width, height, id, content, orderNumber, contentPosition, fixFlag } = renderData
@@ -183,21 +198,6 @@ export function createGuideItem(renderData) {
 
   guideItemDom.innerHTML = stringDom
   getRootElement().appendChild(guideItemDom)
-}
-
-// 创建维护模式的根节点元素
-export function createRootElement () {
-  document.body.appendChild(ele('div', { id: RootId }))
-}
-
-// 创建查看模式的根节点元素
-export function createViewRoot () {
-  return ele('div', { style: 'height: 1px; width: 1px;', id: ViewRootId })
-}
-
-// 插入查看模式的根节点元素
-export function insertViewRoot (el) {
-  document.body.insertBefore(el, document.body.childNodes[0])
 }
 
 // 创建指导模板
