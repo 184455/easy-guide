@@ -1,3 +1,5 @@
+@charset "UTF-8";
+
 /* ------------ 清除自带样式 ------------------------------------------------------------ */
 body {
   margin: 0;
@@ -101,6 +103,7 @@ body {
 }
 .e_guide-content .e_guide-content-text {
   padding: 6px 12px;
+  min-height: 32px;
 }
 .e_guide-content .e_guide-content-btn {
   display: flex;
@@ -199,11 +202,49 @@ body {
 
 #_eG_template {
   position: fixed;
-  left: calc(100vw - 250px);
-  top: 100px;
-  width: 200px;
+  display: flex;
+  align-items: center;
+  left: calc(100vw - 370px);
+  top: 10px;
+  width: 360px;
+  height: 42px;
   font-size: 14px;
   background-color: white;
+  overflow: hidden;
+  border-radius: 4px;
+  color: rgba(0,0,0,.55);
+  box-shadow: 0 1px 10px rgba(0,0,0,.4);
+}
+#_eG_template > div {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all  0.15s;
+  border-right: 1px solid #eee;
+  cursor: pointer;
+  filter: grayscale(100%);
+  padding: 12px 0;
+}
+#_eG_template > div > svg {
+  height: 16px;
+  width: 16px;
+  margin-right: 7px;
+}
+#_eG_template > div:hover {
+  color: rgba(0,0,0,.75);
+  transition: all  0.3s;
+  color: #ff8a2b;
+  filter: none;
+}
+#_eG_template > div:last-child {
+  flex: 0 0 56px;
+  text-align: center;
+  padding: 13px 0;
+  background-color: #cd4e4d;
+  border-right: none;
+  color: white;
+  filter: none;
 }
 #_eG_template .e_template-close-btn {
   position: absolute;
@@ -242,11 +283,26 @@ body {
   margin: 0;
   overflow: hidden;
 }
-#_eG_template .e_template-list > div {
+#_eG_template .e_template-list .e_template-item-top {
   position: relative;
+  display: flex;
+  align-items: center;
   background: #fff;
   margin: 16px 12px;
   text-align: center;
+}
+#_eG_template .e_template-list .e_template-item-top::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+#_eG_template .e_template-list .e_template-item-top svg {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
 }
 /* #_eG_template .e_template-close-btn {}
 #_eG_template .e_template-close-btn {} */
