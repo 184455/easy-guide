@@ -204,8 +204,8 @@ body {
   position: fixed;
   display: flex;
   align-items: center;
-  left: calc(100vw - 370px);
-  top: 10px;
+  left: calc(100vw - 385px);
+  top: 20px;
   width: 360px;
   height: 42px;
   font-size: 14px;
