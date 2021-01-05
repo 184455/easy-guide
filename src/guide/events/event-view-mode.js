@@ -42,7 +42,7 @@ function handleClickPrevBtn(_this, e) {
       firstFlag: newIndex === 0
     })
     _this.currentIndex = newIndex
-    refreshDom(currentItem)
+    refreshDom(_this, currentItem)
   }
 }
 
@@ -63,7 +63,7 @@ function handleClickNextBtn(_this, e) {
       firstFlag: false
     })
     _this.currentIndex = newIndex
-    refreshDom(currentItem)
+    refreshDom(_this, currentItem)
   }
 }
 

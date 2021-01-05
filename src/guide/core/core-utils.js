@@ -68,7 +68,7 @@ export function showGuideView(_this) {
 
   const tempRootEle = createViewRoot()
   tempRootEle.innerHTML = barList + guideContentBox(currentItem, mode)
-  refreshDom(currentItem, tempRootEle)
+  refreshDom(_this, currentItem, tempRootEle)
   insertViewRoot(tempRootEle)
 }
 

@@ -251,32 +251,58 @@ export function setBarLibPosition(barList, { top, left, width, height, fixFlag }
   })
 }
 
-function calcGuidePosition ({ top, left, height, width, fixFlag, contentPosition }) {
-  const styleJoin = (top, left, transform = 'none') => {
-    return {
+function calcGuidePosition ({ top, left, height, width, fixFlag, contentPosition, windowWidth, windowHeight }) {
+  const styleJoin = (top, left, obj = {}) => {
+    return mergeObj({
       position: fixFlag === 'Y' ? 'fixed' : 'absolute',
       top: `${top}px`,
-      left: `${left}px`,
-      transform
-    }
+      left: `${left}px`
+    }, obj)
   }
 
   const offset = 12
+  const Height = fixFlag === 'Y' ? window.innerHeight : windowHeight
   switch (contentPosition) {
-    case TemplateItemTop:
-      return styleJoin(top - offset, left, 'translateY(-100%)')
-    case TemplateItemRight:
+    case '_eg-guide-1':
+      return styleJoin(top - offset, left, {
+        transform: 'translateY(-100%)'
+      })
+    case '_eg-guide-2':
+      return styleJoin(top - offset, left, {
+        left: 'unset',
+        right: `${windowWidth - (left + width)}px`,
+        transform: 'translateY(-100%)'
+      })
+    case '_eg-guide-3':
       return styleJoin(top, left + width + offset)
-    case TemplateItemBottom:
+    case '_eg-guide-4':
+      return styleJoin(top, left + width + offset, {
+        top: 'unset',
+        bottom: `${Height - (top + height)}px`
+      })
+    case '_eg-guide-5':
+      return styleJoin(top + height + offset, left, {
+        left: 'unset',
+        right: `${windowWidth - (left + width)}px`
+      })
+    case '_eg-guide-6':
       return styleJoin(top + height + offset, left)
-    case TemplateItemLeft:
-      return styleJoin(top, left - offset, 'translateX(-100%)')
+    case '_eg-guide-7':
+      return styleJoin(top, left - offset, {
+        top: 'unset',
+        bottom: `${Height - (top + height)}px`,
+        transform: 'translateX(-100%)'
+      })
+    case '_eg-guide-8':
+      return styleJoin(top, left - offset, {
+        transform: 'translateX(-100%)'
+      })
     default:
   }
 }
 
 // 更新上一步下一步 dom 内容
-export function refreshDom(showItemData, rootEle) {
+export function refreshDom(_this, showItemData, rootEle) {
   if (!rootEle) {
     rootEle = getViewRoot()
   }
@@ -289,6 +315,8 @@ export function refreshDom(showItemData, rootEle) {
   const prevBtn = getElement(rootEle, 'e_prev-btn')
   const nextBtn = getElement(rootEle, 'e_next-btn')
   content.innerHTML = showItemData.content
+  const { windowWidth, windowHeight } = _this
+  mergeObj(showItemData, { windowWidth, windowHeight })
 
   const { finalFlag, firstFlag } = showItemData
   if (finalFlag) {
