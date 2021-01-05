@@ -1,5 +1,5 @@
 // core 模块的工具方法
-import { createGuideItemData, isEmptyArray, mergeObj } from '../../utils/index'
+import { createGuideItemData, isEmptyArray, mergeObj, scrollIntoToView } from '../../utils/index'
 import {
   addClass,
   deleteClass,
@@ -13,7 +13,8 @@ import {
   insertViewRoot,
   refreshDom,
   hasViewRoot,
-  guideContentBox
+  guideContentBox,
+  getElement
 } from '../../utils/dom'
 
 function renderGuideList({ guideList }) {
@@ -70,6 +71,7 @@ export function showGuideView(_this) {
   tempRootEle.innerHTML = barList + guideContentBox(currentItem, mode)
   refreshDom(_this, currentItem, tempRootEle)
   insertViewRoot(tempRootEle)
+  scrollIntoToView(getElement(tempRootEle, 'e_guide-content'))
 }
 
 // 初始化默认的数据项

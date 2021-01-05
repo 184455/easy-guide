@@ -1,6 +1,6 @@
 import { PrevBtnName, NextBtnName, ViewCloseBtn } from '../../config/constant'
-import { refreshDom } from '../../utils/dom'
-import { mergeObj } from '../../utils/index'
+import { getElement, refreshDom, getViewRoot } from '../../utils/dom'
+import { mergeObj, scrollIntoToView } from '../../utils/index'
 
 /**
  * 只读模式下的点击事件代理
@@ -43,6 +43,9 @@ function handleClickPrevBtn(_this, e) {
     })
     _this.currentIndex = newIndex
     refreshDom(_this, currentItem)
+    setTimeout(() => {
+      scrollIntoToView(getElement(getViewRoot(), 'e_guide-content'))
+    }, 320)
   }
 }
 
@@ -64,6 +67,9 @@ function handleClickNextBtn(_this, e) {
     })
     _this.currentIndex = newIndex
     refreshDom(_this, currentItem)
+    setTimeout(() => {
+      scrollIntoToView(getElement(getViewRoot(), 'e_guide-content'))
+    }, 320)
   }
 }
 
