@@ -23,7 +23,7 @@ export default function handelWrapperClick(_this, e) {
   if (eventElementNameList.indexOf(elementName) === -1) return
 
   const { guideList, windowWidth } = _this
-  if (elementName.indexOf('template-item-') > -1) {
+  if (elementName.indexOf('_eg-guide-') > -1) {
     const itemProps = createGuideItemData({
       orderNumber: getMaxNumber(guideList, 'orderNumber') + 1,
       contentPosition: elementName,

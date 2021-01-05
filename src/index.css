@@ -86,6 +86,12 @@ body {
   z-index: 9999999999;
   cursor: default;
   color: rgba(0,0,0,.75);
+  transition: all 0.3s;
+}
+.e_guide-content::before {
+  content: '';
+  position: absolute;
+  border: 5px solid transparent;
 }
 .e_guide-content .e_guide-content-title {
   display: flex;
@@ -132,72 +138,92 @@ body {
   color: rgba(0,0,0,.65);
 }
 
-/* top */
-.e_guide-item .template-item-top {
+/* top-left */
+.e_guide-item ._eg-guide-1 {
   left: 0;
   bottom: calc(100% + 12px);
 }
-.template-item-top::before {
-  content: '';
-  position: absolute;
+._eg-guide-1::before {
   bottom: -10px;
   left: 7px;
-  border: 5px solid white;
   border-top-color: white;
-  border-right-color: transparent;
-  border-bottom-color: transparent;
-  border-left-color: transparent
 }
-/* right */
-.e_guide-item .template-item-right {
+/* top-right */
+.e_guide-item ._eg-guide-2 {
+  right: 0;
+  bottom: calc(100% + 12px);
+}
+._eg-guide-2::before {
+  bottom: -10px;
+  right: 7px;
+  border-top-color: white;
+}
+
+/* right-top */
+.e_guide-item ._eg-guide-3 {
   left: calc(100% + 12px);
   bottom: unset;
 }
-.template-item-right::before {
-  content: '';
-  position: absolute;
+._eg-guide-3::before {
   top: 10px;
-  bottom: unset;
   left: -10px;
-  border: 5px solid white;
-  border-top-color: transparent;
   border-right-color: white;
-  border-bottom-color: transparent;
-  border-left-color: transparent;
 }
-/* left */
-.e_guide-item .template-item-left {
-  top: 0;
-  transform: translateX(calc(-100% - 12px));
+/* right-bottom */
+.e_guide-item ._eg-guide-4 {
+  left: calc(100% + 12px);
+  bottom: 0;
 }
-.template-item-left::before {
-  content: '';
-  position: absolute;
-  top: 10px;
-  right: -10px;
-  border: 5px solid white;
-  border-top-color: transparent;
-  border-right-color: transparent;
-  border-bottom-color: transparent;
-  border-left-color: white;
+._eg-guide-4::before {
+  bottom: 10px;
+  left: -10px;
+  border-right-color: white;
 }
-/* bottom */
-.e_guide-item .template-item-bottom {
+
+/* bottom-right */
+.e_guide-item ._eg-guide-5 {
+  bottom: unset;
+  right: 0;
+  top: calc(100% + 12px);
+}
+._eg-guide-5::before {
+  top: -10px;
+  right: 7px;
+  bottom: unset;
+  border-bottom-color: white;
+}
+/* bottom-left */
+.e_guide-item ._eg-guide-6 {
   bottom: unset;
   left: 0;
   top: calc(100% + 12px);
 }
-.template-item-bottom::before {
-  content: '';
-  position: absolute;
+._eg-guide-6::before {
   top: -10px;
   left: 7px;
   bottom: unset;
-  border: 5px solid white;
-  border-top-color: transparent;
-  border-right-color: transparent;
   border-bottom-color: white;
-  border-left-color: transparent;
+}
+
+/* left-bottom */
+.e_guide-item ._eg-guide-7 {
+  bottom: 0;
+  transform: translateX(calc(-100% - 12px));
+}
+._eg-guide-7::before {
+  bottom: 10px;
+  right: -10px;
+  border-left-color: white;
+}
+/* left-top */
+.e_guide-item ._eg-guide-8 {
+  top: 0;
+  transform: translateX(calc(-100% - 12px));
+}
+._eg-guide-8::before {
+  top: 10px;
+  right: -10px;
+  border-left-color: white;
 }
 
 #_eG_template {

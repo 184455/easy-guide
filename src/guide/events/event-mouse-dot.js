@@ -1,15 +1,13 @@
 // 拖拽 dot 调整选区宽高
-import {
-  tagX, tagY,
-  DotTop,
-  DotRight,
-  DotBottom,
-  DotLeft,
-  MinHeight,
-  MinWidth
-} from '../../config/constant'
-import { setStyles, getPosition } from '../../utils/dom'
-import { mergeObj } from '../../utils/index'
+import { tagX, tagY, MinHeight, MinWidth } from '../../config/constant'
+import { setStyles, getPosition, getElement } from '../../utils/dom'
+import { mergeObj, addUtil } from '../../utils/index'
+import checkDot from '../border-check/check-dot'
+import { calcContentPosition } from '../border-check/check-guide'
+
+function editContentClassName (el, className) {
+  el.className = `e_guide-content ${className}`
+}
 
 export function handleDotDown(_this, event) {
   const elementName = event.target.dataset.eg
@@ -20,52 +18,48 @@ export function handleDotDown(_this, event) {
     clientWidth,
     clientHeight,
     elementName,
+    contentElement: getElement(parentEle, 'e_guide-content'),
+    fixFlag: parentEle.style.position === 'fixed' ? 'Y' : 'N',
     startX: event[tagX],
     startY: event[tagY],
     position: getPosition(parentEle)
   }
 }
 export function handleDotMove(_this, event) {
-  const { startX, startY, clientWidth, clientHeight, position, id, elementName } = _this.onMouseDownPositionImage
-  const { currentTarget } = _this
-  const { top, left } = position
-
-  let newPosition = {}
-  let canvasPosition = {}
-  switch (elementName) {
-    case DotTop:
-      const deltaY = startY - event[tagY]
-      newPosition = { height: `${clientHeight + deltaY}px`, top: `${top - deltaY}px` }
-      canvasPosition = { height: clientHeight + deltaY, top: top - deltaY }
-      break
-    case DotRight:
-      newPosition = { width: `${clientWidth + (event[tagX] - startX)}px` }
-      canvasPosition = { width: clientWidth + (event[tagX] - startX) }
-      break
-    case DotBottom:
-      newPosition = { height: `${clientHeight + (event[tagY] - startY)}px` }
-      canvasPosition = { height: clientHeight + (event[tagY] - startY) }
-      break
-    case DotLeft:
-      const deltaX = startX - event[tagX]
-      newPosition = { width: `${clientWidth + deltaX}px`, left: `${left - deltaX}px` }
-      canvasPosition = { width: clientWidth + deltaX, left: left - deltaX }
-      break
-    default:
-  }
-
-  // 设置一个选区的最小宽高
-  if (canvasPosition.width < MinWidth || canvasPosition.height < MinHeight) {
+  let { onMouseDownPositionImage, windowWidth, windowHeight } = _this
+  if (!onMouseDownPositionImage) {
     return
   }
 
-  _this.onMouseDownPositionImage.newPosition = mergeObj({ id }, position, canvasPosition)
+  const { elementName, position, id, contentElement } = onMouseDownPositionImage
+  const { newPosition, missMouse } = checkDot(_this, elementName, event)
 
-  setStyles(currentTarget.parentElement, newPosition)
+  // 设置一个选区的最小宽高
+  if (newPosition.width < MinWidth || newPosition.height < MinHeight) {
+    onMouseDownPositionImage = null
+    return
+  }
+
+  const nextPosition = mergeObj({ id }, position, newPosition)
+  onMouseDownPositionImage.newPosition = nextPosition
+  const { left, top, width, height } = nextPosition
+  const contentPosition = calcContentPosition(windowWidth, windowHeight, left, top, height, width)
+  if (contentPosition) {
+    editContentClassName(contentElement, contentPosition)
+  }
+  setStyles(_this.currentTarget.parentElement, addUtil(newPosition, 'px'))
+
+  if (missMouse) {
+    handleDotUp(_this)
+    return
+  }
 }
 export function handleDotUp(_this, event) {
-  const { onMouseDownPositionImage } = _this
+  const { onMouseDownPositionImage = {} } = _this
   const { newPosition } = onMouseDownPositionImage
+  if (!(newPosition && newPosition.id)) {
+    return
+  }
 
   _this.dispatch('modify', newPosition)
   _this.onMouseDownPositionImage = null

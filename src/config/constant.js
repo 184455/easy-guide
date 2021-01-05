@@ -50,10 +50,10 @@ export const TemplateDragArea = 'template-drag-area'
 export const GuideDragItem = 'guide-drag-item'
 
 // template 上下左右模板
-export const TemplateItemTop = 'template-item-top'
-export const TemplateItemRight = 'template-item-right'
-export const TemplateItemBottom = 'template-item-bottom'
-export const TemplateItemLeft = 'template-item-left'
+export const TemplateItemTop = '_eg-guide-1'
+export const TemplateItemRight = '_eg-guide-3'
+export const TemplateItemBottom = '_eg-guide-5'
+export const TemplateItemLeft = '_eg-guide-7'
 
 // dot 上下左右
 export const DotTop = 'e_dot-top'

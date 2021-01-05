@@ -64,3 +64,14 @@ export function mergeCustomOptions(options) {
 export function mergeObj() {
   return Object.assign.apply(this, arguments)
 }
+
+/**
+ * 给对象元素添加单位
+ * @param {object} obj 添加单位数据
+ * @param {*} util 单位
+ */
+export function addUtil (obj, util) {
+  return Object.keys(obj).reduce((prev, current) => {
+    return mergeObj(prev, { [current]: obj[current] + util })
+  }, {})
+}
