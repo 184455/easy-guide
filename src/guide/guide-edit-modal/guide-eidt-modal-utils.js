@@ -15,11 +15,11 @@ export function createGuideEditModal(_this, editInfo) {
 }
 
 // 用户点击确认，更新对编辑对应的 dom
-const refreshEditDom = (id, { content, orderNumber, fixFlag }) => {
+const refreshEditDom = (id, { content, top, fixFlag }) => {
   const editItemDom = getElementById(String(id))
   const contentBox = getElement(editItemDom, 'e_guide-content-text')
 
-  setStyles(editItemDom, { position: fixFlag === 'Y' ? 'fixed' : 'absolute' })
+  setStyles(editItemDom, { position: fixFlag === 'Y' ? 'fixed' : 'absolute', top: `${top}px` })
   contentBox.innerHTML = content || '请维护用户指导内容！'
 }
 
@@ -35,6 +35,11 @@ const handleClickConfirm = (_this, editInfo) => {
     const { name, value } = inputEle
     return mergeObj(prev, { [name]: value })
   }, {})
+
+  if (values.fixFlag === 'Y' && editInfo.fixFlag === 'N') {
+    // 从相对定位切换到绝对定位，位置需要重置到最开始的位置
+    values.top = 200
+  }
 
   _this.dispatch('modify', mergeObj(editInfo, values, { id: editInfo.id }))
   _this.hiddenEditModal()

@@ -27,7 +27,8 @@ export default function handelWrapperClick(_this, e) {
     const itemProps = createGuideItemData({
       orderNumber: getMaxNumber(guideList, 'orderNumber') + 1,
       contentPosition: elementName,
-      left: (windowWidth / 2 - 150) | 0
+      left: (windowWidth / 2 - 150) | 0,
+      top: window.pageYOffset + 200
     })
 
     createGuideItem(itemProps)
