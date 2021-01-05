@@ -102,9 +102,13 @@ body {
   color: #333;
   font-weight: bold;
 }
+.e_guide-content .e_guide-content-title .e_guide-title-text {
+  line-height: 1;
+  padding: 10px 0;
+}
 .e_guide-content .e_guide-content-title .e_guide-close {
-  opacity: 0;
-  cursor: not-allowed;
+  display: none;
+  cursor: pointer;
   padding: 8px 12px 7px;
 }
 .e_guide-content .e_guide-content-text {

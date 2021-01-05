@@ -349,7 +349,7 @@ export function refreshDom(_this, showItemData, rootEle) {
 
   const { contentPosition, orderNumber } = showItemData
   closeTitle.innerHTML = `步骤${orderNumber}`
-  setStyles(closeBtn, { opacity: 1, cursor: 'pointer' })
+  setStyles(closeBtn, { display: 'inline-block' })
   contentWrap.className = `e_guide-content ${contentPosition}`
   setStyles(contentWrap, calcGuidePosition(showItemData))
 }
