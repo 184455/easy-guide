@@ -265,6 +265,8 @@ function calcGuidePosition ({ top, left, height, width, fixFlag, contentPosition
   switch (contentPosition) {
     case '_eg-guide-1':
       return styleJoin(top - offset, left, {
+        right: 'unset',
+        bottom: 'unset',
         transform: 'translateY(-100%)'
       })
     case '_eg-guide-2':
@@ -274,19 +276,29 @@ function calcGuidePosition ({ top, left, height, width, fixFlag, contentPosition
         transform: 'translateY(-100%)'
       })
     case '_eg-guide-3':
-      return styleJoin(top, left + width + offset)
+      return styleJoin(top, left + width + offset, {
+        right: 'unset',
+        bottom: 'unset',
+        transform: 'none'
+      })
     case '_eg-guide-4':
       return styleJoin(top, left + width + offset, {
         top: 'unset',
-        bottom: `${Height - (top + height)}px`
+        bottom: `${Height - (top + height)}px`,
+        transform: 'none'
       })
     case '_eg-guide-5':
       return styleJoin(top + height + offset, left, {
         left: 'unset',
-        right: `${windowWidth - (left + width)}px`
+        right: `${windowWidth - (left + width)}px`,
+        transform: 'none'
       })
     case '_eg-guide-6':
-      return styleJoin(top + height + offset, left)
+      return styleJoin(top + height + offset, left, {
+        right: 'unset',
+        bottom: 'unset',
+        transform: 'none'
+      })
     case '_eg-guide-7':
       return styleJoin(top, left - offset, {
         top: 'unset',
@@ -295,7 +307,9 @@ function calcGuidePosition ({ top, left, height, width, fixFlag, contentPosition
       })
     case '_eg-guide-8':
       return styleJoin(top, left - offset, {
-        transform: 'translateX(-100%)'
+        transform: 'translateX(-100%)',
+        right: 'unset',
+        bottom: 'unset'
       })
     default:
   }
