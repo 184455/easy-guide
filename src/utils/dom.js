@@ -2,8 +2,7 @@
 import {
   DataSetName, PrevBtnName, NextBtnName, ViewCloseBtn,
   DeleteBtn, CloseButton, TemplateDragArea, ViewRootId,
-  EditBtn, GuideDragItem, RootId, DragTemplate,
-  TemplateItemTop, TemplateItemRight, TemplateItemBottom, TemplateItemLeft, MODE
+  EditBtn, GuideDragItem, RootId, DragTemplate, MODE
 } from '../config/constant'
 import { mergeObj } from './index'
 
