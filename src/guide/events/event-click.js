@@ -3,6 +3,7 @@ import {
   TemplateItemRight,
   TemplateItemBottom,
   TemplateItemLeft,
+  PreviewBtn,
   CloseButton,
   DeleteBtn,
   EditBtn
@@ -18,7 +19,7 @@ export default function handelWrapperClick(_this, e) {
   const elementName = e.target.dataset.eg
   const eventElementNameList = [
     TemplateItemTop, TemplateItemRight, TemplateItemBottom,
-    TemplateItemLeft, CloseButton, DeleteBtn, EditBtn
+    TemplateItemLeft, CloseButton, DeleteBtn, EditBtn, PreviewBtn
   ]
   if (eventElementNameList.indexOf(elementName) === -1) return
 
@@ -46,6 +47,9 @@ export default function handelWrapperClick(_this, e) {
     case EditBtn:
       handleEditItem(_this, e)
       break
+    case PreviewBtn:
+      handlePreview(_this, e)
+      break
     default:
   }
 }
@@ -66,4 +70,12 @@ const handleDeleteItem = (_this, event) => {
 const handleEditItem = (_this, event) => {
   const editId = event.target.parentElement.parentElement.parentElement.id
   _this.showEditModal(_this.guideList.find(o => String(o.id) === String(editId)))
+}
+
+// 维护模式下，切换编辑
+const handlePreview = (_this, event) => {
+  _this.destroy()
+  _this.previewBack = 'maintain'
+  _this.setMode('READ')
+  _this.show()
 }

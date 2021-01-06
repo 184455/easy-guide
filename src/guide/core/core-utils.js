@@ -14,6 +14,7 @@ import {
   refreshStepDom,
   hasViewRoot,
   guideContentBox,
+  exitPreview,
   getElement
 } from '../../utils/dom'
 
@@ -68,7 +69,7 @@ export function showGuideView(_this) {
     .join('')
 
   const tempRootEle = createViewRoot()
-  tempRootEle.innerHTML = barList + guideContentBox(currentItem, mode)
+  tempRootEle.innerHTML = barList + exitPreview(_this.previewBack) + guideContentBox(currentItem, mode)
   refreshStepDom(_this, currentItem, tempRootEle)
   insertViewRoot(tempRootEle)
   scrollIntoToView(getElement(tempRootEle, 'e_guide-content'))

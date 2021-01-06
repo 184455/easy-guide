@@ -82,8 +82,8 @@ export function addUtil (obj, util) {
  * 把目标元素移动到可视区域
  * @param {dom} el 需要显示的元素
  */
-export function scrollIntoToView (el) {
-  el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
+export function scrollIntoToView (el, options = {}) {
+  el.scrollIntoView(mergeObj({ behavior: 'smooth', block: 'center', inline: 'nearest' }, options))
 }
 
 /**

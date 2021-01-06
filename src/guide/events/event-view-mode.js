@@ -1,5 +1,5 @@
-import { PrevBtnName, NextBtnName, ViewCloseBtn } from '../../config/constant'
-import { getElement, refreshStepDom, getViewRoot } from '../../utils/dom'
+import { PrevBtnName, NextBtnName, ViewCloseBtn, ExitPreview } from '../../config/constant'
+import { getElement, refreshStepDom, getViewRoot, getRootElement } from '../../utils/dom'
 import { mergeObj, scrollIntoToView } from '../../utils/index'
 
 /**
@@ -9,7 +9,7 @@ import { mergeObj, scrollIntoToView } from '../../utils/index'
 export default function handelViewModeWrapClick(_this, e) {
   const elementName = e.target.dataset.eg
   // 支持事件的元素列表
-  const eventElementNameList = [PrevBtnName, NextBtnName, ViewCloseBtn]
+  const eventElementNameList = [PrevBtnName, NextBtnName, ExitPreview, ViewCloseBtn]
   if (eventElementNameList.indexOf(elementName) === -1) return
 
   switch (elementName) {
@@ -18,6 +18,9 @@ export default function handelViewModeWrapClick(_this, e) {
       break
     case NextBtnName:
       handleClickNextBtn(_this, e)
+      break
+    case ExitPreview:
+      handleClickCloseBtn(_this, e)
       break
     case ViewCloseBtn:
       handleClickCloseBtn(_this, e)
@@ -77,4 +80,13 @@ function handleClickCloseBtn(_this) {
   // 关闭
   _this.currentIndex = 0
   _this.destroy()
+
+  if (_this.previewBack) {
+    _this.setMode('MAINTAIN')
+    _this.show()
+    _this.previewBack = ''
+    setTimeout(() => {
+      scrollIntoToView(getRootElement(), { block: 'start' })
+    })
+  }
 }

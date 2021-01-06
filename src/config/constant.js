@@ -46,6 +46,9 @@ export const CloseButton = 'guide-close-btn'
 // template 元素 顶部拖拽区域
 export const TemplateDragArea = 'template-drag-area'
 
+// 预览切换按钮
+export const PreviewBtn = 'preview-btn'
+
 // 可拖拽指导 item
 export const GuideDragItem = 'guide-drag-item'
 
@@ -66,6 +69,9 @@ export const DeleteBtn = 'deleteButton'
 
 // 编辑按钮
 export const EditBtn = 'editBtn'
+
+// 退出预览
+export const ExitPreview = 'editBtn'
 
 // 查看上一步下一步
 export const PrevBtnName = 'PrevBtnName'
