@@ -4,7 +4,7 @@ import {
   DeleteBtn, CloseButton, TemplateDragArea, ViewRootId,
   EditBtn, GuideDragItem, RootId, DragTemplate, MODE
 } from '../config/constant'
-import { mergeObj } from './index'
+import { mergeObj, toPixel } from './index'
 
 const POS = ['top', 'right', 'bottom', 'left']
 
@@ -196,19 +196,12 @@ export function guideContentBox ({ contentPosition, orderNumber, content }, mode
 
 // 创建一项为维护的指导内容
 export function createGuideItem(renderData) {
-  const { top, left, width, height, id, fixFlag } = renderData
   const dots = POS
     .map(item => `<div class="e_dot-${item} e_dot-common" ${DataSetName}="e_dot-${item}"></div>`)
     .join('')
 
-  const guideItemDom = ele('div', { id, class: 'e_guide-item', [DataSetName]: GuideDragItem })
-  setStyles(guideItemDom, {
-    position: fixFlag === 'Y' ? 'fixed' : 'absolute',
-    top: `${top}px`,
-    left: `${left}px`,
-    width: `${width}px`,
-    height: `${height}px`
-  })
+  const guideItemDom = ele('div', { id: renderData.id, class: 'e_guide-item', [DataSetName]: GuideDragItem })
+  setStyles(guideItemDom, toPixel(renderData, window.innerWidth))
 
   guideItemDom.innerHTML = dots + guideContentBox(renderData)
   getRootElement().appendChild(guideItemDom)
@@ -237,8 +230,7 @@ export function createTemplateElement () {
   getRootElement().appendChild(template)
 }
 
-export function setBarLibPosition(barList, { top, left, width, height, fixFlag }) {
-  const position = `position:${fixFlag === 'Y' ? 'fixed' : 'absolute'};`
+export function setBarLibPosition(barList, { top, left, width, height, position }) {
   const temp = [
     `height:${top}px;`,
     `height:${height}px; width:${left}px; top:${top}px;`,
@@ -246,7 +238,7 @@ export function setBarLibPosition(barList, { top, left, width, height, fixFlag }
     `top: ${top + height}px;`
   ]
   temp.forEach((item, index) => {
-    barList[index].setAttribute('style', item + position)
+    barList[index].setAttribute('style', item + `position: ${position};`)
   })
 }
 
@@ -315,7 +307,7 @@ function calcGuidePosition ({ top, left, height, width, fixFlag, contentPosition
 }
 
 // 更新上一步下一步 dom 内容
-export function refreshDom(_this, showItemData, rootEle) {
+export function refreshStepDom(_this, showItemData, rootEle) {
   if (!rootEle) {
     rootEle = getViewRoot()
   }
@@ -344,11 +336,12 @@ export function refreshDom(_this, showItemData, rootEle) {
     prevBtn.style.visibility = 'unset'
   }
 
-  setBarLibPosition(barElementList, showItemData)
+  const renderValue = toPixel(showItemData, _this.windowWidth, _this.windowHeight, 0)
+  setBarLibPosition(barElementList, renderValue)
 
   const { contentPosition, orderNumber } = showItemData
   closeTitle.innerHTML = `步骤${orderNumber}`
   setStyles(closeBtn, { display: 'inline-block' })
   contentWrap.className = `e_guide-content ${contentPosition}`
-  setStyles(contentWrap, calcGuidePosition(showItemData))
+  setStyles(contentWrap, calcGuidePosition(mergeObj(showItemData, renderValue)))
 }

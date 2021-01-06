@@ -19,6 +19,8 @@ export default function InitMixin (EG) {
 
   EG.prototype.show = function () {
     handleBodyClassName()
+    initWindowWidthAndHeight(this)
+    console.log(this)
 
     const { mode } = this
     if (mode === MODE.MAINTAIN) {

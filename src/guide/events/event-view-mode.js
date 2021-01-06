@@ -1,5 +1,5 @@
 import { PrevBtnName, NextBtnName, ViewCloseBtn } from '../../config/constant'
-import { getElement, refreshDom, getViewRoot } from '../../utils/dom'
+import { getElement, refreshStepDom, getViewRoot } from '../../utils/dom'
 import { mergeObj, scrollIntoToView } from '../../utils/index'
 
 /**
@@ -42,7 +42,7 @@ function handleClickPrevBtn(_this, e) {
       firstFlag: newIndex === 0
     })
     _this.currentIndex = newIndex
-    refreshDom(_this, currentItem)
+    refreshStepDom(_this, currentItem)
     setTimeout(() => {
       scrollIntoToView(getElement(getViewRoot(), 'e_guide-content'))
     }, 320)
@@ -66,7 +66,7 @@ function handleClickNextBtn(_this, e) {
       firstFlag: false
     })
     _this.currentIndex = newIndex
-    refreshDom(_this, currentItem)
+    refreshStepDom(_this, currentItem)
     setTimeout(() => {
       scrollIntoToView(getElement(getViewRoot(), 'e_guide-content'))
     }, 320)

@@ -1,6 +1,6 @@
 import { ele, getElementById, getElement, setStyles } from '../../utils/dom'
 import { ModalConfirmBtn, EGEditModal, ModalCancelBtn } from '../../config/constant'
-import { mergeObj } from '../../utils/index'
+import { mergeObj, transformUtil, toPixel } from '../../utils/index'
 
 // 创建用户指导编辑框
 export function createGuideEditModal(_this, editInfo) {
@@ -11,15 +11,18 @@ export function createGuideEditModal(_this, editInfo) {
   setTimeout(() => {
     getElement(rootElement, 'e_cancel-btn').onclick = () => handleClickCancel(_this)
     getElement(rootElement, 'e_confirm-btn').onclick = () => handleClickConfirm(_this, editInfo)
+    rootElement.onchange = (e) => handleOnChange(_this, e)
   })
 }
 
 // 用户点击确认，更新对编辑对应的 dom
-const refreshEditDom = (id, { content, top, fixFlag }) => {
+const refreshEditDom = (values, windowWidth, windowHeight) => {
+  const { content, id } = values
   const editItemDom = getElementById(String(id))
   const contentBox = getElement(editItemDom, 'e_guide-content-text')
 
-  setStyles(editItemDom, { position: fixFlag === 'Y' ? 'fixed' : 'absolute', top: `${top}px` })
+  const styleData = toPixel(values, windowWidth, windowHeight)
+  setStyles(editItemDom, styleData)
   contentBox.innerHTML = content || '请维护用户指导内容！'
 }
 
@@ -30,9 +33,10 @@ const handleClickCancel = _this => {
 
 // 处理点击确认按钮
 const handleClickConfirm = (_this, editInfo) => {
+  const { windowWidth, windowHeight } = _this
   const inputElements = document.getElementsByClassName('e_edit_class')
   const values = Array.from(inputElements).reduce((prev, inputEle) => {
-    const { name, value } = inputEle
+    let { name, value } = inputEle
     return mergeObj(prev, { [name]: value })
   }, {})
 
@@ -41,9 +45,33 @@ const handleClickConfirm = (_this, editInfo) => {
     values.top = 200
   }
 
-  _this.dispatch('modify', mergeObj(editInfo, values, { id: editInfo.id }))
+  const temp = mergeObj(editInfo, values, { id: editInfo.id })
+  const patchVal = transformUtil(
+    temp,
+    windowWidth,
+    windowHeight
+  )
+  _this.dispatch('modify', patchVal)
   _this.hiddenEditModal()
-  refreshEditDom(editInfo.id, values)
+  refreshEditDom(patchVal, windowWidth, windowHeight)
+}
+
+// 处理表单 onchange 事件
+const handleOnChange = (_this, e) => {
+  let { value, name } = e.target
+  const selectKeys = ['leftUtil', 'topUtil', 'widthUtil', 'heightUtil']
+  if (selectKeys.indexOf(name) === -1) {
+    return
+  }
+  const valueElement = getElementById(`_EG_${name}`)
+  const oldVal = Number(valueElement.innerHTML)
+
+  if (value === '%') {
+    value = Number((oldVal / _this.windowWidth).toFixed(2))
+  } else {
+    value = parseInt(_this.windowWidth * oldVal)
+  }
+  valueElement.innerHTML = value
 }
 
 function selectElement (value, fileName, optionList) {
@@ -64,7 +92,7 @@ function prefixSelect ({ fileName, value, suffixValue }) {
 
   return `
     <div class="prefix-select">
-      <div class="select-left">${value}</div>
+      <div class="select-left" id="_EG_${fileName}">${value}</div>
       ${selectElement(suffixValue, fileName, prefixOptionList)}
     </div>
   `

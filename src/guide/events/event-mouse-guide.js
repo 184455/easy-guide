@@ -1,7 +1,7 @@
 // 拖拽用户指导Item
 import { tagX, tagY } from '../../config/constant'
 import { getElement, setStyles } from '../../utils/dom'
-import { mergeObj } from '../../utils/index'
+import { mergeObj, transformUtil } from '../../utils/index'
 import checkGuide from '../border-check/check-guide'
 
 function editContentClassName (el, className) {
@@ -67,11 +67,12 @@ export function handleGuideUp(_this) {
     return
   }
 
+  const editItem = _this.guideList.find(i => i.id === id) || {}
   const patchData = { left, top, width, height, id }
   if (contentPosition) {
     mergeObj(patchData, { contentPosition })
   }
 
-  _this.dispatch('modify', patchData)
+  _this.dispatch('modify', transformUtil(mergeObj(editItem, patchData), _this.windowWidth))
   _this.onMouseDownPositionImage = null
 }

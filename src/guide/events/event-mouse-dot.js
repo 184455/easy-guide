@@ -1,7 +1,7 @@
 // 拖拽 dot 调整选区宽高
 import { tagX, tagY, MinHeight, MinWidth } from '../../config/constant'
 import { setStyles, getPosition, getElement } from '../../utils/dom'
-import { mergeObj, addUtil } from '../../utils/index'
+import { mergeObj, addUtil, transformUtil } from '../../utils/index'
 import checkDot from '../border-check/check-dot'
 import { calcContentPosition } from '../border-check/check-guide'
 
@@ -61,6 +61,7 @@ export function handleDotUp(_this, event) {
     return
   }
 
-  _this.dispatch('modify', newPosition)
+  const editItem = _this.guideList.find(i => i.id === newPosition.id) || {}
+  _this.dispatch('modify', transformUtil(mergeObj(editItem, newPosition), _this.windowWidth))
   _this.onMouseDownPositionImage = null
 }

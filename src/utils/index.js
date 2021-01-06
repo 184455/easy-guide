@@ -6,7 +6,7 @@ import Config from '../config/index'
  * @param {object} data 初始化数据
  */
 export function createGuideItemData (initVal) {
-  return mergeObj({
+  const temp = mergeObj({
     id: String((new Date()).getTime()),
     content: '',
     width: 300,
@@ -20,6 +20,8 @@ export function createGuideItemData (initVal) {
     orderNumber: 1,
     fixFlag: 'N'
   }, initVal)
+
+  return transformUtil(temp, window.innerWidth, window.innerHeight)
 }
 
 /**
@@ -82,4 +84,52 @@ export function addUtil (obj, util) {
  */
 export function scrollIntoToView (el) {
   el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
+}
+
+/**
+ * 维护信息，转换数据单位
+ * @param {*} data
+ * @param {*} windowWidth
+ * @param {*} windowHeight
+ */
+export function transformUtil (data, windowWidth, windowHeight) {
+  const transformKeys = ['left', 'top', 'width', 'height']
+  const dependOnHeightKeys = []
+
+  return Object.keys(data).reduce((prev, key) => {
+    const oleVal = data[key]
+    let val = data[key]
+    const denominator = dependOnHeightKeys.indexOf(key) > -1 ? windowHeight : windowWidth
+
+    if (transformKeys.indexOf(key) > -1) {
+      if (data[`${key}Util`] === '%') {
+        val = oleVal > 1 ? Number((val / denominator).toFixed(2)) : oleVal
+      } else {
+        val = oleVal < 1 ? parseInt(val * denominator) : oleVal
+      }
+    }
+    return mergeObj(prev, { [key]: val })
+  }, {})
+}
+
+export function toPixel (data, windowWidth, windowHeight, util = 'px') {
+  const transformKeys = ['left', 'top', 'width', 'height']
+  const dependOnHeightKeys = []
+
+  return Object.keys(data).reduce((prev, key) => {
+    let val = data[key]
+    const denominator = dependOnHeightKeys.indexOf(key) > -1 ? windowHeight : windowWidth
+    if (transformKeys.indexOf(key) === -1) {
+      return prev
+    }
+
+    if (data[`${key}Util`] === '%') {
+      val = parseInt(val * denominator)
+    }
+    return mergeObj(prev, { [key]: val + util })
+  }, { position: isFixedPosition(data.fixFlag) })
+}
+
+export function isFixedPosition (flag) {
+  return flag === 'Y' ? 'fixed' : 'absolute'
 }

@@ -11,8 +11,10 @@ export default function GuideEditModal (EasyGuide) {
     createGuideEditModal(this, editInfo)
   }
   EasyGuide.prototype.hiddenEditModal = function () {
+    const rootEle = getElementById(EGEditModal)
     getElementById(ModalCancelBtn).onclick = null
     getElementById(ModalConfirmBtn).onclick = null
-    removeChild(document.body, getElementById(EGEditModal))
+    rootEle.onchange = null
+    removeChild(document.body, rootEle)
   }
 }
