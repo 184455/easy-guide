@@ -51,10 +51,12 @@
     }
     .intro {
       width: 75%;
+      height: 250px;
       margin: 50px auto 0;
       padding-top: 50px;
       text-align: left;
       border-top: 1px solid #eee;
+      overflow: hidden;
     }
     .intro > h3 {
       margin-bottom: 18px;
@@ -62,7 +64,7 @@
     .bask-use {
       display: flex;
       justify-content: center;
-      margin: 100px auto 0;
+      margin: 30px auto 0;
       width: 75%;
       background: #d4e6e6;
       padding: 50px 10%;
@@ -87,8 +89,8 @@
     }
     .float-element {
       position: fixed;
-      right: 0;
-      bottom: 300px;
+      left: 0;
+      top: 300px;
       display: flex;
       font-size: 20px;
       background-color: #eee;
@@ -169,7 +171,7 @@
 
   <script type="module">
     import EasyGuide from './guide.esm.js'
-    const tempGuideList = [{"content":"这里是一个 '零依赖' 的LOGO！","contentPosition":"_eg-guide-6","fixFlag":"N","height":0.11,"heightUtil":"%","id":"1609220134322","left":0.4,"leftUtil":"%","orderNumber":"1","top":63,"topUtil":"px","width":0.2,"widthUtil":"%"},{"id":"1609834351629","content":"介绍你什么时候应该使用我们。","width":0.77,"widthUtil":"%","height":0.14,"heightUtil":"%","left":0.11,"leftUtil":"%","top":541,"topUtil":"px","orderNumber":"2","fixFlag":"N","contentPosition":"_eg-guide-5"},{"id":"1609834382523","content":"两种模式，你可以随意切换。厉害吧！","width":0.5,"widthUtil":"%","height":0.13,"heightUtil":"%","left":0.25,"leftUtil":"%","top":855,"topUtil":"px","orderNumber":"3","fixFlag":"N","contentPosition":"_eg-guide-1"},{"id":"1609834440816","content":"谁在使用这个框架！","width":0.42,"widthUtil":"%","height":0.07,"heightUtil":"%","left":0.29,"leftUtil":"%","top":1139,"topUtil":"px","orderNumber":"4","fixFlag":"N","contentPosition":"_eg-guide-1"}]
+    const tempGuideList = [{"content":"这里是一个 '零依赖' 的LOGO！","contentPosition":"_eg-guide-6","fixFlag":"N","height":183,"heightUtil":"px","id":"1609220134322","left":0.38,"leftUtil":"%","orderNumber":"1","top":76,"topUtil":"px","width":0.23,"widthUtil":"%"},{"id":"1609834351629","content":"介绍你什么时候应该使用我们。","width":0.77,"widthUtil":"%","height":266,"heightUtil":"px","left":0.11,"leftUtil":"%","top":538.21875,"topUtil":"px","orderNumber":"2","fixFlag":"N","contentPosition":"_eg-guide-5"},{"id":"1609834382523","content":"两种模式，你可以随意切换。厉害吧！","width":0.56,"widthUtil":"%","height":216,"heightUtil":"px","left":0.22,"leftUtil":"%","top":850,"topUtil":"px","orderNumber":"3","fixFlag":"N","contentPosition":"_eg-guide-5"},{"id":"1609834440816","content":"我是一些固定的内容，不会随着页面滚动！","width":133,"widthUtil":"px","height":66,"heightUtil":"px","left":0,"leftUtil":"px","top":279.7734375,"topUtil":"px","orderNumber":"4","fixFlag":"Y","contentPosition":"_eg-guide-3"},{"id":"1610179676919","content":"谁在使用这个框架？","width":0.58,"widthUtil":"%","height":108.79296875,"heightUtil":"px","left":0.21,"leftUtil":"%","top":1157,"topUtil":"px","orderNumber":"5","fixFlag":"N","contentPosition":"_eg-guide-1"}]
     // const tempGuideList = []
 
     const Guide = new EasyGuide({

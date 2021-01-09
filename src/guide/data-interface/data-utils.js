@@ -161,7 +161,8 @@ function transformData (_this) {
   return guideList.map(o => toPixel(o, windowWidth))
 }
 
-function toPixel (obj, windowWidth) {
+function toPixel (guideItem, windowWidth) {
+  const obj = mergeObj({}, guideItem)
   const transformKeys = ['left', 'top', 'width', 'height']
   const temp = Object.keys(obj).reduce((prev, key) => {
     let val = obj[key]
