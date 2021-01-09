@@ -1,7 +1,7 @@
 // 鼠标事件
 import { isDot } from '../../utils/index'
 import { getMaintainRoot } from '../../utils/dom'
-import { OperationBarDrag, GuideDragItem, DotTop, DotRight, DotBottom, DotLeft, getDataSet } from '../../config/constant'
+import { OperationBarDrag, DragGuide, DotTop, DotRight, DotBottom, DotLeft, getDataSet } from '../../config/constant'
 import { operationBarDown, operationBarMove, operationBarUp } from './mouse-operation-bar'
 import { handleGuideDown, handleGuideMove, handleGuideUp } from './mouse-guide'
 import { handleDotDown, handleDotMove, handleDotUp } from './mouse-dot'
@@ -12,7 +12,7 @@ import { handleDotDown, handleDotMove, handleDotUp } from './mouse-dot'
  */
 export function handelMouseDown(_this, e) {
   const targetName = getDataSet(e.target)
-  const targetList = [OperationBarDrag, GuideDragItem, DotTop, DotRight, DotBottom, DotLeft]
+  const targetList = [OperationBarDrag, DragGuide, DotTop, DotRight, DotBottom, DotLeft]
   if (targetList.indexOf(targetName) < 0) { return }
   _this.mouseEventTarget = e.target
 
@@ -24,7 +24,7 @@ export function handelMouseDown(_this, e) {
     case OperationBarDrag:
       operationBarDown(_this, e)
       break
-    case GuideDragItem:
+    case DragGuide:
       handleGuideDown(_this, e)
       break
     default:
@@ -44,7 +44,7 @@ export function handelMouseMove(_this, e) {
     case OperationBarDrag:
       operationBarMove(_this, e)
       break
-    case GuideDragItem:
+    case DragGuide:
       handleGuideMove(_this, e)
       break
     default:
@@ -67,7 +67,7 @@ export function handelMouseUp(_this, e) {
     case OperationBarDrag:
       operationBarUp(_this, e)
       break
-    case GuideDragItem:
+    case DragGuide:
       handleGuideUp(_this, e)
       break
     default:

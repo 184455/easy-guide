@@ -49,13 +49,7 @@ export const OperationBarDrag = 'template-drag-area'
 export const PreviewBtn = 'preview-btn'
 
 // 可拖拽指导 item
-export const GuideDragItem = 'guide-drag-item'
-
-// template 上下左右模板
-export const TemplateItemTop = '_eg-guide-1'
-export const TemplateItemRight = '_eg-guide-3'
-export const TemplateItemBottom = '_eg-guide-5'
-export const TemplateItemLeft = '_eg-guide-7'
+export const DragGuide = 'guide-drag-item'
 
 // dot 上下左右
 export const DotTop = 'e_dot-top'
