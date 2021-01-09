@@ -43,7 +43,7 @@ export const getDataSet = el => el.dataset[DATA_SET_KEY]
 export const CloseButton = 'guide-close-btn'
 
 // template 元素 顶部拖拽区域
-export const OperationBarDrag = 'template-drag-area'
+export const OperationBarDrag = 'operation-drag-area'
 
 // 预览切换按钮
 export const PreviewBtn = 'preview-btn'
