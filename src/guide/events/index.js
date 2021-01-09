@@ -1,33 +1,34 @@
-import { getRootElement, getViewRoot } from '../../utils/dom'
-import { handelMouseDown, handelMouseMove, handelMouseUp } from './event-mouse'
-import handelWrapperClick from './event-click'
-import handelViewModeWrapClick from './event-view-mode'
+import { getMaintainRoot, getViewRoot } from '../../utils/dom'
+import { handelMouseDown, handelMouseMove, handelMouseUp } from './mouse'
+import handelViewModeWrapClick from './click-view'
+import handelWrapperClick from './click'
 
 export default function InitEvents (EasyGuide) {
   EasyGuide.prototype.initEvents = function () {
-    // 在根节点代理所有的事件
-    const listenerTarget = getRootElement()
-    if (listenerTarget) {
-      listenerTarget.onclick = e => handelWrapperClick(this, e)
-      listenerTarget.onmousedown = e => handelMouseDown(this, e)
-      listenerTarget.onmousemove = e => handelMouseMove(this, e)
-      listenerTarget.onmouseup = e => handelMouseUp(this, e)
+    const _this = this
+
+    // 事件代理（Event agent）
+    const maintainToot = getMaintainRoot()
+    if (maintainToot) {
+      maintainToot.onclick = e => handelWrapperClick(_this, e)
+      maintainToot.onpointerdown = e => handelMouseDown(_this, e)
+      maintainToot.onmousemove = e => handelMouseMove(_this, e)
+      maintainToot.onpointerup = e => handelMouseUp(_this, e)
     }
 
     const viewModeListen = getViewRoot()
     if (viewModeListen) {
-      viewModeListen.onclick = e => handelViewModeWrapClick(this, e)
+      viewModeListen.onclick = e => handelViewModeWrapClick(_this, e)
     }
   }
 
-  // 解绑所有事件
   EasyGuide.prototype.eventsDestroy = function () {
-    const listenerTarget = getRootElement()
-    if (listenerTarget) {
-      listenerTarget.onclick = null
-      listenerTarget.onmousedown = null
-      listenerTarget.onmousemove = null
-      listenerTarget.onmouseup = null
+    const maintainToot = getMaintainRoot()
+    if (maintainToot) {
+      maintainToot.onclick = null
+      maintainToot.onpointerdown = null
+      maintainToot.onmousemove = null
+      maintainToot.onpointerup = null
     }
 
     const viewModeListen = getViewRoot()

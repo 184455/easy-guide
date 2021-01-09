@@ -1,28 +1,48 @@
-// core 模块的工具方法
-import { createGuideItemData, isEmptyArray, mergeObj, scrollIntoToView } from '../../utils/index'
+/**
+ * CoreUtils
+ * 模块的工具方法
+ * @author Abner <xiaocao1602@qq.com>
+ * @date 2021/01/01
+ */
+
+import Config from '../../config/index'
+import { MODE } from '../../config/constant'
+import { getOperationBarDomText } from '../../config/dom-text'
+import { isEmptyArray, mergeObj, getWindowWidthHeight, PX } from '../../utils/index'
 import {
-  addClass,
-  deleteClass,
-  setStyles,
-  createGuideItem,
-  getRootElement,
-  hasRootElement,
-  createRootElement,
-  createTemplateElement,
-  createViewRoot,
-  insertViewRoot,
-  refreshStepDom,
-  hasViewRoot,
-  guideContentBox,
-  exitPreview,
-  getElement
+  addClass, deleteClass, setStyles, getMaintainRoot, hasMaintainRoot,
+  createMaintainRoot, hasViewRoot
 } from '../../utils/dom'
 
-function renderGuideList({ guideList }) {
-  if (!isEmptyArray(guideList)) {
-    guideList.forEach((position) => {
-      createGuideItem(createGuideItemData(position))
-    })
+export function initMode (_this, m) {
+  setMode(_this, m)
+  if (MODE.MAINTAIN === m) {
+    showModeMaintain(_this)
+  } else {
+    _this.dispatch('initViewRender')
+  }
+}
+
+export function initDefaultData (_this) {
+  const { mode, guideList = [], currentIndex = 0 } = _this.Options
+  _this.guideList = guideList.slice(0)
+  _this.mode = mode
+  _this.currentIndex = currentIndex
+}
+
+export function initViewport(_this) {
+  const [vw, vh] = getWindowWidthHeight()
+  _this.windowWidth = vw
+  _this.windowHeight = vh
+}
+
+export function mergeCustomOptions(_this, options) {
+  _this.Options = mergeObj({}, Config, options)
+}
+
+export function checkMode (m) {
+  if (!MODE[m]) {
+    throw new Error('Mode 是一个枚举类型：[READ, MAINTAIN]')
   }
 }
 
@@ -30,62 +50,34 @@ export function handleBodyClassName () {
   addClass(document.body, '_eG_body')
 }
 
-export function handleRemoveBodyClassName () {
+export function removeBodyClassName () {
   deleteClass(document.body, '_eG_body')
 }
 
-// 展示-编辑模式
-export function showGuideMainTain(_this) {
-  // 检查根结点
-  if (!hasRootElement()) {
-    createRootElement()
-  }
+export function showFlag (_this, m) {
+  if (m === MODE.READ && isEmptyArray(_this.guideList)) { return false }
+  return !(hasMaintainRoot() || hasViewRoot())
+}
 
-  // 设置蒙板宽高
+/* --------------------------- Private function ---------------------------------------- */
+
+function showModeMaintain(_this) {
+  createMaintainRoot()
+  setMaintainRootWidthHeight(_this)
+  createOperationBar()
+  _this.dispatch('initRender')
+}
+
+function setMode(_this, m) {
+  _this.mode = m
+}
+
+function createOperationBar () {
+  const domText = getOperationBarDomText()
+  getMaintainRoot().insertAdjacentHTML('afterbegin', domText)
+}
+
+function setMaintainRootWidthHeight (_this) {
   const { windowWidth, windowHeight } = _this
-  setStyles(getRootElement(), { height: windowHeight + 'px', width: windowWidth + 'px' })
-
-  // 渲染用户指导
-  renderGuideList(_this)
-
-  // 创建指导模板
-  createTemplateElement()
-}
-
-// 展示-查看模式
-export function showGuideView(_this) {
-  const { guideList, mode } = _this
-  if (isEmptyArray(guideList) || hasViewRoot()) {
-    return
-  }
-
-  const currentItem = mergeObj({}, guideList[0], {
-    finalFlag: guideList.length === 1,
-    firstFlag: true
-  })
-
-  const barList = (['top', 'left', 'right', 'bottom'])
-    .map(i => `<div class="bar-lib-${i} bar-lib-common"></div>`)
-    .join('')
-
-  const tempRootEle = createViewRoot()
-  tempRootEle.innerHTML = barList + exitPreview(_this.previewBack) + guideContentBox(currentItem, mode)
-  refreshStepDom(_this, currentItem, tempRootEle)
-  insertViewRoot(tempRootEle)
-  scrollIntoToView(getElement(tempRootEle, 'e_guide-content'))
-}
-
-// 初始化默认的数据项
-export function initDefaultData (_this) {
-  const { mode, guideList } = _this.Options
-  _this.guideList = (guideList || []).slice(0)
-  _this.mode = mode
-  _this.currentIndex = 0
-}
-
-// 初始化面板的宽高
-export function initWindowWidthAndHeight(_this) {
-  const { scrollAble } = _this.Options
-  _this.windowWidth = scrollAble ? document.body.scrollWidth : window.innerWidth
-  _this.windowHeight = scrollAble ? document.body.scrollHeight : window.innerHeight
+  setStyles(getMaintainRoot(), { height: PX(windowHeight), width: PX(windowWidth) })
 }

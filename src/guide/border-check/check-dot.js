@@ -1,69 +1,54 @@
 // 模板边缘检测
 import {
-  tagX, tagY,
   DotTop,
   DotRight,
   DotBottom,
   DotLeft
 } from '../../config/constant'
 
-const errorSet = 4 // 边缘检测误差值
-
-export default function checkDot (_this, elementName, event) {
-  const newX = event[tagX]
-  const newY = event[tagY]
-  const {
-    startX, startY,
-    clientWidth, clientHeight,
-    position, fixFlag
-  } = _this.onMouseDownPositionImage
-  const { top, left } = position
-
-  let missMouse = false
+export default function checkDot (
+  [windowWidth, windowHeight],
+  [startX, startY, newX, newY],
+  position,
+  [elementName, fixFlag]
+) {
+  const errorSet = 2 // 边缘检测误差值
+  const { left, top, width, height } = position
   let newPosition = {}
-  let newHeight, newWidth
+  let newLeft, newTop, newHeight, newWidth
+
   switch (elementName) {
     case DotTop:
-      let deltaY = startY - newY
-      let newTop = top - deltaY
-      newHeight = clientHeight + deltaY
+      newTop = top - (startY - newY)
+      newHeight = height + (startY - newY)
       if (newY < errorSet) {
         newTop = 0
-        newHeight = top + clientHeight
-        missMouse = true
+        newHeight = top + height
       }
-      newPosition = { height: newHeight, top: newTop }
-      break
+      return { left, top: newTop, width, height: newHeight }
     case DotRight:
-      newWidth = clientWidth + (newX - startX)
-      if (newX > (_this.windowWidth - errorSet)) {
-        newWidth = _this.windowWidth - left
-        missMouse = true
+      newWidth = width + (newX - startX)
+      if (newX > (windowWidth - errorSet)) {
+        newWidth = windowWidth - left
       }
-      newPosition = { width: newWidth }
-      break
+      return { left, top, width: newWidth, height }
     case DotBottom:
-      const containHeight = fixFlag === 'Y' ? window.innerHeight : _this.windowHeight
-      newHeight = clientHeight + (newY - startY)
+      const containHeight = fixFlag === 'Y' ? window.innerHeight : windowHeight
+      newHeight = height + (newY - startY)
       if (newY > (containHeight - errorSet)) {
         newHeight = containHeight - top
-        missMouse = true
       }
-      newPosition = { height: newHeight }
-      break
+      return { left, top, width, height: newHeight }
     case DotLeft:
-      const deltaX = startX - newX
-      let newLeft = left - deltaX
-      newWidth = clientWidth + deltaX
+      newLeft = left - (startX - newX)
+      newWidth = width + (startX - newX)
       if (newX < errorSet) {
         newLeft = 0
-        newWidth = left + clientWidth
-        missMouse = true
+        newWidth = left + width
       }
-      newPosition = { width: newWidth, left: newLeft }
-      break
+      return { left: newLeft, top, width: newWidth, height }
     default:
   }
 
-  return { newPosition, missMouse }
+  return newPosition
 }

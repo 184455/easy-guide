@@ -5,8 +5,7 @@
  */
 export const MODE = {
   READ: 'READ',           // 只展示
-  MAINTAIN: 'MAINTAIN',    // 只编辑
-  MIX: 'MIX'    // 可以切换展示和编辑模式
+  MAINTAIN: 'MAINTAIN'    // 只编辑
 }
 
 // 选区最小高度，宽度
@@ -23,9 +22,6 @@ export const RootId = '_eG_root'
 // 查看模式最外层容器 ID
 export const ViewRootId = '_eG_viewRoot'
 
-// EasyGuide 放置用户可以选用的模版
-export const DragTemplate = '_eG_template'
-
 // EasyGuide 内容编辑 modal 框
 export const EGEditModal = '_eG_editModal'
 
@@ -38,13 +34,16 @@ export const ModalConfirmBtn = '_eG_modalConfirm'
 // ------------------ 元素 DataSet --------------------------
 
 // 元素 dataset 的 key
-export const DataSetName = 'data-eg'
+const DATA_SET_KEY = 'eg'
+export const DataSetName = `data-${DATA_SET_KEY}`
+export const dataSet = val => `${DataSetName}="${val}"`
+export const getDataSet = el => el.dataset[DATA_SET_KEY]
 
 // 元素 close button 的 key
 export const CloseButton = 'guide-close-btn'
 
 // template 元素 顶部拖拽区域
-export const TemplateDragArea = 'template-drag-area'
+export const OperationBarDrag = 'template-drag-area'
 
 // 预览切换按钮
 export const PreviewBtn = 'preview-btn'
@@ -71,9 +70,9 @@ export const DeleteBtn = 'deleteButton'
 export const EditBtn = 'editBtn'
 
 // 退出预览
-export const ExitPreview = 'editBtn'
+export const ExitPreview = 'exitPreview'
 
-// 查看上一步下一步
+// 查看 上一步/下一步
 export const PrevBtnName = 'PrevBtnName'
 export const NextBtnName = 'NextBtnName'
 export const ViewCloseBtn = 'ViewCloseBtn'

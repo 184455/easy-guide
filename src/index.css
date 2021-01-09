@@ -1,11 +1,5 @@
 @charset "UTF-8";
 
-/* ------------ 清除自带样式 ------------------------------------------------------------ */
-body {
-  margin: 0;
-  padding: 0;
-}
-
 /* ------------要求他们的父元素高度撑开，并且是有相对定位 ------------------------------------ */
 #_eG_root {
   position: absolute;
@@ -230,7 +224,7 @@ body {
   border-left-color: white;
 }
 
-#_eG_template {
+#_eG_operation-bar {
   position: fixed;
   display: flex;
   align-items: center;
@@ -245,7 +239,8 @@ body {
   color: rgba(0,0,0,.55);
   box-shadow: 0 1px 10px rgba(0,0,0,.4);
 }
-#_eG_template > div {
+#_eG_operation-bar > div {
+  position: relative;
   flex: 1;
   display: flex;
   align-items: center;
@@ -256,18 +251,27 @@ body {
   filter: grayscale(100%);
   padding: 12px 0;
 }
-#_eG_template > div > svg {
+#_eG_operation-bar > div::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+}
+#_eG_operation-bar > div > svg {
   height: 16px;
   width: 16px;
   margin-right: 7px;
 }
-#_eG_template > div:hover {
+#_eG_operation-bar > div:hover {
   color: rgba(0,0,0,.75);
   transition: all  0.3s;
   color: #ff8a2b;
   filter: none;
 }
-#_eG_template > div:last-child {
+#_eG_operation-bar ._eg_close {
   flex: 0 0 56px;
   text-align: center;
   padding: 13px 0;
@@ -276,66 +280,6 @@ body {
   color: white;
   filter: none;
 }
-#_eG_template .e_template-close-btn {
-  position: absolute;
-  right: 0;
-  top: -30px;
-  height: 18px;
-  width: 20px;
-  padding-bottom: 2px;
-  color: white;
-  text-align: center;
-  border: 1px solid white;
-  border-radius: 20px;
-  cursor: pointer;
-}
-#_eG_template .e_template-close-btn::after {
-  position: absolute;
-  content: '';
-  width: 1px;
-  background: white;
-  height: 25px;
-  height: 9px;
-  bottom: -9px;
-  left: 10px;
-}
-#_eG_template .e_template-top-text {
-  text-align: center;
-  padding: 15px 0;
-  cursor: move;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-#_eG_template .e_template-list {
-  background: #d9d9d9;
-  margin: 0;
-  overflow: hidden;
-}
-#_eG_template .e_template-list .e_template-item-top {
-  position: relative;
-  display: flex;
-  align-items: center;
-  background: #fff;
-  margin: 16px 12px;
-  text-align: center;
-}
-#_eG_template .e_template-list .e_template-item-top::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-#_eG_template .e_template-list .e_template-item-top svg {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-}
-/* #_eG_template .e_template-close-btn {}
-#_eG_template .e_template-close-btn {} */
 
 
 /* ------------ 查看模式样式 --------------------------------------------------------------- */
@@ -546,8 +490,4 @@ body {
   position: relative !important;
   -webkit-user-select: none;
   user-select: none;
-}
-
-.e_lock-scroll {
-  position: fixed;
 }

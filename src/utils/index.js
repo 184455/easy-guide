@@ -1,5 +1,6 @@
 // 全局公共方法
-import Config from '../config/index'
+
+import { isElement } from './dom'
 
 /**
  * 创建一个 guide 所必须拥有的字段
@@ -16,9 +17,10 @@ export function createGuideItemData (initVal) {
     left: 500,
     leftUtil: '%',
     top: 200,
-    topUtil: '%',
+    topUtil: 'px',
     orderNumber: 1,
-    fixFlag: 'N'
+    fixFlag: 'N',
+    contentPosition: '_eg-guide-1'
   }, initVal)
 
   return transformUtil(temp, window.innerWidth, window.innerHeight)
@@ -41,7 +43,7 @@ export function getMaxNumber(list, field) {
 }
 
 /**
- * 检测是否是非空数组
+ * 检测是否是空数组
  * @param {array} arr - 检测数组
  * @returns {boolean}
  */
@@ -53,11 +55,12 @@ export function isEmptyArray(arr) {
 }
 
 /**
- * 合同用户的配置
- * @param {object} options 用户传入的配置项
+ * 检测是否是非空数组
+ * @param {array} arr - 检测数组
+ * @returns {boolean}
  */
-export function mergeCustomOptions(options) {
-  return mergeObj({}, Config, options)
+export function isNotEmptyArray(arr) {
+  return Array.isArray(arr) && arr.length > 0
 }
 
 /**
@@ -83,7 +86,9 @@ export function addUtil (obj, util) {
  * @param {dom} el 需要显示的元素
  */
 export function scrollIntoToView (el, options = {}) {
-  el.scrollIntoView(mergeObj({ behavior: 'smooth', block: 'center', inline: 'nearest' }, options))
+  if (isElement(el)) {
+    el.scrollIntoView(mergeObj({ behavior: 'smooth', block: 'center', inline: 'nearest' }, options))
+  }
 }
 
 /**
@@ -132,4 +137,18 @@ export function toPixel (data, windowWidth, windowHeight, util = 'px') {
 
 export function isFixedPosition (flag) {
   return flag === 'Y' ? 'fixed' : 'absolute'
+}
+
+export function getWindowWidthHeight (isViewPort) {
+  const vw = document.body.scrollWidth
+  const vh = isViewPort ? window.innerHeight : document.body.scrollHeight
+  return [vw, vh]
+}
+
+export function PX (n) {
+  return n + 'px'
+}
+
+export function isDot (name) {
+  return name.indexOf('e_dot-') > -1
 }

@@ -1,45 +1,40 @@
-import { MODE } from '../../config/constant'
-import { mergeCustomOptions } from '../../utils/index'
-import { getRootElement, removeChild, getViewRoot } from '../../utils/dom'
+/**
+ * InitMixin
+ * 初始化模块
+ * @author Abner <xiaocao1602@qq.com>
+ * @date 2021/01/01
+ */
+
+import { getMaintainRoot, removeChild, getViewRoot } from '../../utils/dom'
 import {
-  handleBodyClassName,
-  handleRemoveBodyClassName,
-  showGuideMainTain,
-  showGuideView,
+  initMode,
+  showFlag,
+  initViewport,
   initDefaultData,
-  initWindowWidthAndHeight
+  mergeCustomOptions,
+  handleBodyClassName,
+  removeBodyClassName
 } from './core-utils'
 
 export default function InitMixin (EG) {
   EG.prototype.init = function (options) {
-    this.Options = mergeCustomOptions(options)
+    mergeCustomOptions(this, options)
     initDefaultData(this)
-    initWindowWidthAndHeight(this)
   }
 
-  EG.prototype.show = function () {
+  EG.prototype.show = function (m) {
+    if (!showFlag(this, m)) { return }
+
     handleBodyClassName()
-    initWindowWidthAndHeight(this)
-
-    const { mode } = this
-    if (mode === MODE.MAINTAIN) {
-      showGuideMainTain(this)
-    } else if (mode === MODE.READ) {
-      showGuideView(this)
-    }
-
-    // 初始化事件
+    initViewport(this)
+    initMode(this, m)
     this.initEvents()
   }
 
-  EG.prototype.setMode = function (newMode) {
-    this.mode = newMode
-  }
-
   EG.prototype.destroy = function () {
+    removeBodyClassName()
     this.eventsDestroy()
-    handleRemoveBodyClassName()
     removeChild(document.body, getViewRoot())
-    removeChild(document.body, getRootElement())
+    removeChild(document.body, getMaintainRoot())
   }
 };

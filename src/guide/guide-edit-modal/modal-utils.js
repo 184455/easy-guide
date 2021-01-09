@@ -16,7 +16,7 @@ export function createGuideEditModal(_this, editInfo) {
 }
 
 // 用户点击确认，更新对编辑对应的 dom
-const refreshEditDom = (values, windowWidth, windowHeight) => {
+const refreshEdit = (values, windowWidth, windowHeight) => {
   const { content, id } = values
   const editItemDom = getElementById(String(id))
   const contentBox = getElement(editItemDom, 'e_guide-content-text')
@@ -53,7 +53,7 @@ const handleClickConfirm = (_this, editInfo) => {
   )
   _this.dispatch('modify', patchVal)
   _this.hiddenEditModal()
-  refreshEditDom(patchVal, windowWidth, windowHeight)
+  refreshEdit(patchVal, windowWidth, windowHeight)
 }
 
 // 处理表单 onchange 事件
@@ -73,6 +73,8 @@ const handleOnChange = (_this, e) => {
   }
   valueElement.innerHTML = value
 }
+
+/* --------------------------- Private function ---------------------------------------- */
 
 function selectElement (value, fileName, optionList) {
   const selectedFlag = (val) => val === value ? ' selected' : ''
