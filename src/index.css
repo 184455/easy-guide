@@ -8,6 +8,7 @@
   z-index: 100001;
   background-color: rgba(0, 0, 0, 0.5);
   overflow: hidden;
+  font-size: 14px;
 }
 #_eG_root .div-show-exit {
   position: absolute;
@@ -316,6 +317,7 @@
   color: white;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 14px;
 }
 
 /* ------------ 编辑框样式 --------------------------------------------------------------- */
@@ -338,6 +340,7 @@
   z-index: 99999990;
   overflow: auto;
   outline: 0;
+  font-size: 14px;
 }
 .e_modal-content-wrap .e_modal-inner-content {
   position: relative;
