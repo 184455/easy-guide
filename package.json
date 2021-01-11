@@ -3,11 +3,9 @@
   "version": "0.0.1",
   "description": "用户指导",
   "author": {
-    "name": "zhongji.huang",
+    "name": "Abner",
     "email": "xiaocao1602@qq.com"
   },
-  "main": "dist/guide.js",
-  "module": "dist/guide.esm.js",
   "scripts": {
     "start": "node build/dev-service.js",
     "serve": "serve -s ./dist",
@@ -15,6 +13,7 @@
   },
   "keywords": [
     "guide",
+    "intro",
     "javascript"
   ],
   "licenses": "MIT",
@@ -60,9 +59,15 @@
     "stylus": "^0.54.5",
     "stylus-loader": "^2.1.1",
     "uglify-js": "3.0.27",
-    "url-loader": "^0.5.9"
-  },
-  "dependencies": {
+    "url-loader": "^0.5.9",
     "lodash": "^4.17.20"
-  }
+  },
+  "dependencies": {},
+  "main": "dist/easy-guide.min.js",
+  "module": "dist/easy-guide.min.js",
+  "files": [
+    "dist/easy-guide.esm.js",
+    "dist/easy-guide.min.js",
+    "dist/easy-guide.css"
+  ]
 }
