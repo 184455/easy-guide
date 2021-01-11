@@ -16,7 +16,7 @@ function resolve(p) {
 }
 
 function copyCSS() {
-  fs.copyFile(resolve('./src/index.css'), resolve('./dist/guide.css'), function (err) {
+  fs.copyFile(resolve('./src/index.css'), resolve('./dist/easy-guide.css'), function (err) {
     if(err) console.log('CSS Copy Fail !'.red)
   })
 }
@@ -39,7 +39,7 @@ const banner =
 const builds = [
   // {
   //   entry: resolve('src/index.js'),
-  //   dest: resolve('dist/guide.js'),
+  //   dest: resolve('dist/easy-guide.js'),
   //   format: 'umd',
   //   moduleName: 'EasyGuide',
   //   plugins: [
@@ -51,7 +51,7 @@ const builds = [
   // },
   {
     entry: resolve('src/index.js'),
-    dest: resolve('dist/guide.esm.js'),
+    dest: resolve('dist/easy-guide.esm.js'),
     format: 'es',
     moduleName: 'EasyGuide',
     plugins: [
@@ -63,7 +63,7 @@ const builds = [
   },
   // {
   //   entry: resolve('src/index.js'),
-  //   dest: resolve('dist/guide.min.js'),
+  //   dest: resolve('dist/easy-guide.min.js'),
   //   format: 'umd',
   //   moduleName: 'EasyGuide',
   //   plugins: [
