@@ -16,9 +16,11 @@ const MinHeight = 50
 const MinWidth = 100
 
 export function handleDotDown(_this, e) {
+  const { guideList } = _this
   const elementName = getDataSet(e.target)
   const parentEle = _this.mouseEventTarget.parentElement
   const { id } = parentEle
+  const editItem = guideList.find(o => o.id === id)
 
   _this.mouseEventTempData = {
     id,
@@ -27,7 +29,7 @@ export function handleDotDown(_this, e) {
     startY: e[tagY],
     position: getPosition(parentEle),
     contentElement: getElement(parentEle, 'e_guide-content'),
-    fixFlag: parentEle.style.position === 'fixed' ? 'Y' : 'N'
+    fixFlag: editItem.fixFlag
   }
 }
 export function handleDotMove(_this, e) {

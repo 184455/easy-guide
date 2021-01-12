@@ -36,7 +36,7 @@ export default function checkDot (
       }
       return { left, top, width: newWidth, height }
     case DotBottom:
-      const containHeight = fixFlag === 'Y' ? window.innerHeight : windowHeight
+      const containHeight = fixFlag !== 'N' ? window.innerHeight : windowHeight
       newHeight = height + (newY - startY)
       if (newY > (containHeight - errorSet)) {
         newHeight = containHeight - top

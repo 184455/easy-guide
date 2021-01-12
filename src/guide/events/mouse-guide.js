@@ -13,12 +13,13 @@ import commonBorderCheck, { calcContentPosition } from '../border-check/check-co
 const { tagX, tagY } = Constant
 
 export function handleGuideDown(_this, e) {
-  const { mouseEventTarget } = _this
+  const { mouseEventTarget, guideList } = _this
   const {
     id, offsetLeft, offsetTop,
     clientWidth: selectBoxWidth, clientHeight: selectBoxHeight
   } = mouseEventTarget
-  const fixFlag = mouseEventTarget.style.position === 'fixed' ? 'Y' : 'N'
+  const editItem = guideList.find(o => o.id === id)
+  const fixFlag = editItem.fixFlag
 
   const contentElement = getElement(mouseEventTarget, 'e_guide-content')
   const { clientWidth: contentWidth, clientHeight: contentHeight } = contentElement
@@ -29,7 +30,7 @@ export function handleGuideDown(_this, e) {
     moveFlag: false,
     deltaX: e[tagX] - offsetLeft,
     deltaY: e[tagY] - offsetTop,
-    outerContain: getWindowWidthHeight(fixFlag === 'Y'),
+    outerContain: getWindowWidthHeight(fixFlag !== 'N'),
     contentWidth, contentHeight,
     selectBoxWidth, selectBoxHeight,
     contentElement
