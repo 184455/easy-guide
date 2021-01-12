@@ -1,4 +1,10 @@
-// 模板边缘检测
+/**
+ * checkDot
+ * Dot 边缘检查
+ * @author Abner <xiaocao1602@qq.com>
+ * @date 2021/01/01
+ */
+
 import Constant from '../../config/constant'
 
 const { DotTop, DotRight, DotBottom, DotLeft } = Constant

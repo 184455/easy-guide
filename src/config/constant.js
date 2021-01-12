@@ -1,6 +1,11 @@
-// 系统试用到的常量
+/**
+ * Constant
+ * 系统常量
+ * @author Abner <xiaocao1602@qq.com>
+ * @date 2021/01/01
+ */
 
-const Config = {
+const Constant = {
   tagX: 'pageX',
   tagY: 'pageY',
   MODE: {
@@ -29,4 +34,4 @@ const Config = {
   getDataSet: el => el.dataset.eg
 }
 
-export default Config
+export default Constant

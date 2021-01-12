@@ -1,4 +1,10 @@
-// 工具方法
+/**
+ * DOM utils
+ * 操作 dom 工具方法
+ * @author Abner <xiaocao1602@qq.com>
+ * @date 2021/01/01
+ */
+
 import { mergeObj } from './index'
 
 /**

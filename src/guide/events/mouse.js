@@ -1,4 +1,10 @@
-// 鼠标事件
+/**
+ * Mouse
+ * 处理鼠标移动事件
+ * @author Abner <xiaocao1602@qq.com>
+ * @date 2021/01/01
+ */
+
 import { isDot } from '../../utils/index'
 import { getMaintainRoot } from '../../utils/dom'
 import Constant from '../../config/constant'

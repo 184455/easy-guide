@@ -1,4 +1,10 @@
-// 拖拽用户指导Item
+/**
+ * Mouse Guide
+ * 指导 拖拽
+ * @author Abner <xiaocao1602@qq.com>
+ * @date 2021/01/01
+ */
+
 import Constant from '../../config/constant'
 import { getElement, setStyles } from '../../utils/dom'
 import { mergeObj, transformUtil, getWindowWidthHeight, selectPosition } from '../../utils/index'

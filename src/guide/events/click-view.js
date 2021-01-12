@@ -1,3 +1,10 @@
+/**
+ * Click
+ * 处理查看模式下的点击事件
+ * @author Abner <xiaocao1602@qq.com>
+ * @date 2021/01/01
+ */
+
 import Constant from '../../config/constant'
 
 const { PrevBtnName, NextBtnName, ViewCloseBtn, ExitPreview, getDataSet } = Constant

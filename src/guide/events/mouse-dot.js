@@ -1,4 +1,10 @@
-// 拖拽 dot 调整选区宽高
+/**
+ * Mouse Dot
+ * dot 拖拽
+ * @author Abner <xiaocao1602@qq.com>
+ * @date 2021/01/01
+ */
+
 import Constant from '../../config/constant'
 import { setStyles, getPosition, getElement } from '../../utils/dom'
 import { mergeObj, addUtil, transformUtil } from '../../utils/index'

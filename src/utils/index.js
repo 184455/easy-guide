@@ -1,4 +1,9 @@
-// 全局公共方法
+/**
+ * Utils
+ * 系统工具方法
+ * @author Abner <xiaocao1602@qq.com>
+ * @date 2021/01/01
+ */
 
 import { isElement } from './dom'
 

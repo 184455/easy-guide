@@ -1,3 +1,9 @@
+/**
+ * 数据处理方法：工具方法
+ * @author Abner <xiaocao1602@qq.com>
+ * @date 2021/01/01
+ */
+
 import { mergeObj, isEmptyArray, createGuideItemData, getMaxNumber, scrollIntoToView, selectPosition } from '../../utils/index'
 import { getGuideItemDomText, getGuideViewDomText } from '../../config/dom-text'
 import {

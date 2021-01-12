@@ -1,3 +1,10 @@
+/**
+ * InitDataInterface
+ * 初始化数据处理接口
+ * @author Abner <xiaocao1602@qq.com>
+ * @date 2021/01/01
+ */
+
 import Constant from '../../config/constant'
 import {
   handleInitRender, handleCreate,

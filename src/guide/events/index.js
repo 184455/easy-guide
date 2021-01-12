@@ -1,3 +1,10 @@
+/**
+ * InitEvents
+ * 初始化事件，事件代理
+ * @author Abner <xiaocao1602@qq.com>
+ * @date 2021/01/01
+ */
+
 import { getMaintainRoot, getViewRoot } from '../../utils/dom'
 import { handelMouseDown, handelMouseMove, handelMouseUp } from './mouse'
 import handelViewModeWrapClick from './click-view'
