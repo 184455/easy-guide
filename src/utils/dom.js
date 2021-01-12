@@ -1,8 +1,5 @@
 // 工具方法
-import Constant from '../config/constant'
 import { mergeObj } from './index'
-
-const { ViewRootId, RootId } = Constant
 
 /**
  * 创建一个 div 元素
@@ -125,7 +122,7 @@ export function getPosition (el) {
 
 // 创建【维护模式】的根节点元素
 export function createMaintainRoot () {
-  document.body.appendChild(ele('div', { id: RootId }))
+  document.body.appendChild(ele('div', { id: '_eG_root' }))
 }
 
 // 是否有【维护模式】的根节点元素
@@ -135,12 +132,12 @@ export function hasMaintainRoot () {
 
 // 获取【维护模式】的最外层元素
 export function getMaintainRoot () {
-  return getElementById(RootId)
+  return getElementById('_eG_root')
 }
 
 // 获取【查看模式】的最外层元素
 export function getViewRoot () {
-  return getElementById(ViewRootId)
+  return getElementById('_eG_viewRoot')
 }
 
 // 是否有【查看模式】的根节点元素
@@ -150,7 +147,7 @@ export function hasViewRoot () {
 
 // 创建【查看模式】的根节点元素
 export function createViewRoot () {
-  return ele('div', { style: 'height: 1px; width: 1px;', id: ViewRootId })
+  return ele('div', { style: 'height: 1px; width: 1px;', id: '_eG_viewRoot' })
 }
 
 // 获取【操作条】根元素

@@ -5,7 +5,9 @@ import { mergeObj, addUtil, transformUtil } from '../../utils/index'
 import { calcContentPosition } from '../border-check/check-common'
 import checkDot from '../border-check/check-dot'
 
-const { tagX, tagY, MinHeight, MinWidth, getDataSet } = Constant
+const { tagX, tagY, getDataSet } = Constant
+const MinHeight = 50
+const MinWidth = 100
 
 export function handleDotDown(_this, e) {
   const elementName = getDataSet(e.target)

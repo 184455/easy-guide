@@ -7,17 +7,10 @@ const Config = {
     READ: 'READ',           // 只展示
     MAINTAIN: 'MAINTAIN'    // 只编辑
   },
-  MinHeight: 50,
-  MinWidth: 100,
   DefaultFillStyle: 'rgba(0, 0, 0, 0.5)',
-  RootId: '_eG_root',
-  ViewRootId: '_eG_viewRoot',
   EGEditModal: '_eG_editModal',
   ModalCancelBtn: '_eG_modalCancel',
   ModalConfirmBtn: '_eG_modalConfirm',
-  DataSetName: 'data-eg',
-  dataSet: val => `data-eg="${val}"`,
-  getDataSet: el => el.dataset.eg,
   CloseButton: 'guide-close-btn',
   OperationBarDrag: 'operation-drag-area',
   PreviewBtn: 'preview-btn',
@@ -31,7 +24,9 @@ const Config = {
   ExitPreview: 'exitPreview',
   PrevBtnName: 'PrevBtnName',
   NextBtnName: 'NextBtnName',
-  ViewCloseBtn: 'ViewCloseBtn'
+  ViewCloseBtn: 'ViewCloseBtn',
+  dataSet: val => `data-eg="${val}"`,
+  getDataSet: el => el.dataset.eg
 }
 
 export default Config

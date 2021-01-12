@@ -10,8 +10,6 @@ const {
   PrevBtnName, NextBtnName, DeleteBtn, EditBtn, ViewCloseBtn, DragGuide, ExitPreview
 } = Constant
 
-const POS = ['top', 'right', 'bottom', 'left']
-
 export function getOperationBarDomText () {
   return `
     <div id="_eG_operation-bar">
@@ -34,7 +32,7 @@ export function getOperationBarDomText () {
 
 export function getGuideItemDomText (guideItem, mode) {
   const { id, position, width, height, left, top } = guideItem
-  const dots = POS
+  const dots = (['top', 'right', 'bottom', 'left'])
     .map(o => `<div class="e_dot-${o} e_dot-common" ${dataSet(`e_dot-${o}`)}></div>`)
     .join('')
 
