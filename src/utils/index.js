@@ -117,7 +117,7 @@ export function transformUtil (data, windowWidth, windowHeight) {
   }, {})
 }
 
-export function toPixel (data, windowWidth, windowHeight, util = 'px') {
+export function toPixel (data, windowWidth, windowHeight) {
   const transformKeys = ['left', 'top', 'width', 'height']
   const dependOnHeightKeys = []
 
@@ -131,12 +131,12 @@ export function toPixel (data, windowWidth, windowHeight, util = 'px') {
     if (data[`${key}Util`] === '%') {
       val = parseInt(val * denominator)
     }
-    return mergeObj(prev, { [key]: val + util })
+    return mergeObj(prev, { [key]: val })
   }, { position: isFixedPosition(data.fixFlag) })
 }
 
 export function isFixedPosition (flag) {
-  return flag === 'Y' ? 'fixed' : 'absolute'
+  return flag !== 'N' ? 'fixed' : 'absolute'
 }
 
 export function getWindowWidthHeight (isViewPort) {
@@ -151,4 +151,33 @@ export function PX (n) {
 
 export function isDot (name) {
   return name.indexOf('e_dot-') > -1
+}
+
+export function addUtils (obj, keys, util = 'px') {
+  return Object.keys(obj).reduce((prev, current) => {
+    if (keys.indexOf(current) > -1) {
+      return mergeObj(prev, { [current]: obj[current] + util })
+    } else {
+      return mergeObj(prev, { [current]: obj[current] })
+    }
+  }, {})
+}
+
+export function selectPosition ({ left, top, height, width, fixFlag }) {
+  const [vw, vh] = getWindowWidthHeight(true)
+  const newLeft = vw - left - width
+  const newTop = vh - top - height
+
+  switch (fixFlag) {
+    case 'leftTop':
+      return { left, top }
+    case 'rightTop':
+      return { left: newLeft, top }
+    case 'rightBottom':
+      return { left: newLeft, top: newTop }
+    case 'leftBottom':
+      return { left, top: newTop }
+    default:
+      return { left, top }
+  }
 }

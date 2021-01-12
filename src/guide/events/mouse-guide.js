@@ -1,7 +1,7 @@
 // 拖拽用户指导Item
 import { tagX, tagY } from '../../config/constant'
 import { getElement, setStyles } from '../../utils/dom'
-import { mergeObj, transformUtil, getWindowWidthHeight } from '../../utils/index'
+import { mergeObj, transformUtil, getWindowWidthHeight, selectPosition } from '../../utils/index'
 import commonBorderCheck, { calcContentPosition } from '../border-check/check-common'
 
 export function handleGuideDown(_this, e) {
@@ -65,7 +65,9 @@ export function handleGuideUp(_this) {
   const { left, top, width, height, id, contentPosition } = mouseEventTempData
   const editItem = guideList.find(i => i.id === id) || {}
   const patchData = { left, top, width, height, id, contentPosition }
+  const checkPosition = selectPosition(mergeObj({}, patchData, { fixFlag: editItem.fixFlag }))
+  const patchData2 = mergeObj({}, editItem, patchData, checkPosition)
 
-  _this.dispatch('modify', transformUtil(mergeObj(editItem, patchData), _this.windowWidth))
+  _this.dispatch('modify', transformUtil(patchData2, _this.windowWidth))
   _this.mouseEventTempData = null
 }

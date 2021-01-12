@@ -1,6 +1,6 @@
 import { ele, getElementById, getElement, setStyles } from '../../utils/dom'
 import { ModalConfirmBtn, EGEditModal, ModalCancelBtn } from '../../config/constant'
-import { mergeObj, transformUtil, toPixel } from '../../utils/index'
+import { mergeObj, transformUtil, toPixel, selectPosition, addUtils } from '../../utils/index'
 
 // 创建用户指导编辑框
 export function createGuideEditModal(_this, editInfo) {
@@ -16,13 +16,17 @@ export function createGuideEditModal(_this, editInfo) {
 }
 
 // 用户点击确认，更新对编辑对应的 dom
-const refreshEdit = (values, windowWidth, windowHeight) => {
-  const { content, id } = values
+const refreshEdit = (patchData, windowWidth, windowHeight) => {
+  const { content, id } = patchData
   const editItemDom = getElementById(String(id))
   const contentBox = getElement(editItemDom, 'e_guide-content-text')
 
-  const styleData = toPixel(values, windowWidth, windowHeight)
-  setStyles(editItemDom, styleData)
+  const pixelData = toPixel(patchData, windowWidth, windowHeight)
+  const temp1 = mergeObj({}, patchData, pixelData)
+  const checkPositionData = selectPosition(temp1)
+  const temp2 = mergeObj({}, temp1, checkPositionData)
+  const pixel = addUtils(temp2, ['top', 'left', 'height', 'width'], 'px')
+  setStyles(editItemDom, pixel)
   contentBox.innerHTML = content || '请维护用户指导内容！'
 }
 
@@ -40,20 +44,23 @@ const handleClickConfirm = (_this, editInfo) => {
     return mergeObj(prev, { [name]: value })
   }, {})
 
-  if (values.fixFlag === 'Y' && editInfo.fixFlag === 'N') {
-    // 从相对定位切换到绝对定位，位置需要重置到最开始的位置
-    values.top = 200
+  if (editInfo.fixFlag !== values.fixFlag) {
+    const { topUtil, leftUtil } = values
+    if (values.fixFlag === 'N') {
+      values.top = topUtil === '%' ? 0.15 : 200
+      values.left = leftUtil === '%' ? 0.15 : (windowWidth / 2 - 150) | 0
+    } else {
+      // 四个角
+      values.top = topUtil === '%' ? 0.15 : 200
+      values.left = leftUtil === '%' ? 0.15 : 200
+    }
   }
 
   const temp = mergeObj(editInfo, values, { id: editInfo.id })
-  const patchVal = transformUtil(
-    temp,
-    windowWidth,
-    windowHeight
-  )
-  _this.dispatch('modify', patchVal)
+  const transformUtilData = transformUtil(temp, windowWidth, windowHeight)
+  _this.dispatch('modify', transformUtilData)
   _this.hiddenEditModal()
-  refreshEdit(patchVal, windowWidth, windowHeight)
+  refreshEdit(transformUtilData, windowWidth, windowHeight)
 }
 
 // 处理表单 onchange 事件
@@ -124,8 +131,11 @@ function formItemRight (itemData) {
       return `<textarea class="e_input e_textarea e_edit_class" name="content" placeholder="请输入指导内容">${value}</textarea>`
     case 'fixFlag':
       return selectElement(value, fileName, [
-        { showText: '是', value: 'Y' },
-        { showText: '否', value: 'N' }
+        { showText: '不固定', value: 'N' },
+        { showText: '参考左上角固定', value: 'leftTop' },
+        { showText: '参考右上角固定', value: 'rightTop' },
+        { showText: '参考右下角固定', value: 'rightBottom' },
+        { showText: '参考左下角固定', value: 'leftBottom' }
       ])
     default:
       return prefixSelect(itemData)
@@ -146,7 +156,7 @@ function modalDomText (initData) {
     { title: '选框高度', fileName: 'heightUtil', value: height, suffixValue: heightUtil },
     { title: '左/右边距', fileName: 'leftUtil', value: left, suffixValue: leftUtil },
     { title: '上/下边距', fileName: 'topUtil', value: top, suffixValue: topUtil },
-    { title: '是否固定位置', fileName: 'fixFlag', value: fixFlag }
+    { title: '是否固定', fileName: 'fixFlag', value: fixFlag }
   ]
 
   return `

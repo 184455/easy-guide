@@ -1,4 +1,4 @@
-import { mergeObj, isEmptyArray, createGuideItemData, getMaxNumber, scrollIntoToView } from '../../utils/index'
+import { mergeObj, isEmptyArray, createGuideItemData, getMaxNumber, scrollIntoToView, selectPosition } from '../../utils/index'
 import { getGuideItemDomText, getGuideViewDomText } from '../../config/dom-text'
 import {
   getElementById, removeChild, getMaintainRoot,
@@ -6,7 +6,11 @@ import {
 } from '../../utils/dom'
 
 export function handleInitRender (_this) {
-  const renderData = transformData(_this)
+  const renderData = transformData(_this).map(o => {
+    const temp = mergeObj({}, o)
+    const pos = selectPosition(temp)
+    return mergeObj({}, temp, pos)
+  })
   const { mode } = _this
 
   const domText = renderData.map(o => getGuideItemDomText(o, mode)).join('')
@@ -22,7 +26,7 @@ export function handleCreate (_this, action) {
   })
 
   guideList.push(guideItem)
-  const domText = getGuideItemDomText(toPixel(guideItem, windowWidth), 'MAINTAIN')
+  const domText = getGuideItemDomText(transformPixel(guideItem, windowWidth), 'MAINTAIN')
   getMaintainRoot().insertAdjacentHTML('beforeend', domText)
   broadcast(_this, action, guideItem)
 }
@@ -158,10 +162,10 @@ function transformData (_this) {
   if (isEmptyArray(guideList)) {
     return []
   }
-  return guideList.map(o => toPixel(o, windowWidth))
+  return guideList.map(o => transformPixel(o, windowWidth))
 }
 
-function toPixel (guideItem, windowWidth) {
+function transformPixel (guideItem, windowWidth) {
   const obj = mergeObj({}, guideItem)
   const transformKeys = ['left', 'top', 'width', 'height']
   const temp = Object.keys(obj).reduce((prev, key) => {
@@ -177,7 +181,7 @@ function toPixel (guideItem, windowWidth) {
       }
       return mergeObj({}, prev, { [key]: val, [newKey]: 'px' })
     }
-  }, { position: obj.fixFlag === 'Y' ? 'fixed' : 'absolute' })
+  }, { position: obj.fixFlag !== 'N' ? 'fixed' : 'absolute' })
 
   return mergeObj(obj, temp)
 }
@@ -213,14 +217,19 @@ export function refreshStepDom(_this, showItemData, rootEle) {
     prevBtn.style.visibility = 'unset'
   }
 
-  const renderValue = toPixel(showItemData, _this.windowWidth, _this.windowHeight, 0)
-  setBarLibPosition(barElementList, renderValue)
+  const renderValue1 = transformPixel(showItemData, _this.windowWidth, _this.windowHeight, 0)
+  console.log(mergeObj({}, renderValue1))
+  const checkPosition = selectPosition(renderValue1)
+  const finalRender = mergeObj({}, renderValue1, checkPosition)
+  setBarLibPosition(barElementList, finalRender)
+
+  console.log(finalRender)
 
   const { contentPosition, orderNumber } = showItemData
   closeTitle.innerHTML = `步骤${orderNumber}`
   setStyles(closeBtn, { display: 'inline-block' })
   contentWrap.className = `e_guide-content ${contentPosition}`
-  setStyles(contentWrap, calcGuidePosition(mergeObj(showItemData, renderValue)))
+  setStyles(contentWrap, calcGuidePosition(mergeObj(showItemData, finalRender)))
 }
 
 export function setBarLibPosition(barList, { top, left, width, height, position }) {
@@ -238,14 +247,14 @@ export function setBarLibPosition(barList, { top, left, width, height, position 
 function calcGuidePosition ({ top, left, height, width, fixFlag, contentPosition, windowWidth, windowHeight }) {
   const styleJoin = (top, left, obj = {}) => {
     return mergeObj({
-      position: fixFlag === 'Y' ? 'fixed' : 'absolute',
+      position: fixFlag !== 'N' ? 'fixed' : 'absolute',
       top: `${top}px`,
       left: `${left}px`
     }, obj)
   }
 
   const offset = 12
-  const Height = fixFlag === 'Y' ? window.innerHeight : windowHeight
+  const Height = fixFlag !== 'N' ? window.innerHeight : windowHeight
   switch (contentPosition) {
     case '_eg-guide-1':
       return styleJoin(top - offset, left, {
