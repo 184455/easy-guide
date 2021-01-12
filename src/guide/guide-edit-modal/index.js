@@ -1,4 +1,10 @@
-// 维护指导信息的弹框
+/**
+ * GuideEditModal
+ * 编辑指导的模态框
+ * @author Abner <xiaocao1602@qq.com>
+ * @date 2021/01/01
+ */
+
 import Constant from '../../config/constant'
 import { createGuideEditModal } from './modal-utils'
 import { removeChild, getElementById } from '../../utils/dom'

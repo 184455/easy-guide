@@ -5,7 +5,7 @@
  * @date 2021/01/01
  */
 
-const Constant = {
+export default {
   tagX: 'pageX',
   tagY: 'pageY',
   MODE: {
@@ -34,4 +34,3 @@ const Constant = {
   getDataSet: el => el.dataset.eg
 }
 
-export default Constant
