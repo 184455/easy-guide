@@ -8,7 +8,7 @@ const _ = require('lodash')
 
 const execContent = () => {
   console.log('\n')
-  shelljs.exec(`node ${path.resolve(__dirname, './build.js')}`)
+  shelljs.exec(`cross-env GUIDE_MODE=develop node ${path.resolve(__dirname, './build.js')}`)
   console.log('Continue file listening...'.green);
 }
 const _execContent = _.debounce(execContent, 200);

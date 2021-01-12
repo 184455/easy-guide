@@ -7,9 +7,9 @@
     "email": "xiaocao1602@qq.com"
   },
   "scripts": {
-    "start": "node build/dev-service.js",
+    "start": "cross-env GUIDE_MODE=develop node build/dev-service.js",
     "serve": "serve -s ./dist",
-    "build": "node build/build.js"
+    "build": "cross-env GUIDE_MODE=product node build/build.js"
   },
   "keywords": [
     "guide",

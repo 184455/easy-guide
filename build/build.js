@@ -7,6 +7,53 @@ const babel = require('rollup-plugin-babel')
 const uglify = require('uglify-js')
 const zlib = require('zlib')
 
+const banner =
+  '/*!\n' +
+  ' * Easy Guide v' + version + '\n' +
+  ' * (c) 2020-' + new Date().getFullYear() + ' Abner\n' +
+  ' * Released under the MIT License.\n' +
+  ' */'
+
+// 平时开发的时候，只需要打包 esm 格式的文件，发布 mpm 包的时候，所有格式都需要
+const builds = [{
+  entry: resolve('src/index.js'),
+  dest: resolve('dist/easy-guide.esm.js'),
+  format: 'es',
+  moduleName: 'EasyGuide',
+  plugins: [
+    babel({
+      exclude: 'node_modules/**' // only transpile our source code
+    })
+  ],
+  banner
+}]
+
+if (process.env.GUIDE_MODE === 'product') {
+  builds.push({
+    entry: resolve('src/index.js'),
+    dest: resolve('dist/easy-guide.js'),
+    format: 'umd',
+    moduleName: 'EasyGuide',
+    plugins: [
+      babel({
+        exclude: 'node_modules/**' // only transpile our source code
+      })
+    ],
+    banner
+  }, {
+    entry: resolve('src/index.js'),
+    dest: resolve('dist/easy-guide.min.js'),
+    format: 'umd',
+    moduleName: 'EasyGuide',
+    plugins: [
+      babel({
+        exclude: 'node_modules/**' // only transpile our source code
+      })
+    ],
+    banner
+  })
+}
+
 if (!fs.existsSync('dist')) {
   fs.mkdirSync('dist')
 }
@@ -27,53 +74,6 @@ function copyCSS() {
  * TODO: 把 CSS 文件加入 rollup 打包文件
  */
 copyCSS()
-
-const banner =
-  '/*!\n' +
-  ' * Easy Guide v' + version + '\n' +
-  ' * (c) 2020-' + new Date().getFullYear() + ' Abner\n' +
-  ' * Released under the MIT License.\n' +
-  ' */'
-
-// 平时开发的时候，只需要打包 esm 格式的文件，发布 mpm 包的时候，所有格式都需要
-const builds = [
-  // {
-  //   entry: resolve('src/index.js'),
-  //   dest: resolve('dist/easy-guide.js'),
-  //   format: 'umd',
-  //   moduleName: 'EasyGuide',
-  //   plugins: [
-  //     babel({
-  //       exclude: 'node_modules/**' // only transpile our source code
-  //     })
-  //   ],
-  //   banner
-  // },
-  {
-    entry: resolve('src/index.js'),
-    dest: resolve('dist/easy-guide.esm.js'),
-    format: 'es',
-    moduleName: 'EasyGuide',
-    plugins: [
-      babel({
-        exclude: 'node_modules/**' // only transpile our source code
-      })
-    ],
-    banner
-  },
-  // {
-  //   entry: resolve('src/index.js'),
-  //   dest: resolve('dist/easy-guide.min.js'),
-  //   format: 'umd',
-  //   moduleName: 'EasyGuide',
-  //   plugins: [
-  //     babel({
-  //       exclude: 'node_modules/**' // only transpile our source code
-  //     })
-  //   ],
-  //   banner
-  // }
-]
 
 function build(builds) {
   let built = 0
