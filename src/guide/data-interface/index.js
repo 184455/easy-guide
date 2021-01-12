@@ -1,13 +1,15 @@
-import {
-  PrevBtnName, NextBtnName, ViewCloseBtn, ExitPreview,
-  CloseButton, DeleteBtn, EditBtn, PreviewBtn
-} from '../../config/constant'
+import Constant from '../../config/constant'
 import {
   handleInitRender, handleCreate,
   handleDelete, handleModify, handleInitViewRender,
   handleClickPrevBtn, handleClickNextBtn, handleClickCloseBtn,
   handleClickCloseButton, handleDeleteItem, handleEditItem, handlePreview
  } from './data-utils'
+
+ const {
+  PrevBtnName, NextBtnName, ViewCloseBtn, ExitPreview,
+  CloseButton, DeleteBtn, EditBtn, PreviewBtn
+} = Constant
 
 export default function InitDataInterface (EasyGuide) {
   EasyGuide.prototype.dispatch = function (action, data) {

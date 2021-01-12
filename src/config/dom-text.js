@@ -3,10 +3,12 @@
  * @author Abner <xiaocao1602@qq.com>
  * @date 2021/01/01
  */
-import {
+import Constant from './constant'
+
+const {
   MODE, dataSet, PreviewBtn, OperationBarDrag,
   PrevBtnName, NextBtnName, DeleteBtn, EditBtn, ViewCloseBtn, DragGuide, ExitPreview
-} from './constant'
+} = Constant
 
 const POS = ['top', 'right', 'bottom', 'left']
 

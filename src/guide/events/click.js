@@ -1,4 +1,6 @@
-import { PreviewBtn, CloseButton, DeleteBtn, EditBtn, getDataSet } from '../../config/constant'
+import Constant from '../../config/constant'
+
+const { PreviewBtn, CloseButton, DeleteBtn, EditBtn, getDataSet } = Constant
 
 /**
  * 点击事件

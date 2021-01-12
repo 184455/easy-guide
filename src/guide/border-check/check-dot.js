@@ -1,10 +1,7 @@
 // 模板边缘检测
-import {
-  DotTop,
-  DotRight,
-  DotBottom,
-  DotLeft
-} from '../../config/constant'
+import Constant from '../../config/constant'
+
+const { DotTop, DotRight, DotBottom, DotLeft } = Constant
 
 export default function checkDot (
   [windowWidth, windowHeight],

@@ -1,7 +1,9 @@
 // 维护指导信息的弹框
-import { MODE, ModalCancelBtn, ModalConfirmBtn, EGEditModal } from '../../config/constant'
+import Constant from '../../config/constant'
 import { createGuideEditModal } from './modal-utils'
 import { removeChild, getElementById } from '../../utils/dom'
+
+const { MODE, ModalCancelBtn, ModalConfirmBtn, EGEditModal } = Constant
 
 export default function GuideEditModal (EasyGuide) {
   EasyGuide.prototype.showEditModal = function (editInfo) {

@@ -5,14 +5,16 @@
  * @date 2021/01/01
  */
 
-import Config from '../../config/index'
-import { MODE } from '../../config/constant'
+import Config1 from '../../config/index'
+import Constant from '../../config/constant'
 import { getOperationBarDomText } from '../../config/dom-text'
 import { isEmptyArray, mergeObj, getWindowWidthHeight, PX } from '../../utils/index'
 import {
   addClass, deleteClass, setStyles, getMaintainRoot, hasMaintainRoot,
   createMaintainRoot, hasViewRoot
 } from '../../utils/dom'
+
+const { MODE } = Constant
 
 export function initMode (_this, m) {
   setMode(_this, m)
@@ -37,7 +39,7 @@ export function initViewport(_this) {
 }
 
 export function mergeCustomOptions(_this, options) {
-  _this.Options = mergeObj({}, Config, options)
+  _this.Options = mergeObj({}, Config1, options)
 }
 
 export function checkMode (m) {

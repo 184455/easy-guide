@@ -5,10 +5,12 @@
  * @date 2021/01/01
  */
 
-import { tagX, tagY } from '../../config/constant'
+import Constant from '../../config/constant'
 import { setStyles, getOperationBarEle } from '../../utils/dom'
 import commonBorderCheck from '../border-check/check-common'
 import { getWindowWidthHeight, PX } from '../../utils/index'
+
+const { tagX, tagY } = Constant
 
 export function operationBarDown(_this, e) {
   const rootEle = getOperationBarEle()

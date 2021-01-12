@@ -1,8 +1,8 @@
 // 核心配置文件
-import { MODE } from './constant'
+import Constant from './constant'
 
 const Config = {
-  mode: MODE.READ,
+  mode: Constant.MODE.READ,
   scrollAble: true,
   defaultFillStyle: 'rgba(0, 0, 0, 0.5)'
 }

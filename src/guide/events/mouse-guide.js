@@ -1,8 +1,10 @@
 // 拖拽用户指导Item
-import { tagX, tagY } from '../../config/constant'
+import Constant from '../../config/constant'
 import { getElement, setStyles } from '../../utils/dom'
 import { mergeObj, transformUtil, getWindowWidthHeight, selectPosition } from '../../utils/index'
 import commonBorderCheck, { calcContentPosition } from '../border-check/check-common'
+
+const { tagX, tagY } = Constant
 
 export function handleGuideDown(_this, e) {
   const { mouseEventTarget } = _this

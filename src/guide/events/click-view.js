@@ -1,4 +1,6 @@
-import { PrevBtnName, NextBtnName, ViewCloseBtn, ExitPreview, getDataSet } from '../../config/constant'
+import Constant from '../../config/constant'
+
+const { PrevBtnName, NextBtnName, ViewCloseBtn, ExitPreview, getDataSet } = Constant
 
 /**
  * 只读模式下的点击事件代理

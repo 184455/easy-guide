@@ -1,10 +1,11 @@
 // 鼠标事件
 import { isDot } from '../../utils/index'
 import { getMaintainRoot } from '../../utils/dom'
-import { OperationBarDrag, DragGuide, DotTop, DotRight, DotBottom, DotLeft, getDataSet } from '../../config/constant'
+import Constant from '../../config/constant'
 import { operationBarDown, operationBarMove, operationBarUp } from './mouse-operation-bar'
 import { handleGuideDown, handleGuideMove, handleGuideUp } from './mouse-guide'
 import { handleDotDown, handleDotMove, handleDotUp } from './mouse-dot'
+const { OperationBarDrag, DragGuide, DotTop, DotRight, DotBottom, DotLeft, getDataSet } = Constant
 
 /**
  * 鼠标按下事件

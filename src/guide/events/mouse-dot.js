@@ -1,9 +1,11 @@
 // 拖拽 dot 调整选区宽高
-import { tagX, tagY, MinHeight, MinWidth, getDataSet } from '../../config/constant'
+import Constant from '../../config/constant'
 import { setStyles, getPosition, getElement } from '../../utils/dom'
 import { mergeObj, addUtil, transformUtil } from '../../utils/index'
 import { calcContentPosition } from '../border-check/check-common'
 import checkDot from '../border-check/check-dot'
+
+const { tagX, tagY, MinHeight, MinWidth, getDataSet } = Constant
 
 export function handleDotDown(_this, e) {
   const elementName = getDataSet(e.target)

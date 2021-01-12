@@ -1,6 +1,8 @@
 import { ele, getElementById, getElement, setStyles } from '../../utils/dom'
-import { ModalConfirmBtn, EGEditModal, ModalCancelBtn } from '../../config/constant'
+import Constant from '../../config/constant'
 import { mergeObj, transformUtil, toPixel, selectPosition, addUtils } from '../../utils/index'
+
+const { ModalConfirmBtn, EGEditModal, ModalCancelBtn } = Constant
 
 // 创建用户指导编辑框
 export function createGuideEditModal(_this, editInfo) {

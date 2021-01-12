@@ -1,6 +1,8 @@
 // 工具方法
-import { ViewRootId, RootId } from '../config/constant'
+import Constant from '../config/constant'
 import { mergeObj } from './index'
+
+const { ViewRootId, RootId } = Constant
 
 /**
  * 创建一个 div 元素
