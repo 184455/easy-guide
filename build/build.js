@@ -40,18 +40,21 @@ if (process.env.GUIDE_MODE === 'product') {
       })
     ],
     banner
-  }, {
-    entry: resolve('src/index.js'),
-    dest: resolve('dist/easy-guide.min.js'),
-    format: 'umd',
-    moduleName: 'EasyGuide',
-    plugins: [
-      babel({
-        exclude: 'node_modules/**' // only transpile our source code
-      })
-    ],
-    banner
   })
+
+  // TODO 支持压缩版本
+  // {
+  //   entry: resolve('src/index.js'),
+  //   dest: resolve('dist/easy-guide.min.js'),
+  //   format: 'umd',
+  //   moduleName: 'EasyGuide',
+  //   plugins: [
+  //     babel({
+  //       exclude: 'node_modules/**' // only transpile our source code
+  //     })
+  //   ],
+  //   banner
+  // }
 }
 
 if (!fs.existsSync('dist')) {
