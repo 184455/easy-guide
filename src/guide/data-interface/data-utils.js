@@ -28,16 +28,16 @@ export async function handleCreate (_this, action) {
   const { guideList, windowWidth, Options } = _this
   const { beforeCreate } = Options
 
-  let beforeVal
-  if (isFunction(beforeCreate)) {
-    beforeVal = await beforeCreate(_this)
-  }
-
-  const guideItem = beforeVal || createGuideItemData({
+  const beforeVal = createGuideItemData({
     orderNumber: getMaxNumber(guideList, 'orderNumber') + 1,
     left: (windowWidth / 2 - 150) | 0,
     top: window.pageYOffset + 200
   })
+
+  let guideItem = beforeVal
+  if (isFunction(beforeCreate)) {
+    guideItem = await beforeCreate(_this, beforeVal)
+  }
 
   guideList.push(guideItem)
   const domText = getGuideItemDomText(transformPixel(guideItem, windowWidth), 'MAINTAIN')
