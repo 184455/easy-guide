@@ -180,6 +180,15 @@
       guideList: tempGuideList,
       onGuideListChange: (action, data, list) => {
         console.log({ action, modifyItem: data, guideList: list })
+      },
+      beforeCreate: () => {
+        console.log('beforeCreate');
+      },
+      beforePrev: (oldIndex, newIndex, guideList) => {
+        console.log('beforePrev');
+      },
+      beforeNext: (oldIndex, newIndex, guideList) => {
+        console.log('beforeNext');
       }
     })
 

@@ -186,3 +186,7 @@ export function selectPosition ({ left, top, height, width, fixFlag }) {
       return { left, top }
   }
 }
+
+export function isFunction (fun) {
+  return typeof fun === 'function'
+}

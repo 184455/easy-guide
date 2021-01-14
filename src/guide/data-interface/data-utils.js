@@ -4,7 +4,8 @@
  * @date 2021/01/01
  */
 
-import { mergeObj, isEmptyArray, createGuideItemData, getMaxNumber, scrollIntoToView, selectPosition } from '../../utils/index'
+import { mergeObj, isEmptyArray, createGuideItemData,
+  getMaxNumber, scrollIntoToView, selectPosition, isFunction } from '../../utils/index'
 import { getGuideItemDomText, getGuideViewDomText } from '../../config/dom-text'
 import {
   getElementById, removeChild, getMaintainRoot,
@@ -23,9 +24,16 @@ export function handleInitRender (_this) {
   getMaintainRoot().insertAdjacentHTML('beforeend', domText)
 }
 
-export function handleCreate (_this, action) {
-  const { guideList, windowWidth } = _this
-  const guideItem = createGuideItemData({
+export async function handleCreate (_this, action) {
+  const { guideList, windowWidth, Options } = _this
+  const { beforeCreate } = Options
+
+  let beforeVal
+  if (isFunction(beforeCreate)) {
+    beforeVal = await beforeCreate(_this)
+  }
+
+  const guideItem = beforeVal || createGuideItemData({
     orderNumber: getMaxNumber(guideList, 'orderNumber') + 1,
     left: (windowWidth / 2 - 150) | 0,
     top: window.pageYOffset + 200
@@ -71,17 +79,24 @@ export function handleModify (_this, action, data) {
   broadcast(_this, action, data)
 }
 
-export function handleClickPrevBtn(_this, e) {
+export async function handleClickPrevBtn(_this, e) {
   const { guideList, currentIndex: oldIndex } = _this
   if (!Array.isArray(guideList) || !guideList.length) {
     return
   }
+
+  const { beforePrev } = _this.Options
 
   let newIndex
   if (oldIndex === 0) {
     // 第一条，不做任何事情
   } else {
     newIndex = oldIndex - 1
+
+    if (isFunction(beforePrev)) {
+      await beforePrev(oldIndex, newIndex, guideList)
+    }
+
     const currentItem = mergeObj({}, guideList[newIndex], {
       finalFlag: (newIndex + 1) === guideList.length,
       firstFlag: newIndex === 0
@@ -94,7 +109,7 @@ export function handleClickPrevBtn(_this, e) {
   }
 }
 
-export function handleClickNextBtn(_this, e) {
+export async function handleClickNextBtn(_this, e) {
   const { guideList, currentIndex: oldIndex } = _this
   if (!Array.isArray(guideList) || !guideList.length) {
     return
@@ -106,6 +121,12 @@ export function handleClickNextBtn(_this, e) {
     handleClickCloseBtn(_this)
   } else {
     newIndex = oldIndex + 1
+
+    const { beforeNext } = _this.Options
+    if (isFunction(beforeNext)) {
+      await beforeNext(oldIndex, newIndex, guideList)
+    }
+
     const currentItem = mergeObj({}, guideList[newIndex], {
       finalFlag: (oldIndex + 2) === guideList.length,
       firstFlag: false

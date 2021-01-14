@@ -37,4 +37,11 @@ export default function InitMixin (EG) {
     removeChild(document.body, getViewRoot())
     removeChild(document.body, getMaintainRoot())
   }
+
+  EG.prototype.getConfig = function () {
+    return this.Options
+  }
+  EG.prototype.setGuideList = function (list) {
+    this.guideList = list
+  }
 };
