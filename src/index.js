@@ -11,6 +11,6 @@ InitDataInterface(EasyGuide)
 InitEvents(EasyGuide)
 GuideEditModal(EasyGuide)
 
-EasyGuide.prototype.Version = '0.0.4'
+EasyGuide.prototype.Version = '0.0.5'
 
 export default EasyGuide
