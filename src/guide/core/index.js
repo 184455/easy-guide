@@ -36,6 +36,7 @@ export default function InitMixin (EG) {
     this.eventsDestroy()
     removeChild(document.body, getViewRoot())
     removeChild(document.body, getMaintainRoot())
+    this.status = 'none'
   }
 
   EG.prototype.getConfig = function () {

@@ -8,7 +8,7 @@
 import Constant from '../../config/constant'
 import {
   handleInitRender, handleCreate,
-  handleDelete, handleModify, handleInitViewRender,
+  handleDelete, handleModify, handleInitViewRender, handleShowStep,
   handleClickPrevBtn, handleClickNextBtn, handleClickCloseBtn,
   handleClickCloseButton, handleDeleteItem, handleEditItem, handlePreview
  } from './data-utils'
@@ -23,6 +23,9 @@ export default function InitDataInterface (EasyGuide) {
     const _this = this
 
     switch (action) {
+      case 'modify':
+        handleModify(_this, action, data)
+        break
       case 'initRender':
         handleInitRender(_this)
         break
@@ -35,8 +38,8 @@ export default function InitDataInterface (EasyGuide) {
       case 'initViewRender':
         handleInitViewRender(_this)
         break
-      case 'modify':
-        handleModify(_this, action, data)
+      case 'showStep':
+        handleShowStep(_this, data)
         break
       case PrevBtnName:
         handleClickPrevBtn(_this)

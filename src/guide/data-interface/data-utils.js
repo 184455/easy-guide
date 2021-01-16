@@ -81,65 +81,56 @@ export function handleModify (_this, action, data) {
 
 export async function handleClickPrevBtn(_this, e) {
   const { guideList, currentIndex: oldIndex } = _this
-  if (!Array.isArray(guideList) || !guideList.length) {
-    return
-  }
+  if (!Array.isArray(guideList) || !guideList.length) { return }
+
+  const newIndex = oldIndex - 1
 
   const { beforePrev } = _this.Options
-
-  let newIndex
-  if (oldIndex === 0) {
-    // 第一条，不做任何事情
-  } else {
-    newIndex = oldIndex - 1
-
-    if (isFunction(beforePrev)) {
-      await beforePrev(oldIndex, newIndex, guideList)
-    }
-
-    const currentItem = mergeObj({}, guideList[newIndex], {
-      finalFlag: (newIndex + 1) === guideList.length,
-      firstFlag: newIndex === 0
-    })
-    _this.currentIndex = newIndex
-    refreshStepDom(_this, currentItem)
-    setTimeout(() => {
-      scrollIntoToView(getElement(getViewRoot(), 'e_guide-content'))
-    }, 320)
+  if (isFunction(beforePrev)) {
+    await beforePrev(oldIndex, newIndex, guideList)
   }
+
+  handleShowStep(_this, newIndex)
 }
 
 export async function handleClickNextBtn(_this, e) {
   const { guideList, currentIndex: oldIndex } = _this
-  if (!Array.isArray(guideList) || !guideList.length) {
+  if (!Array.isArray(guideList) || !guideList.length) { return }
+
+  const newIndex = oldIndex + 1
+
+  const { beforeNext } = _this.Options
+  if (isFunction(beforeNext)) {
+    await beforeNext(oldIndex, newIndex, guideList)
+  }
+
+  handleShowStep(_this, newIndex)
+}
+
+export function handleShowStep (_this, index) {
+  const { guideList } = _this
+  if (!guideList[index]) {
+    handleClickCloseBtn(_this)
     return
   }
 
-  let newIndex
-  if ((oldIndex + 1) === guideList.length) {
-    // 关闭
-    handleClickCloseBtn(_this)
-  } else {
-    newIndex = oldIndex + 1
+  const showItem = mergeObj({}, guideList[index], {
+    finalFlag: (index + 1) === guideList.length,
+    firstFlag: index === 0
+  })
 
-    const { beforeNext } = _this.Options
-    if (isFunction(beforeNext)) {
-      await beforeNext(oldIndex, newIndex, guideList)
-    }
-
-    const currentItem = mergeObj({}, guideList[newIndex], {
-      finalFlag: (oldIndex + 2) === guideList.length,
-      firstFlag: false
-    })
-    _this.currentIndex = newIndex
-    refreshStepDom(_this, currentItem)
-    setTimeout(() => {
-      scrollIntoToView(getElement(getViewRoot(), 'e_guide-content'))
-    }, 320)
-  }
+  _this.currentIndex = index
+  refreshStepDom(_this, showItem)
+  setTimeout(() => {
+    scrollIntoToView(getElement(getViewRoot(), 'e_guide-content'))
+  }, 320)
 }
 
 export function handleClickCloseBtn(_this) {
+  const { currentIndex, guideList } = _this
+  const { guildClose } = _this.Options
+  if (isFunction(guildClose)) { guildClose(currentIndex, guideList[currentIndex], guideList) }
+
   _this.currentIndex = 0
   _this.destroy()
 
@@ -245,12 +236,9 @@ export function refreshStepDom(_this, showItemData, rootEle) {
   }
 
   const renderValue1 = transformPixel(showItemData, _this.windowWidth, _this.windowHeight, 0)
-  console.log(mergeObj({}, renderValue1))
   const checkPosition = selectPosition(renderValue1)
   const finalRender = mergeObj({}, renderValue1, checkPosition)
   setBarLibPosition(barElementList, finalRender)
-
-  console.log(finalRender)
 
   const { contentPosition, orderNumber } = showItemData
   closeTitle.innerHTML = `步骤${orderNumber}`

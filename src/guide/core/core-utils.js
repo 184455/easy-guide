@@ -18,6 +18,7 @@ const { MODE } = Constant
 
 export function initMode (_this, m) {
   setMode(_this, m)
+  setStatus(_this, m)
   if (MODE.MAINTAIN === m) {
     showModeMaintain(_this)
   } else {
@@ -30,6 +31,7 @@ export function initDefaultData (_this) {
   _this.guideList = guideList.slice(0)
   _this.mode = mode
   _this.currentIndex = currentIndex
+  _this.status = 'none'
 }
 
 export function initViewport(_this) {
@@ -72,6 +74,9 @@ function showModeMaintain(_this) {
 
 function setMode(_this, m) {
   _this.mode = m
+}
+function setStatus(_this, m) {
+  _this.status = m
 }
 
 function createOperationBar () {
