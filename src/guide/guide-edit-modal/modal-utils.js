@@ -28,7 +28,7 @@ export function createGuideEditModal(_this, editInfo) {
 const refreshEdit = (patchData, windowWidth, windowHeight) => {
   const { content, id } = patchData
   const editItemDom = getElementById(String(id))
-  const contentBox = getElement(editItemDom, 'e_guide-content-text')
+  const contentBox = getElement(editItemDom, '_eG_guide-content-text')
 
   const pixelData = toPixel(patchData, windowWidth, windowHeight)
   const temp1 = mergeObj({}, patchData, pixelData)

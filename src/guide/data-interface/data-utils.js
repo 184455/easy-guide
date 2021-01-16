@@ -6,7 +6,7 @@
 
 import { mergeObj, isEmptyArray, createGuideItemData,
   getMaxNumber, scrollIntoToView, selectPosition, isFunction } from '../../utils/index'
-import { getGuideItemDomText, getGuideViewDomText } from '../../config/dom-text'
+import { getGuideItemDomText, getGuideViewDomText, exitPreview } from '../../config/dom-text'
 import {
   getElementById, removeChild, getMaintainRoot,
   getElement, getViewRoot, createViewRoot, setStyles
@@ -55,17 +55,17 @@ export function handleDelete (_this, action, data) {
 }
 
 export function handleInitViewRender (_this) {
-  const { guideList, mode } = _this
+  const { guideList, mode, previewBack } = _this
   const currentItem = mergeObj({}, guideList[0], {
     finalFlag: guideList.length === 1,
     firstFlag: true
   })
 
   const tempRootEle = createViewRoot()
-  tempRootEle.innerHTML = getGuideViewDomText(currentItem, mode)
+  tempRootEle.innerHTML = exitPreview(previewBack === 'maintain') + getGuideViewDomText(currentItem, mode)
   refreshStepDom(_this, currentItem, tempRootEle)
   insertViewRoot(tempRootEle)
-  scrollIntoToView(getElement(tempRootEle, 'e_guide-content'))
+  scrollIntoToView(getElement(tempRootEle, '_eG_guide-content'))
 }
 
 export function handleModify (_this, action, data) {
@@ -122,7 +122,7 @@ export function handleShowStep (_this, index) {
   _this.currentIndex = index
   refreshStepDom(_this, showItem)
   setTimeout(() => {
-    scrollIntoToView(getElement(getViewRoot(), 'e_guide-content'))
+    scrollIntoToView(getElement(getViewRoot(), '_eG_guide-content'))
   }, 320)
 }
 
@@ -211,13 +211,13 @@ function insertViewRoot (el) {
 // 更新上一步下一步 dom 内容
 export function refreshStepDom(_this, showItemData, rootEle) {
   rootEle = rootEle || getViewRoot()
-  const barElementList = Array.from(rootEle.getElementsByClassName('bar-lib-common'))
-  const contentWrap = getElement(rootEle, 'e_guide-content')
-  const content = getElement(rootEle, 'e_guide-content-text')
+  const barElementList = Array.from(rootEle.getElementsByClassName('_eG_view-bar-common'))
+  const contentWrap = getElement(rootEle, '_eG_guide-content')
+  const content = getElement(rootEle, '_eG_guide-content-text')
   const closeTitle = getElement(rootEle, 'e_guide-title-text')
   const closeBtn = getElement(rootEle, 'e_guide-close')
-  const prevBtn = getElement(rootEle, 'e_prev-btn')
-  const nextBtn = getElement(rootEle, 'e_next-btn')
+  const prevBtn = getElement(rootEle, '_eG_prev-btn')
+  const nextBtn = getElement(rootEle, '_eG_next-btn')
   content.innerHTML = showItemData.content
   const { windowWidth, windowHeight } = _this
   mergeObj(showItemData, { windowWidth, windowHeight })
@@ -243,7 +243,7 @@ export function refreshStepDom(_this, showItemData, rootEle) {
   const { contentPosition, orderNumber } = showItemData
   closeTitle.innerHTML = `步骤${orderNumber}`
   setStyles(closeBtn, { display: 'inline-block' })
-  contentWrap.className = `e_guide-content ${contentPosition}`
+  contentWrap.className = `_eG_guide-content ${contentPosition}`
   setStyles(contentWrap, calcGuidePosition(mergeObj(showItemData, finalRender)))
 }
 
@@ -271,54 +271,59 @@ function calcGuidePosition ({ top, left, height, width, fixFlag, contentPosition
   const offset = 12
   const Height = fixFlag !== 'N' ? window.innerHeight : windowHeight
   switch (contentPosition) {
-    case '_eg-guide-1':
+    case '_eG_guide-1':
       return styleJoin(top - offset, left, {
         right: 'unset',
         bottom: 'unset',
         transform: 'translateY(-100%)'
       })
-    case '_eg-guide-2':
+    case '_eG_guide-2':
       return styleJoin(top - offset, left, {
         left: 'unset',
         right: `${windowWidth - (left + width)}px`,
         transform: 'translateY(-100%)'
       })
-    case '_eg-guide-3':
+    case '_eG_guide-3':
       return styleJoin(top, left + width + offset, {
         right: 'unset',
         bottom: 'unset',
         transform: 'none'
       })
-    case '_eg-guide-4':
+    case '_eG_guide-4':
       return styleJoin(top, left + width + offset, {
         top: 'unset',
         bottom: `${Height - (top + height)}px`,
         transform: 'none'
       })
-    case '_eg-guide-5':
+    case '_eG_guide-5':
       return styleJoin(top + height + offset, left, {
         left: 'unset',
         right: `${windowWidth - (left + width)}px`,
         transform: 'none'
       })
-    case '_eg-guide-6':
+    case '_eG_guide-6':
       return styleJoin(top + height + offset, left, {
         right: 'unset',
         bottom: 'unset',
         transform: 'none'
       })
-    case '_eg-guide-7':
+    case '_eG_guide-7':
       return styleJoin(top, left - offset, {
         top: 'unset',
         bottom: `${Height - (top + height)}px`,
         transform: 'translateX(-100%)'
       })
-    case '_eg-guide-8':
+    case '_eG_guide-8':
       return styleJoin(top, left - offset, {
         transform: 'translateX(-100%)',
         right: 'unset',
         bottom: 'unset'
       })
     default:
+      return styleJoin(top - offset, left, {
+        right: 'unset',
+        bottom: 'unset',
+        transform: 'translateY(-100%)'
+      })
   }
 }

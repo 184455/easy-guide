@@ -161,7 +161,7 @@ export function calcContentPosition (containBorder, childReact) {
       res = 1
   }
 
-  return `_eg-guide-${res}`
+  return `_eG_guide-${res}`
 }
 
 /**
@@ -188,7 +188,7 @@ export function getContentPosition (containBorder, childReact, guideReact) {
   const mapping = [top, right, bottom, left]
   const maxBorder = Math.max(top, right, bottom, left)
   const index = mapping.indexOf(maxBorder)
-  const res = val => '_eg-guide-' + val
+  const res = val => '_eG_guide-' + val
 
   switch (index) {
     case 0: // top

@@ -28,7 +28,7 @@ export function handleDotDown(_this, e) {
     startX: e[tagX],
     startY: e[tagY],
     position: getPosition(parentEle),
-    contentElement: getElement(parentEle, 'e_guide-content'),
+    contentElement: getElement(parentEle, '_eG_guide-content'),
     fixFlag: editItem.fixFlag
   }
 }
@@ -52,7 +52,7 @@ export function handleDotMove(_this, e) {
   mouseEventTempData.newPosition = nextPosition
   const { left, top, width, height } = nextPosition
   const contentPosition = calcContentPosition([windowWidth, windowHeight], [left, top, width, height])
-  contentElement.className = `e_guide-content ${contentPosition}`
+  contentElement.className = `_eG_guide-content ${contentPosition}`
   setStyles(_this.mouseEventTarget.parentElement, addUtil(newPosition, 'px'))
 }
 

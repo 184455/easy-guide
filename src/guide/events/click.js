@@ -15,7 +15,7 @@ const { PreviewBtn, CloseButton, DeleteBtn, EditBtn, getDataSet } = Constant
  */
 export default function handelWrapperClick(_this, e) {
   const targetName = getDataSet(e.target)
-  if (targetName && targetName.indexOf('_eg-guide-') > -1) {
+  if (targetName && targetName.indexOf('_eG_guide-') > -1) {
     _this.dispatch('create')
     return
   }

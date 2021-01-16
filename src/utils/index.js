@@ -25,7 +25,7 @@ export function createGuideItemData (initVal) {
     topUtil: 'px',
     orderNumber: 1,
     fixFlag: 'N',
-    contentPosition: '_eg-guide-1'
+    contentPosition: '_eG_guide-1'
   }, initVal)
 
   return transformUtil(temp, window.innerWidth, window.innerHeight)
@@ -115,7 +115,7 @@ export function transformUtil (data, windowWidth, windowHeight) {
       if (data[`${key}Util`] === '%') {
         val = oleVal > 1 ? Number((val / denominator).toFixed(2)) : oleVal
       } else {
-        val = oleVal < 1 ? parseInt(val * denominator) : oleVal
+        val = oleVal < 1 ? parseInt(val * denominator) : parseInt(oleVal)
       }
     }
     return mergeObj(prev, { [key]: val })
@@ -155,7 +155,7 @@ export function PX (n) {
 }
 
 export function isDot (name) {
-  return name.indexOf('e_dot-') > -1
+  return name.indexOf('_eG_dot-') > -1
 }
 
 export function addUtils (obj, keys, util = 'px') {

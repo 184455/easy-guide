@@ -21,7 +21,7 @@ export function handleGuideDown(_this, e) {
   const editItem = guideList.find(o => o.id === id)
   const fixFlag = editItem.fixFlag
 
-  const contentElement = getElement(mouseEventTarget, 'e_guide-content')
+  const contentElement = getElement(mouseEventTarget, '_eG_guide-content')
   const { clientWidth: contentWidth, clientHeight: contentHeight } = contentElement
 
   _this.mouseEventTempData = {
@@ -53,7 +53,7 @@ export function handleGuideMove(_this, e) {
   )
   const contentPosition = calcContentPosition(outerContain, [newLeft, newTop, selectBoxWidth, selectBoxHeight])
   setStyles(mouseEventTarget, { left: `${newLeft}px`, top: `${newTop}px` })
-  contentElement.className = `e_guide-content ${contentPosition}`
+  contentElement.className = `_eG_guide-content ${contentPosition}`
 
   mergeObj(mouseEventTempData, {
     contentPosition,
