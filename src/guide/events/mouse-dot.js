@@ -5,9 +5,9 @@
  * @date 2021/01/01
  */
 
-import Constant from '../../config/constant'
-import { setStyles, getPosition, getElement } from '../../utils/dom'
-import { mergeObj, addUtil, transformUtil } from '../../utils/index'
+import Constant from '@/config/constant'
+import { setStyles, getPosition, getElement } from '@/utils/dom'
+import { mergeObj, addUtil, transformUtil } from '@/utils/index'
 import { calcContentPosition } from '../border-check/check-common'
 import checkDot from '../border-check/check-dot'
 

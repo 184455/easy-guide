@@ -5,9 +5,9 @@
  * @date 2021/01/01
  */
 
-import { isDot } from '../../utils/index'
-import { getMaintainRoot } from '../../utils/dom'
-import Constant from '../../config/constant'
+import { isDot } from '@/utils/index'
+import { getMaintainRoot } from '@/utils/dom'
+import Constant from '@/config/constant'
 import { operationBarDown, operationBarMove, operationBarUp } from './mouse-operation-bar'
 import { handleGuideDown, handleGuideMove, handleGuideUp } from './mouse-guide'
 import { handleDotDown, handleDotMove, handleDotUp } from './mouse-dot'

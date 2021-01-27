@@ -5,14 +5,14 @@
  * @date 2021/01/01
  */
 
-import Config from '../../config/index'
-import Constant from '../../config/constant'
-import { getOperationBarDomText } from '../../config/dom-text'
-import { isEmptyArray, mergeObj, getWindowWidthHeight, PX } from '../../utils/index'
+import Config from '@/config/index'
+import Constant from '@/config/constant'
+import { getOperationBarDomText } from '@/config/dom-text'
+import { isEmptyArray, mergeObj, getWindowWidthHeight, PX } from '@/utils/index'
 import {
   addClass, deleteClass, setStyles, getMaintainRoot, hasMaintainRoot,
   createMaintainRoot, hasViewRoot
-} from '../../utils/dom'
+} from '@/utils/dom'
 
 const { MODE } = Constant
 

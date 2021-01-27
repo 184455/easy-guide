@@ -5,7 +5,7 @@
  * @date 2021/01/01
  */
 
-import { getMaintainRoot, getViewRoot } from '../../utils/dom'
+import { getMaintainRoot, getViewRoot } from '@/utils/dom'
 import { handelMouseDown, handelMouseMove, handelMouseUp } from './mouse'
 import handelViewModeWrapClick from './click-view'
 import handelWrapperClick from './click'

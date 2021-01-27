@@ -5,9 +5,9 @@
  * @date 2021/01/01
  */
 
-import Constant from '../../config/constant'
+import Constant from '@/config/constant'
+import { removeChild, getElementById } from '@/utils/dom'
 import { createGuideEditModal } from './modal-utils'
-import { removeChild, getElementById } from '../../utils/dom'
 
 const { MODE, ModalCancelBtn, ModalConfirmBtn, EGEditModal } = Constant
 

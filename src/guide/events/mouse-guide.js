@@ -5,9 +5,9 @@
  * @date 2021/01/01
  */
 
-import Constant from '../../config/constant'
-import { getElement, setStyles } from '../../utils/dom'
-import { mergeObj, transformUtil, getWindowWidthHeight, selectPosition } from '../../utils/index'
+import Constant from '@/config/constant'
+import { getElement, setStyles } from '@/utils/dom'
+import { mergeObj, transformUtil, getWindowWidthHeight, selectPosition } from '@/utils/index'
 import commonBorderCheck, { calcContentPosition } from '../border-check/check-common'
 
 const { tagX, tagY } = Constant

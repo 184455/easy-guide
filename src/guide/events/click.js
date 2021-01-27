@@ -5,7 +5,7 @@
  * @date 2021/01/01
  */
 
-import Constant from '../../config/constant'
+import Constant from '@/config/constant'
 
 const { PreviewBtn, CloseButton, DeleteBtn, EditBtn, getDataSet } = Constant
 

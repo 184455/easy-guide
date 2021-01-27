@@ -5,12 +5,12 @@
  */
 
 import { mergeObj, isEmptyArray, createGuideItemData,
-  getMaxNumber, scrollIntoToView, selectPosition, isFunction } from '../../utils/index'
-import { getGuideItemDomText, getGuideViewDomText, exitPreview } from '../../config/dom-text'
+  getMaxNumber, scrollIntoToView, selectPosition, isFunction } from '@/utils/index'
+import { getGuideItemDomText, getGuideViewDomText, exitPreview } from '@/config/dom-text'
 import {
   getElementById, removeChild, getMaintainRoot,
   getElement, getViewRoot, createViewRoot, setStyles
-} from '../../utils/dom'
+} from '@/utils/dom'
 
 export function handleInitRender (_this) {
   const renderData = transformData(_this).map(o => {

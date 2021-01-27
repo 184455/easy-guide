@@ -5,10 +5,10 @@
  * @date 2021/01/01
  */
 
-import Constant from '../../config/constant'
-import { setStyles, getOperationBarEle } from '../../utils/dom'
+import Constant from '@/config/constant'
+import { setStyles, getOperationBarEle } from '@/utils/dom'
 import commonBorderCheck from '../border-check/check-common'
-import { getWindowWidthHeight, PX } from '../../utils/index'
+import { getWindowWidthHeight, PX } from '@/utils/index'
 
 const { tagX, tagY } = Constant
 

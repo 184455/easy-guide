@@ -5,9 +5,9 @@
  * @date 2021/01/01
  */
 
-import { ele, getElementById, getElement, setStyles } from '../../utils/dom'
-import Constant from '../../config/constant'
-import { mergeObj, transformUtil, toPixel, selectPosition, addUtils } from '../../utils/index'
+import Constant from '@/config/constant'
+import { ele, getElementById, getElement, setStyles } from '@/utils/dom'
+import { mergeObj, transformUtil, toPixel, selectPosition, addUtils } from '@/utils/index'
 
 const { ModalConfirmBtn, EGEditModal, ModalCancelBtn } = Constant
 

@@ -5,7 +5,7 @@
  * @date 2021/01/01
  */
 
-import { getMaintainRoot, removeChild, getViewRoot } from '../../utils/dom'
+import { getMaintainRoot, removeChild, getViewRoot } from '@/utils/dom'
 import {
   initMode,
   showFlag,
