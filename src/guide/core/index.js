@@ -45,4 +45,7 @@ export default function InitMixin (EG) {
   EG.prototype.setGuideList = function (list) {
     this.guideList = list
   }
+  EG.prototype.getGuideList = function () {
+    return this.guideList
+  }
 };
