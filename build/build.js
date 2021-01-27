@@ -3,6 +3,7 @@ const path = require('path')
 const rollup = require('rollup')
 const colors = require('colors')
 const version = require('../package.json').version
+const alias = require('rollup-plugin-alias')
 const babel = require('rollup-plugin-babel')
 const uglify = require('uglify-js')
 const zlib = require('zlib')
@@ -14,6 +15,13 @@ const banner =
   ' * Released under the MIT License.\n' +
   ' */'
 
+const aliasConfig = alias({
+  resolve: ['.jsx', '.js'],
+  entries:[
+    {find:'@', replacement: resolve('src')},
+  ]
+})
+
 // 平时开发的时候，只需要打包 esm 格式的文件，发布 mpm 包的时候，所有格式都需要
 const builds = [{
   entry: resolve('src/index.js'),
@@ -21,6 +29,7 @@ const builds = [{
   format: 'es',
   moduleName: 'EasyGuide',
   plugins: [
+    aliasConfig,
     babel({
       exclude: 'node_modules/**' // only transpile our source code
     })
@@ -35,6 +44,7 @@ if (process.env.GUIDE_MODE === 'product') {
     format: 'umd',
     moduleName: 'EasyGuide',
     plugins: [
+      aliasConfig,
       babel({
         exclude: 'node_modules/**' // only transpile our source code
       })
@@ -49,7 +59,8 @@ if (process.env.GUIDE_MODE === 'product') {
   //   format: 'umd',
   //   moduleName: 'EasyGuide',
   //   plugins: [
-  //     babel({
+      // aliasConfig,
+      // babel({
   //       exclude: 'node_modules/**' // only transpile our source code
   //     })
   //   ],
