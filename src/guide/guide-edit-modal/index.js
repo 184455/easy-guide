@@ -9,7 +9,7 @@ import Constant from '@/config/constant'
 import { removeChild, getElementById } from '@/utils/dom'
 import { createGuideEditModal } from './modal-utils'
 
-const { MODE, ModalCancelBtn, ModalConfirmBtn, EGEditModal } = Constant
+const { MODE } = Constant
 
 export default function GuideEditModal (EasyGuide) {
   EasyGuide.prototype.showEditModal = function (editInfo) {
@@ -18,9 +18,9 @@ export default function GuideEditModal (EasyGuide) {
     }
   }
   EasyGuide.prototype.hiddenEditModal = function () {
-    const rootEle = getElementById(EGEditModal)
-    getElementById(ModalCancelBtn).onclick = null
-    getElementById(ModalConfirmBtn).onclick = null
+    const rootEle = getElementById('_eG_editModal')
+    getElementById('_eG_modalCancel').onclick = null
+    getElementById('_eG_modalConfirm').onclick = null
     rootEle.onchange = null
     removeChild(document.body, rootEle)
   }

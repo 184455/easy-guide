@@ -4,16 +4,12 @@
  * @author Abner <xiaocao1602@qq.com>
  * @date 2021/01/01
  */
-
-import Constant from '@/config/constant'
 import { ele, getElementById, getElement, setStyles } from '@/utils/dom'
 import { mergeObj, transformUtil, toPixel, selectPosition, addUtils } from '@/utils/index'
 
-const { ModalConfirmBtn, EGEditModal, ModalCancelBtn } = Constant
-
 // 创建用户指导编辑框
 export function createGuideEditModal(_this, editInfo) {
-  const rootElement = ele('div', { class: 'e_edit-modal', id: EGEditModal })
+  const rootElement = ele('div', { class: 'e_edit-modal', id: '_eG_editModal' })
   rootElement.innerHTML = modalDomText(editInfo)
   document.body.appendChild(rootElement)
 
@@ -179,8 +175,8 @@ function modalDomText (initData) {
           </form>
         </div>
         <div class="modal-footer">
-          <button class="e_cancel-btn" id="${ModalCancelBtn}">取消</button>
-          <button class="e_confirm-btn" id="${ModalConfirmBtn}">确定</button>
+          <button class="e_cancel-btn" id="_eG_modalCancel">取消</button>
+          <button class="e_confirm-btn" id="_eG_modalConfirm">确定</button>
         </div>
       </div>
     </div>

@@ -7,7 +7,7 @@
 
 import Constant from '@/config/constant'
 
-const { PreviewBtn, CloseButton, DeleteBtn, EditBtn, getDataSet } = Constant
+const { getDataSet } = Constant
 
 /**
  * 点击事件
@@ -20,7 +20,7 @@ export default function handelWrapperClick(_this, e) {
     return
   }
 
-  const eventElementNameList = [CloseButton, DeleteBtn, EditBtn, PreviewBtn]
+  const eventElementNameList = ['guide-close-btn', 'deleteButton', 'editBtn', 'preview-btn']
   if (eventElementNameList.indexOf(targetName) === -1) { return }
 
   _this.dispatch(targetName, e)

@@ -13,23 +13,12 @@ export default {
     MAINTAIN: 'MAINTAIN'    // 只编辑
   },
   DefaultFillStyle: 'rgba(0, 0, 0, 0.5)',
-  EGEditModal: '_eG_editModal',
-  ModalCancelBtn: '_eG_modalCancel',
-  ModalConfirmBtn: '_eG_modalConfirm',
-  CloseButton: 'guide-close-btn',
   OperationBarDrag: 'operation-drag-area',
-  PreviewBtn: 'preview-btn',
   DragGuide: 'guide-drag-item',
   DotTop: '_eG_dot-top',
   DotRight: '_eG_dot-right',
   DotBottom: '_eG_dot-bottom',
   DotLeft: '_eG_dot-left',
-  DeleteBtn: 'deleteButton',
-  EditBtn: 'editBtn',
-  ExitPreview: 'exitPreview',
-  PrevBtnName: 'PrevBtnName',
-  NextBtnName: 'NextBtnName',
-  ViewCloseBtn: 'ViewCloseBtn',
   dataSet: val => `data-eg="${val}"`,
   getDataSet: el => el.dataset.eg
 }
