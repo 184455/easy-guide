@@ -12,6 +12,8 @@ export default {
     READ: 'READ',           // 只展示
     MAINTAIN: 'MAINTAIN'    // 只编辑
   },
+  MinHeight: 50,
+  MinWidth: 100,
   DefaultFillStyle: 'rgba(0, 0, 0, 0.5)',
   OperationBarDrag: 'operation-drag-area',
   DragGuide: 'guide-drag-item',
