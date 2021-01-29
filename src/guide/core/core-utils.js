@@ -4,11 +4,10 @@
  * @author Abner <xiaocao1602@qq.com>
  * @date 2021/01/01
  */
-
 import Config from '@/config/index'
 import Constant from '@/config/constant'
 import { getOperationBarDomText } from '@/config/dom-text'
-import { isEmptyArray, mergeObj, getWindowWidthHeight, PX } from '@/utils/index'
+import { isEmptyArray, assign, getWindowWidthHeight, PX } from '@/utils/index'
 import {
   addClass, deleteClass, setStyles, getMaintainRoot, hasMaintainRoot,
   createMaintainRoot, hasViewRoot
@@ -28,10 +27,13 @@ export function initMode (_this, m) {
 
 export function initDefaultData (_this) {
   const { mode, guideList = [], currentIndex = 0 } = _this.Options
-  _this.guideList = guideList.slice(0)
+
   _this.mode = mode
+  _this.previewBack = ''
+  _this.guideList = guideList.slice(0)
   _this.currentIndex = currentIndex
-  _this.status = 'none'
+  _this.mouseEventTempData = null
+  _this.mouseEventTarget = null
 }
 
 export function initViewport(_this) {
@@ -41,7 +43,7 @@ export function initViewport(_this) {
 }
 
 export function mergeCustomOptions(_this, options) {
-  _this.Options = mergeObj({}, Config, options)
+  _this.Options = assign({}, Config, options)
 }
 
 export function checkMode (m) {
@@ -75,6 +77,7 @@ function showModeMaintain(_this) {
 function setMode(_this, m) {
   _this.mode = m
 }
+
 function setStatus(_this, m) {
   _this.status = m
 }

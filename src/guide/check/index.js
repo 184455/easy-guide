@@ -1,22 +1,19 @@
-/**
- * CommonBorderCheck
- * 边缘检测公共函数
- * @author Abner <xiaocao1602@qq.com>
- * @date 2021/01/01
- */
+import Constant from '@/config/constant'
+
+const { DotTop, DotRight, DotBottom, DotLeft } = Constant
 
 /**
  * 边缘检测函数
- * @param {array} containBorder 外部容器宽高
- * @param {array} childBorder 内部容器宽高
+ * @param {array} containHW 外部容器宽高
+ * @param {array} childHW 内部容器宽高
  * @param {array} mouseContainOffset 鼠标在外部容器的坐标
  * @param {array} mouseChildOffset 鼠标在内部容器的坐标
  * @returns {object} 新 距离 (0, 0) 的位置信息
  */
-export default function commonBorderCheck (containBorder, childBorder, mouseContainOffset, mouseChildOffset) {
+export function commonBorderCheck ({ containHW, childHW, mouseContainOffset, mouseChildOffset }) {
   const errorOffset = 2 // 误差允许范围
-  const [containWidth, containHeight] = containBorder
-  const [childWidth, childHeight] = childBorder
+  const [containWidth, containHeight] = containHW
+  const [childWidth, childHeight] = childHW
   const [containX, containY] = mouseContainOffset
   const [childX, childY] = mouseChildOffset
   let newLeft = containX - childX
@@ -162,6 +159,58 @@ export function calcContentPosition (containBorder, childReact) {
   }
 
   return `_eG_guide-${res}`
+}
+
+/**
+ * dot 边缘检测
+ * @param {array} containHW 外部容器宽高
+ * @param {array} childHW 内部容器宽高
+ * @param {array} startPointer 鼠标落点坐标
+ * @param {array} dropPointer 鼠标移动点坐标
+ * @param {string} elementName dot 元素名称
+ * @returns {object} 新 距离 (0, 0) 的位置信息
+ */
+export function checkDot ({ containHW, childLTWH, startPointer, dropPointer, elementName }) {
+  const errorSet = 2 // 边缘检测误差值
+  const [containWidth, containHeight] = containHW
+  const [left, top, width, height] = childLTWH
+  const [startX, startY] = startPointer
+  const [endX, endY] = dropPointer
+
+  let newLeft, newTop, newHeight, newWidth
+
+  switch (elementName) {
+    case DotTop:
+      newTop = top - (startY - endY)
+      newHeight = height + (startY - endY)
+      if (endY < errorSet) {
+        newTop = 0
+        newHeight = top + height
+      }
+      return { left, top: newTop, width, height: newHeight }
+    case DotRight:
+      newWidth = width + (endX - startX)
+      if (endX > (containWidth - errorSet)) {
+        newWidth = containWidth - left
+      }
+      return { left, top, width: newWidth, height }
+    case DotBottom:
+      newHeight = height + (endY - startY)
+      if (endY > (containHeight - errorSet)) {
+        newHeight = containHeight - top
+      }
+      return { left, top, width, height: newHeight }
+    case DotLeft:
+      newLeft = left - (startX - endX)
+      newWidth = width + (startX - endX)
+      if (endX < errorSet) {
+        newLeft = 0
+        newWidth = left + width
+      }
+      return { left: newLeft, top, width: newWidth, height }
+    default:
+      return { left, top, width, height }
+  }
 }
 
 /**

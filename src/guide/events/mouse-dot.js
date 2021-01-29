@@ -4,64 +4,44 @@
  * @author Abner <xiaocao1602@qq.com>
  * @date 2021/01/01
  */
-
 import Constant from '@/config/constant'
-import { setStyles, getPosition, getElement } from '@/utils/dom'
-import { mergeObj, addUtil, transformUtil } from '@/utils/index'
-import { calcContentPosition } from '../border-check/check-common'
-import checkDot from '../border-check/check-dot'
+import { getElement } from '@/utils/dom'
+import { assign, getWindowWidthHeight, isFixed } from '@/utils/index'
 
-const { tagX, tagY, getDataSet, MinHeight, MinWidth } = Constant
+const { tagX, tagY, getDataSet } = Constant
 
 export function handleDotDown(_this, e) {
-  const { guideList } = _this
-  const elementName = getDataSet(e.target)
-  const parentEle = _this.mouseEventTarget.parentElement
-  const { id } = parentEle
-  const editItem = guideList.find(o => o.id === id)
+  const guideElement = _this.mouseEventTarget.parentElement
+  const { id, offsetLeft, offsetTop, clientWidth, clientHeight } = guideElement
+  const popElement = getElement(guideElement, '_eG_guide-content')
+  const editItem = _this.getGuideItemById(id)
+  const deltaX = e[tagX]
+  const deltaY = e[tagY]
 
   _this.mouseEventTempData = {
-    id,
-    elementName,
-    startX: e[tagX],
-    startY: e[tagY],
-    position: getPosition(parentEle),
-    contentElement: getElement(parentEle, '_eG_guide-content'),
-    fixFlag: editItem.fixFlag
+    editItem,
+    popElement,
+    moveFlag: false, // 标记是否移动过
+    el: guideElement,
+    elementName: getDataSet(e.target),
+    startPointer: [deltaX, deltaY],
+    childLTWH: [offsetLeft, offsetTop, clientWidth, clientHeight],
+    containHW: getWindowWidthHeight(isFixed(editItem.fixFlag))
   }
 }
+
 export function handleDotMove(_this, e) {
-  let { mouseEventTempData, windowWidth, windowHeight } = _this
-  const { elementName, position, id, contentElement, startX, startY, fixFlag } = mouseEventTempData
-  const newPosition = checkDot(
-    [windowWidth, windowHeight],
-    [startX, startY, e[tagX], e[tagY]],
-    position,
-    [elementName, fixFlag]
-  )
-
-  // 设置一个选区的最小宽高
-  if (newPosition.width < MinWidth || newPosition.height < MinHeight) {
-    mouseEventTempData = null
-    return
-  }
-
-  const nextPosition = mergeObj({ id }, position, newPosition)
-  mouseEventTempData.newPosition = nextPosition
-  const { left, top, width, height } = nextPosition
-  const contentPosition = calcContentPosition([windowWidth, windowHeight], [left, top, width, height])
-  contentElement.className = `_eG_guide-content ${contentPosition}`
-  setStyles(_this.mouseEventTarget.parentElement, addUtil(newPosition, 'px'))
+  _this.dispatch('onMouseMoving', assign(_this.mouseEventTempData, {
+    moveFlag: true,
+    type: 'dotMoving',
+    dropPointer: [e[tagX], e[tagY]]
+  }))
 }
 
 export function handleDotUp(_this, e) {
-  const { mouseEventTempData = {} } = _this
-  const { newPosition } = mouseEventTempData
-  if (!(newPosition && newPosition.id)) {
-    return
-  }
+  if (!_this.mouseEventTempData || _this.mouseEventTempData.moveFlag !== true) { return }
 
-  const editItem = _this.guideList.find(i => i.id === newPosition.id) || {}
-  _this.dispatch('modify', transformUtil(mergeObj(editItem, newPosition), _this.windowWidth))
+  const { changeData, editItem } = _this.mouseEventTempData
+  _this.dispatch('modify', assign({}, editItem, changeData))
   _this.mouseEventTempData = null
 }

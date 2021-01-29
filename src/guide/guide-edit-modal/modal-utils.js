@@ -5,7 +5,7 @@
  * @date 2021/01/01
  */
 import { ele, getElementById, getElement, setStyles } from '@/utils/dom'
-import { mergeObj, transformUtil, toPixel, selectPosition, addUtils } from '@/utils/index'
+import { assign, transformUtil, toPixel, selectPosition, addUtils } from '@/utils/index'
 
 // 创建用户指导编辑框
 export function createGuideEditModal(_this, editInfo) {
@@ -27,9 +27,9 @@ const refreshEdit = (patchData, windowWidth, windowHeight) => {
   const contentBox = getElement(editItemDom, '_eG_guide-content-text')
 
   const pixelData = toPixel(patchData, windowWidth, windowHeight)
-  const temp1 = mergeObj({}, patchData, pixelData)
+  const temp1 = assign({}, patchData, pixelData)
   const checkPositionData = selectPosition(temp1)
-  const temp2 = mergeObj({}, temp1, checkPositionData)
+  const temp2 = assign({}, temp1, checkPositionData)
   const pixel = addUtils(temp2, ['top', 'left', 'height', 'width'], 'px')
   setStyles(editItemDom, pixel)
   contentBox.innerHTML = content || '请维护用户指导内容！'
@@ -46,7 +46,7 @@ const handleClickConfirm = (_this, editInfo) => {
   const inputElements = document.getElementsByClassName('e_edit_class')
   const values = Array.from(inputElements).reduce((prev, inputEle) => {
     let { name, value } = inputEle
-    return mergeObj(prev, { [name]: value })
+    return assign(prev, { [name]: value })
   }, {})
 
   if (editInfo.fixFlag !== values.fixFlag) {
@@ -61,7 +61,7 @@ const handleClickConfirm = (_this, editInfo) => {
     }
   }
 
-  const temp = mergeObj(editInfo, values, { id: editInfo.id })
+  const temp = assign(editInfo, values, { id: editInfo.id })
   const transformUtilData = transformUtil(temp, windowWidth, windowHeight)
   _this.dispatch('modify', transformUtilData)
   _this.hiddenEditModal()

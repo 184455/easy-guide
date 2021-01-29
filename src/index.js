@@ -1,5 +1,5 @@
 import InitMixin from './guide/core/index'
-import InitDataInterface from './guide/data-interface/index'
+import Distribute from './guide/distribute/index'
 import InitEvents from './guide/events/index'
 import GuideEditModal from './guide/guide-edit-modal/index'
 function EasyGuide(options = {}) {
@@ -7,7 +7,7 @@ function EasyGuide(options = {}) {
 }
 
 InitMixin(EasyGuide)
-InitDataInterface(EasyGuide)
+Distribute(EasyGuide)
 InitEvents(EasyGuide)
 GuideEditModal(EasyGuide)
 

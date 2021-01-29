@@ -4,40 +4,33 @@
  * @author Abner <xiaocao1602@qq.com>
  * @date 2021/01/01
  */
-
 import Constant from '@/config/constant'
-import { setStyles, getOperationBarEle } from '@/utils/dom'
-import commonBorderCheck from '../border-check/check-common'
-import { getWindowWidthHeight, PX } from '@/utils/index'
+import { getOperationBarEle } from '@/utils/dom'
+import { assign, getWindowWidthHeight } from '@/utils/index'
 
 const { tagX, tagY } = Constant
 
 export function operationBarDown(_this, e) {
   const rootEle = getOperationBarEle()
-  const { offsetLeft, offsetTop, clientHeight, clientWidth } = rootEle // 从父元素取距离屏幕的位置
-  _this.mouseEventTempData = {
-    deltaX: e[tagX] - offsetLeft,
-    deltaY: e[tagY] - offsetTop,
-    outerContain: getWindowWidthHeight(true),
-    clientHeight,
-    clientWidth,
-    rootEle
-  }
-}
-export function operationBarMove(_this, e) {
-  if (!_this.mouseEventTempData) {
-    return
-  }
+  const { offsetLeft, offsetTop, clientHeight, clientWidth } = rootEle
+  const deltaX = e[tagX] - offsetLeft
+  const deltaY = e[tagY] - offsetTop
 
-  const { deltaX, deltaY, rootEle, clientHeight, clientWidth, outerContain } = _this.mouseEventTempData // 鼠标落点和元素的边距，需要减去，保持移动前不抖动
-  const { newLeft, newTop } = commonBorderCheck(
-    outerContain,
-    [clientWidth, clientHeight],
-    [e[tagX], e[tagY]],
-    [deltaX, deltaY]
-  )
-  setStyles(rootEle, { left: PX(newLeft), top: PX(newTop) })
+  _this.mouseEventTempData = {
+    el: rootEle,
+    mouseChildOffset: [deltaX, deltaY],
+    childHW: [clientWidth, clientHeight],
+    containHW: getWindowWidthHeight(true)
+  }
 }
+
+export function operationBarMove(_this, e) {
+  _this.dispatch('onMouseMoving', assign(_this.mouseEventTempData, {
+    type: 'barMoving',
+    mouseContainOffset: [e[tagX], e[tagY]]
+  }))
+}
+
 export function operationBarUp(_this, e) {
   _this.mouseEventTempData = null
 }

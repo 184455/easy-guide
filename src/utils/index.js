@@ -12,7 +12,7 @@ import { isElement } from './dom'
  * @param {object} data 初始化数据
  */
 export function createGuideItemData (initVal) {
-  const temp = mergeObj({
+  const temp = assign({
     id: String((new Date()).getTime()),
     content: '',
     width: 300,
@@ -71,7 +71,7 @@ export function isNotEmptyArray(arr) {
 /**
  * 对象合并
  */
-export function mergeObj() {
+export function assign() {
   return Object.assign.apply(this, arguments)
 }
 
@@ -82,7 +82,7 @@ export function mergeObj() {
  */
 export function addUtil (obj, util) {
   return Object.keys(obj).reduce((prev, current) => {
-    return mergeObj(prev, { [current]: obj[current] + util })
+    return assign(prev, { [current]: obj[current] + util })
   }, {})
 }
 
@@ -92,7 +92,7 @@ export function addUtil (obj, util) {
  */
 export function scrollIntoToView (el, options = {}) {
   if (isElement(el)) {
-    el.scrollIntoView(mergeObj({ behavior: 'smooth', block: 'center', inline: 'nearest' }, options))
+    el.scrollIntoView(assign({ behavior: 'smooth', block: 'center', inline: 'nearest' }, options))
   }
 }
 
@@ -118,7 +118,7 @@ export function transformUtil (data, windowWidth, windowHeight) {
         val = oleVal < 1 ? parseInt(val * denominator) : parseInt(oleVal)
       }
     }
-    return mergeObj(prev, { [key]: val })
+    return assign(prev, { [key]: val })
   }, {})
 }
 
@@ -136,7 +136,7 @@ export function toPixel (data, windowWidth, windowHeight) {
     if (data[`${key}Util`] === '%') {
       val = parseInt(val * denominator)
     }
-    return mergeObj(prev, { [key]: val })
+    return assign(prev, { [key]: val })
   }, { position: isFixedPosition(data.fixFlag) })
 }
 
@@ -144,9 +144,9 @@ export function isFixedPosition (flag) {
   return flag !== 'N' ? 'fixed' : 'absolute'
 }
 
-export function getWindowWidthHeight (isViewPort) {
+export function getWindowWidthHeight (isFixed) {
   const vw = document.body.scrollWidth
-  const vh = isViewPort ? window.innerHeight : document.body.scrollHeight
+  const vh = isFixed ? window.innerHeight : document.body.scrollHeight
   return [vw, vh]
 }
 
@@ -161,32 +161,44 @@ export function isDot (name) {
 export function addUtils (obj, keys, util = 'px') {
   return Object.keys(obj).reduce((prev, current) => {
     if (keys.indexOf(current) > -1) {
-      return mergeObj(prev, { [current]: obj[current] + util })
+      return assign(prev, { [current]: obj[current] + util })
     } else {
-      return mergeObj(prev, { [current]: obj[current] })
+      return assign(prev, { [current]: obj[current] })
     }
   }, {})
 }
 
-export function selectPosition ({ left, top, height, width, fixFlag }) {
+// 转换成根据某个角定位
+export function selectPosition (guideItem) {
+  const { left, top, height, width, fixFlag } = guideItem
   const [vw, vh] = getWindowWidthHeight(true)
   const newLeft = vw - left - width
   const newTop = vh - top - height
+  let res = { left, top }
 
   switch (fixFlag) {
     case 'leftTop':
-      return { left, top }
+      res = { left, top }
+      break
     case 'rightTop':
-      return { left: newLeft, top }
+      res = { left: newLeft, top }
+      break
     case 'rightBottom':
-      return { left: newLeft, top: newTop }
+      res = { left: newLeft, top: newTop }
+      break
     case 'leftBottom':
-      return { left, top: newTop }
+      res = { left, top: newTop }
+      break
     default:
-      return { left, top }
   }
+
+  return assign({}, guideItem, res)
 }
 
 export function isFunction (fun) {
   return typeof fun === 'function'
+}
+
+export function isFixed (flag) {
+  return flag !== 'N'
 }

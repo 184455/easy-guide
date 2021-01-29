@@ -5,7 +5,7 @@
  * @date 2021/01/01
  */
 
-import { mergeObj } from './index'
+import { assign } from './index'
 
 /**
  * 创建一个 div 元素
@@ -120,7 +120,7 @@ export function isElement(obj) {
  */
 export function getPosition (el) {
   return (['top', 'left', 'width', 'height']).reduce((prev, current) => {
-    return mergeObj({}, prev, { [current]: parseInt(el.style[current], 10) })
+    return assign({}, prev, { [current]: parseInt(el.style[current], 10) })
   }, {})
 }
 
