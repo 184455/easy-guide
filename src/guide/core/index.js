@@ -53,10 +53,15 @@ export default function InitMixin (EG) {
   }
 
   EG.prototype.getGuideList = function () {
-    return this.guideList
+    return this.guideList || []
   }
 
   EG.prototype.getGuideItemById = function (id) {
     return (this.guideList || []).find(o => o.id === id) || {}
+  }
+
+  EG.prototype.broadcast = function (action, data) {
+    const { onGuideListChange = () => {} } = this.Options
+    onGuideListChange(action, data, this.getGuideList())
   }
 };

@@ -4,7 +4,7 @@
  * @author Abner <xiaocao1602@qq.com>
  * @date 2021/01/01
  */
-import { distribute } from './data-utils'
+import { distribute } from './distribute-util'
 
 export default function Distribute (EasyGuide) {
   EasyGuide.prototype.dispatch = function (action, data) {

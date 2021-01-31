@@ -4,17 +4,13 @@
  * @date 2021/01/01
  */
 import Constant from '@/config/constant'
-import { calcContentPosition, commonBorderCheck, checkDot } from '@/guide/check'
+import { calcContentPosition, borderCheck, checkDot } from '@/guide/check'
 import { getGuideItemDomText, getGuideViewDomText, exitPreview } from '@/config/dom-text'
+import { getElementById, removeChild, getMaintainRoot, getElement, getViewRoot, createViewRoot, setStyles } from '@/utils/dom'
 import {
-  assign, isEmptyArray, createGuideItemData,
-  getMaxNumber, scrollIntoToView, selectCorner,
-  isFunction, px, transformUtilToSave, addUtils
+  assign, isEmptyArray, createGuideItemData, getMaxNumber, scrollIntoToView, selectCorner,
+  isFunction, px, transformUtilToSave, addUtils, transformUtilToPixel, isNotEmptyArray
 } from '@/utils'
-import {
-  getElementById, removeChild, getMaintainRoot,
-  getElement, getViewRoot, createViewRoot, setStyles
-} from '@/utils/dom'
 
 const { minHeight, minWidth } = Constant
 
@@ -30,7 +26,7 @@ export function distribute(_this, action, data) {
         handleInitRender(_this)
         break
       case 'create':
-        handleCreate(_this, action)
+        handleCreate(_this)
         break
       case 'delete':
         handleDelete(_this, action, data)
@@ -78,58 +74,63 @@ function handleInitRender (_this) {
   getMaintainRoot().insertAdjacentHTML('beforeend', domText)
 }
 
-async function handleCreate (_this, action) {
-  const { guideList, windowWidth, Options } = _this
+const handleCreate = async (_this) => {
+  const guideList = _this.getGuideList()
+  const { windowWidth, Options } = _this
   const { beforeCreate } = Options
-
-  const beforeVal = createGuideItemData({
+  const beforeGuideItem = createGuideItemData({
     orderNumber: getMaxNumber(guideList, 'orderNumber') + 1,
     left: (windowWidth / 2 - 150) | 0,
     top: window.pageYOffset + 200
   })
 
-  let guideItem = beforeVal
+  let guideItem = null
   if (isFunction(beforeCreate)) {
-    guideItem = await beforeCreate(_this, beforeVal)
+    guideItem = await beforeCreate(_this, beforeGuideItem)
+  } else {
+    guideItem = beforeGuideItem
   }
 
-  guideList.push(guideItem)
-  const domText = getGuideItemDomText(transformPixel(guideItem, windowWidth), 'MAINTAIN')
+  _this.setGuideList(guideList.concat(guideItem))
+  _this.broadcast('create', guideItem)
+
+  // Render to Dom
+  const pixelGuideItem = transformUtilToPixel(guideItem, windowWidth)
+  const domText = getGuideItemDomText(pixelGuideItem, 'MAINTAIN')
   getMaintainRoot().insertAdjacentHTML('beforeend', domText)
-  broadcast(_this, action, guideItem)
 }
 
-function handleDelete (_this, action, data) {
-  const { guideList } = _this
-  _this.guideList = guideList.filter(i => String(i.id) !== String(data.id))
-  const deleteElement = getElementById(data.id)
-  removeChild(deleteElement.parentElement, deleteElement)
+function handleDelete (_this, action, guideItem) {
+  _this.setGuideList(_this.getGuideList().filter(i => String(i.id) !== String(guideItem.id)))
 
-  broadcast(_this, action, data)
+  const deleteElement = getElementById(guideItem.id)
+  removeChild(deleteElement.parentElement, deleteElement)
+  _this.broadcast(action, guideItem)
 }
 
 function handleInitViewRender (_this) {
-  const { guideList, mode, previewBack } = _this
-  const currentItem = assign({}, guideList[0], {
+  const guideList = _this.getGuideList()
+  const { mode, previewBack } = _this
+  const guideItem = assign({}, guideList[0], {
     finalFlag: guideList.length === 1,
     firstFlag: true
   })
 
-  const tempRootEle = createViewRoot()
-  tempRootEle.innerHTML = exitPreview(previewBack === 'maintain') + getGuideViewDomText(currentItem, mode)
-  refreshStepDom(_this, currentItem, tempRootEle)
-  insertViewRoot(tempRootEle)
-  scrollIntoToView(getElement(tempRootEle, '_eG_guide-content'))
+  const rootEle = createViewRoot()
+  rootEle.innerHTML = exitPreview(previewBack === 'maintain') + getGuideViewDomText(guideItem, mode)
+  updateGuideItemPosition(_this, guideItem, rootEle)
+  insertViewRoot(rootEle)
+  scrollIntoToView(getElement(rootEle, '_eG_guide-content'))
 }
 
 function handleMouseMoving (_this, data) {
   const { type, el } = data
 
   if (type === 'barMoving') {
-    const { newLeft, newTop } = commonBorderCheck(data)
+    const { newLeft, newTop } = borderCheck(data)
     setStyles(el, { left: px(newLeft), top: px(newTop) })
   } else if (type === 'guideMoving') {
-    const { newLeft, newTop } = commonBorderCheck(data)
+    const { newLeft, newTop } = borderCheck(data)
     setStyles(el, { left: px(newLeft), top: px(newTop) })
 
     const { containHW, childHW, popElement } = data
@@ -168,13 +169,14 @@ function handleModify (_this, newGuideItem) {
   pipeline = transformUtilToSave(pipeline, _this.windowWidth)
 
   _this.setGuideItem(pipeline)
-  broadcast(_this, 'modify', pipeline)
+  _this.broadcast('modify', pipeline)
 }
 
-async function handleClickPrevBtn(_this, e) {
-  const { guideList, currentIndex: oldIndex } = _this
-  if (!Array.isArray(guideList) || !guideList.length) { return }
+const handleClickPrevBtn = async (_this, e) => {
+  const guideList = _this.getGuideList()
+  if (!isNotEmptyArray(guideList)) { return }
 
+  const { currentIndex: oldIndex } = _this
   const newIndex = oldIndex - 1
 
   const { beforePrev } = _this.Options
@@ -185,10 +187,11 @@ async function handleClickPrevBtn(_this, e) {
   handleShowStep(_this, newIndex)
 }
 
-async function handleClickNextBtn(_this, e) {
-  const { guideList, currentIndex: oldIndex } = _this
-  if (!Array.isArray(guideList) || !guideList.length) { return }
+const handleClickNextBtn = async (_this, e) => {
+  const guideList = _this.getGuideList()
+  if (!isNotEmptyArray(guideList)) { return }
 
+  const { currentIndex: oldIndex } = _this
   const newIndex = oldIndex + 1
 
   const { beforeNext } = _this.Options
@@ -200,33 +203,35 @@ async function handleClickNextBtn(_this, e) {
 }
 
 function handleShowStep (_this, index) {
-  const { guideList } = _this
+  const guideList = _this.getGuideList()
   if (!guideList[index]) {
     handleClickCloseBtn(_this)
     return
   }
 
-  const showItem = assign({}, guideList[index], {
+  const guideItem = assign({}, guideList[index], {
     finalFlag: (index + 1) === guideList.length,
     firstFlag: index === 0
   })
 
   _this.currentIndex = index
-  refreshStepDom(_this, showItem)
+  updateGuideItemPosition(_this, guideItem, getViewRoot())
   setTimeout(() => {
     scrollIntoToView(getElement(getViewRoot(), '_eG_guide-content'))
   }, 320)
 }
 
 function handleClickCloseBtn(_this) {
-  const { currentIndex, guideList } = _this
+  const { currentIndex, previewBack } = _this
+  const guideList = _this.getGuideList()
   const { guildClose } = _this.Options
   if (isFunction(guildClose)) { guildClose(currentIndex, guideList[currentIndex], guideList) }
 
   _this.currentIndex = 0
   _this.destroy()
 
-  if (_this.previewBack) { // 通过 previewBack 标示判断回退界面
+  // 通过 previewBack 标示判断回退界面
+  if (previewBack) {
     _this.show('MAINTAIN')
     _this.previewBack = ''
     setTimeout(() => {
@@ -236,21 +241,20 @@ function handleClickCloseBtn(_this) {
 }
 
 // 关闭按钮
-function handleClickCloseButton (_this, e) {
+function handleClickCloseButton (_this) {
   _this.destroy()
 }
 
 // 维护模式下，删除某个用户指导
 function handleDeleteItem (_this, e) {
-  const { guideList } = _this
-  const deleteId = e.target.parentElement.parentElement.parentElement.id
-  _this.dispatch('delete', guideList.find(i => String(i.id) === String(deleteId)) || {})
+  const guideId = e.target.parentElement.parentElement.parentElement.id
+  _this.dispatch('delete', _this.getGuideItemById(guideId))
 }
 
 // 维护模式下，编辑某个用户指导
 function handleEditItem (_this, e) {
-  const editId = e.target.parentElement.parentElement.parentElement.id
-  _this.showEditModal(_this.guideList.find(o => String(o.id) === String(editId)))
+  const guideId = e.target.parentElement.parentElement.parentElement.id
+  _this.showEditModal(_this.getGuideItemById(guideId))
 }
 
 // 维护模式下，切换编辑
@@ -262,38 +266,10 @@ function handlePreview (_this, e) {
 
 /* --------------------------- Private function ---------------------------------------- */
 
-function broadcast (_this, action, data) {
-  const { onGuideListChange = () => {} } = _this.Options
-  onGuideListChange(action, data, _this.guideList)
-}
-
 function transformData (_this) {
-  const { guideList, windowWidth } = _this
-  if (isEmptyArray(guideList)) {
-    return []
-  }
-  return guideList.map(o => transformPixel(o, windowWidth))
-}
-
-function transformPixel (guideItem, windowWidth) {
-  const obj = assign({}, guideItem)
-  const transformKeys = ['left', 'top', 'width', 'height']
-  const temp = Object.keys(obj).reduce((prev, key) => {
-    let val = obj[key]
-    const newKey = `${key}Util`
-    const denominator = windowWidth
-
-    if (transformKeys.indexOf(key) === -1) {
-      return prev
-    } else {
-      if (obj[newKey] === '%') {
-        val = parseInt(val * denominator)
-      }
-      return assign({}, prev, { [key]: val, [newKey]: 'px' })
-    }
-  }, { position: obj.fixFlag !== 'N' ? 'fixed' : 'absolute' })
-
-  return assign(obj, temp)
+  const { windowWidth } = _this
+  const guideList = _this.getGuideList()
+  return isEmptyArray(guideList) ? [] : guideList.map(o => transformUtilToPixel(o, windowWidth))
 }
 
 function insertViewRoot (el) {
@@ -301,45 +277,42 @@ function insertViewRoot (el) {
 }
 
 // 更新上一步下一步 dom 内容
-function refreshStepDom(_this, showItemData, rootEle) {
-  rootEle = rootEle || getViewRoot()
-  const barElementList = Array.from(rootEle.getElementsByClassName('_eG_view-bar-common'))
-  const contentWrap = getElement(rootEle, '_eG_guide-content')
-  const content = getElement(rootEle, '_eG_guide-content-text')
-  const closeTitle = getElement(rootEle, 'e_guide-title-text')
-  const closeBtn = getElement(rootEle, 'e_guide-close')
+function updateGuideItemPosition(_this, guideItem, rootEle) {
+  const { finalFlag, firstFlag, orderNumber, content } = guideItem
+
+  // 1. update content
+  getElement(rootEle, '_eG_guide-content-text').innerHTML = content
+
+  // 2. update button text
   const prevBtn = getElement(rootEle, '_eG_prev-btn')
   const nextBtn = getElement(rootEle, '_eG_next-btn')
-  content.innerHTML = showItemData.content
-  const { windowWidth, windowHeight } = _this
-  assign(showItemData, { windowWidth, windowHeight })
+  nextBtn.innerHTML = finalFlag ? '关闭' : '下一步'
+  prevBtn.style.visibility = firstFlag ? 'hidden' : 'unset'
 
-  const { finalFlag, firstFlag } = showItemData
-  if (finalFlag) {
-    nextBtn.innerHTML = '关闭'
-  } else {
-    nextBtn.innerHTML = '下一步'
-  }
-
-  if (firstFlag) {
-    prevBtn.style.visibility = 'hidden'
-  } else {
-    prevBtn.style.visibility = 'unset'
-  }
-
-  const renderValue1 = transformPixel(showItemData, _this.windowWidth, _this.windowHeight, 0)
-  const checkPosition = selectCorner(renderValue1)
-  const finalRender = assign({}, renderValue1, checkPosition)
-  setBarLibPosition(barElementList, finalRender)
-
-  const { contentPosition, orderNumber } = showItemData
+  // 3. update close title
+  const closeTitle = getElement(rootEle, 'e_guide-title-text')
   closeTitle.innerHTML = `步骤${orderNumber}`
+
+  // 4. update close button
+  const closeBtn = getElement(rootEle, 'e_guide-close')
   setStyles(closeBtn, { display: 'inline-block' })
+
+  const renderGuideItem = selectCorner(transformUtilToPixel(guideItem, _this.windowWidth))
+
+  // 5. update bar position
+  setBarLibPosition(rootEle, renderGuideItem)
+
+  // 6. update wrapper
+  const { windowWidth, windowHeight } = _this
+  const { left, top, width, height } = renderGuideItem
+  const contentPosition = calcContentPosition([windowWidth, windowHeight], [left, top, width, height])
+  const contentWrap = getElement(rootEle, '_eG_guide-content')
   contentWrap.className = `_eG_guide-content ${contentPosition}`
-  setStyles(contentWrap, calcGuidePosition(assign(showItemData, finalRender)))
+  setStyles(contentWrap, calcGuidePosition(_this, renderGuideItem, contentPosition))
 }
 
-function setBarLibPosition(barList, { top, left, width, height, position }) {
+function setBarLibPosition(rootEle, { top, left, width, height, position }) {
+  const barElementList = Array.from(rootEle.getElementsByClassName('_eG_view-bar-common'))
   const temp = [
     `height:${top}px;`,
     `height:${height}px; width:${left}px; top:${top}px;`,
@@ -347,11 +320,14 @@ function setBarLibPosition(barList, { top, left, width, height, position }) {
     `top: ${top + height}px;`
   ]
   temp.forEach((item, index) => {
-    barList[index].setAttribute('style', item + `position: ${position};`)
+    barElementList[index].setAttribute('style', item + `position: ${position};`)
   })
 }
 
-function calcGuidePosition ({ top, left, height, width, fixFlag, contentPosition, windowWidth, windowHeight }) {
+// TODO 优化这里显示问题
+function calcGuidePosition (_this, guideItem, contentPosition) {
+  const { windowWidth, windowHeight } = _this
+  const { top, left, height, width, fixFlag } = guideItem
   const styleJoin = (top, left, obj = {}) => {
     return assign({
       position: fixFlag !== 'N' ? 'fixed' : 'absolute',

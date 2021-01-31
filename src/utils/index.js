@@ -121,6 +121,22 @@ export function transformUtilToSave (guideItem, windowWidth) {
 }
 
 /**
+ * 把 'left', 'top', 'width', 'height' 字段的值转换成像素
+ * @param {object} guideItem
+ * @param {number} windowWidth
+ */
+export function transformUtilToPixel(guideItem, windowWidth) {
+  const pixelFields = (['left', 'top', 'width', 'height']).reduce((acc, field) => {
+    const util = guideItem[field + 'Util']
+    const val = guideItem[field]
+
+    return assign(acc, { [field]: util === '%' ? getUtilValue(val, 'px', windowWidth) : val })
+  }, { position: isFixedPosition(guideItem.fixFlag) })
+
+  return assign({}, guideItem, pixelFields)
+}
+
+/**
  * 把目标元素移动到可视区域
  * @param {dom} el 需要显示的元素
  */

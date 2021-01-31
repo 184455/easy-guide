@@ -10,7 +10,7 @@ const { DotTop, DotRight, DotBottom, DotLeft } = Constant
  * @param {array} mouseChildOffset 鼠标在内部容器的坐标
  * @returns {object} 新 距离 (0, 0) 的位置信息
  */
-export function commonBorderCheck ({ containHW, childHW, mouseContainOffset, mouseChildOffset }) {
+export function borderCheck ({ containHW, childHW, mouseContainOffset, mouseChildOffset }) {
   const errorOffset = 2 // 误差允许范围
   const [containWidth, containHeight] = containHW
   const [childWidth, childHeight] = childHW

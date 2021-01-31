@@ -7,7 +7,7 @@
 import Config from '@/config/index'
 import Constant from '@/config/constant'
 import { getOperationBarDomText } from '@/config/dom-text'
-import { isEmptyArray, assign, getWindowWidthHeight, px } from '@/utils/index'
+import { isEmptyArray, assign, getWindowWidthHeight, px } from '@/utils'
 import {
   addClass, deleteClass, setStyles, getMaintainRoot, hasMaintainRoot,
   createMaintainRoot, hasViewRoot

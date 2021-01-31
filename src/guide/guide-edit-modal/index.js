@@ -16,6 +16,7 @@ export default function GuideEditModal (EasyGuide) {
       createGuideEditModal(this, editInfo)
     }
   }
+
   EasyGuide.prototype.hiddenEditModal = function () {
     const rootEle = getElementById('_eG_editModal')
     getElementById('_eG_modalCancel').onclick = null

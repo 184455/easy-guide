@@ -6,7 +6,7 @@
  */
 import { formDomText } from '@/config/dom-text'
 import { createElement, getElementById, getElement, setStyles } from '@/utils/dom'
-import { assign, selectCorner, addUtils, isFixed, getUtilValue, isFixedPosition } from '@/utils'
+import { assign, selectCorner, addUtils, isFixed, getUtilValue, isFixedPosition, transformUtilToPixel } from '@/utils'
 
 // 创建用户指导编辑框
 export function createGuideEditModal(_this, guideItem) {
@@ -28,15 +28,8 @@ const handleOnChange = (_this, e) => {
   const selectKeys = ['leftUtil', 'topUtil', 'widthUtil', 'heightUtil']
   if (selectKeys.indexOf(name) === -1) { return }
 
-  const valueElement = getElementById(`_EG_${name}`)
-  const oldVal = Number(valueElement.innerHTML)
-
-  if (value === '%') {
-    value = Number((oldVal / _this.windowWidth).toFixed(2))
-  } else {
-    value = parseInt(_this.windowWidth * oldVal)
-  }
-  valueElement.innerHTML = value
+  const valueContain = getElementById(`_EG_${name}`)
+  valueContain.innerHTML = getUtilValue(Number(valueContain.innerHTML), value, _this.windowWidth)
 }
 
 // 表单元素
@@ -96,17 +89,6 @@ const transformChangeFields = (formValues, guideItem, windowWidth) => {
   return assign({}, guideItem, formValues, changeFields)
 }
 
-const toPixel = (guideItem, windowWidth) => {
-  const pixelFields = (['left', 'top', 'width', 'height']).reduce((acc, field) => {
-    const util = guideItem[field + 'Util']
-    const val = guideItem[field]
-
-    return assign(acc, { [field]: util === '%' ? getUtilValue(val, 'px', windowWidth) : val })
-  }, {})
-
-  return assign({}, guideItem, pixelFields)
-}
-
 // 处理点击确认按钮
 const handleClickConfirm = (_this, guideItem) => {
   const { content, id } = guideItem
@@ -116,10 +98,10 @@ const handleClickConfirm = (_this, guideItem) => {
   const formValues = getFormValues(guideItem, windowWidth)
 
   // 根据改变的字段，转换他们的值
-  const transData = transformChangeFields(formValues, guideItem, windowWidth)
+  const transformGuideItem = transformChangeFields(formValues, guideItem, windowWidth)
 
   // 把数据转成像素
-  const pixelGuideItem = toPixel(transData, windowWidth)
+  const pixelGuideItem = transformUtilToPixel(transformGuideItem, windowWidth)
 
   // 根据四个角落转换数据
   const cornerGuideItem = selectCorner(pixelGuideItem)
@@ -128,7 +110,7 @@ const handleClickConfirm = (_this, guideItem) => {
   const editItemDom = getElementById(String(id))
   const styles = addUtils(cornerGuideItem, ['top', 'left', 'height', 'width'], 'px')
   getElement(editItemDom, '_eG_guide-content-text').innerHTML = content || '请维护用户指导内容！'
-  setStyles(editItemDom, assign({}, styles, { position: isFixedPosition(editItemDom.fixFlag) }))
+  setStyles(editItemDom, assign({}, styles, { position: isFixedPosition(cornerGuideItem.fixFlag) }))
 
   // Dispatch To modify
   _this.dispatch('modify', cornerGuideItem)
