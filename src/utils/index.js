@@ -7,18 +7,55 @@
 
 import { isElement } from './dom'
 
+export function isEmptyArray(arr) {
+  if (!Array.isArray(arr)) {
+    return true
+  }
+  return arr.length === 0
+}
+
+export function isDot (name) {
+  return name.indexOf('_eG_dot-') > -1
+}
+
+export function isFixed (flag) {
+  return flag !== 'N'
+}
+
+export function isFixedPosition (flag) {
+  return isFixed(flag) ? 'fixed' : 'absolute'
+}
+
+export function isFunction (fun) {
+  return typeof fun === 'function'
+}
+
+export function isNotEmptyArray(arr) {
+  return Array.isArray(arr) && arr.length > 0
+}
+
+export function assign() {
+  return Object.assign.apply(this, arguments)
+}
+
+export function getMaxNumber(list, field) {
+  return list.reduce((acc, current) => {
+    return Number(current[field]) > acc ? Number(current[field]) : acc
+  }, 0)
+}
+
 /**
  * 创建一个 guide 所必须拥有的字段
  * @param {object} data 初始化数据
  */
 export function createGuideItemData (initVal) {
-  const temp = assign({
+  const guideItem = assign({
     id: String((new Date()).getTime()),
     content: '',
     width: 300,
     widthUtil: '%',
     height: 120,
-    heightUtil: '%',
+    heightUtil: 'px',
     left: 500,
     leftUtil: '%',
     top: 200,
@@ -28,148 +65,14 @@ export function createGuideItemData (initVal) {
     contentPosition: '_eG_guide-1'
   }, initVal)
 
-  return transformUtil(temp, window.innerWidth, window.innerHeight)
+  return transformUtilToSave(guideItem, window.innerWidth, window.innerHeight)
 }
 
 /**
- * 找到数据中最大的某项数据
- * @param {array} list 列表数据
- * @param {string} field 比较的字段
- * @return {number} 列表里面最大的数
+ * 转换成根据某个角定位
+ * @param {object} guideItem
  */
-export function getMaxNumber(list, field) {
-  let res = 0
-  list.forEach(item => {
-    if (Number(item[field]) > res) {
-      res = Number(item[field])
-    }
-  })
-  return res
-}
-
-/**
- * 检测是否是空数组
- * @param {array} arr - 检测数组
- * @returns {boolean}
- */
-export function isEmptyArray(arr) {
-  if (!Array.isArray(arr)) {
-    return true
-  }
-  return arr.length === 0
-}
-
-/**
- * 检测是否是非空数组
- * @param {array} arr - 检测数组
- * @returns {boolean}
- */
-export function isNotEmptyArray(arr) {
-  return Array.isArray(arr) && arr.length > 0
-}
-
-/**
- * 对象合并
- */
-export function assign() {
-  return Object.assign.apply(this, arguments)
-}
-
-/**
- * 给对象元素添加单位
- * @param {object} obj 添加单位数据
- * @param {*} util 单位
- */
-export function addUtil (obj, util) {
-  return Object.keys(obj).reduce((prev, current) => {
-    return assign(prev, { [current]: obj[current] + util })
-  }, {})
-}
-
-/**
- * 把目标元素移动到可视区域
- * @param {dom} el 需要显示的元素
- */
-export function scrollIntoToView (el, options = {}) {
-  if (isElement(el)) {
-    el.scrollIntoView(assign({ behavior: 'smooth', block: 'center', inline: 'nearest' }, options))
-  }
-}
-
-/**
- * 维护信息，转换数据单位
- * @param {*} data
- * @param {*} windowWidth
- * @param {*} windowHeight
- */
-export function transformUtil (data, windowWidth, windowHeight) {
-  const transformKeys = ['left', 'top', 'width', 'height']
-  const dependOnHeightKeys = []
-
-  return Object.keys(data).reduce((prev, key) => {
-    const oleVal = data[key]
-    let val = data[key]
-    const denominator = dependOnHeightKeys.indexOf(key) > -1 ? windowHeight : windowWidth
-
-    if (transformKeys.indexOf(key) > -1) {
-      if (data[`${key}Util`] === '%') {
-        val = oleVal > 1 ? Number((val / denominator).toFixed(2)) : oleVal
-      } else {
-        val = oleVal < 1 ? parseInt(val * denominator) : parseInt(oleVal)
-      }
-    }
-    return assign(prev, { [key]: val })
-  }, {})
-}
-
-export function toPixel (data, windowWidth, windowHeight) {
-  const transformKeys = ['left', 'top', 'width', 'height']
-  const dependOnHeightKeys = []
-
-  return Object.keys(data).reduce((prev, key) => {
-    let val = data[key]
-    const denominator = dependOnHeightKeys.indexOf(key) > -1 ? windowHeight : windowWidth
-    if (transformKeys.indexOf(key) === -1) {
-      return prev
-    }
-
-    if (data[`${key}Util`] === '%') {
-      val = parseInt(val * denominator)
-    }
-    return assign(prev, { [key]: val })
-  }, { position: isFixedPosition(data.fixFlag) })
-}
-
-export function isFixedPosition (flag) {
-  return flag !== 'N' ? 'fixed' : 'absolute'
-}
-
-export function getWindowWidthHeight (isFixed) {
-  const vw = document.body.scrollWidth
-  const vh = isFixed ? window.innerHeight : document.body.scrollHeight
-  return [vw, vh]
-}
-
-export function PX (n) {
-  return n + 'px'
-}
-
-export function isDot (name) {
-  return name.indexOf('_eG_dot-') > -1
-}
-
-export function addUtils (obj, keys, util = 'px') {
-  return Object.keys(obj).reduce((prev, current) => {
-    if (keys.indexOf(current) > -1) {
-      return assign(prev, { [current]: obj[current] + util })
-    } else {
-      return assign(prev, { [current]: obj[current] })
-    }
-  }, {})
-}
-
-// 转换成根据某个角定位
-export function selectPosition (guideItem) {
+export function selectCorner (guideItem) {
   const { left, top, height, width, fixFlag } = guideItem
   const [vw, vh] = getWindowWidthHeight(true)
   const newLeft = vw - left - width
@@ -195,10 +98,63 @@ export function selectPosition (guideItem) {
   return assign({}, guideItem, res)
 }
 
-export function isFunction (fun) {
-  return typeof fun === 'function'
+/**
+ * 单位转换
+ * @param {*} guideItem
+ * @param {*} windowWidth
+ */
+export function transformUtilToSave (guideItem, windowWidth) {
+  const transformData = (['left', 'top', 'width', 'height']).reduce((acc, field) => {
+    const util = guideItem[field + 'Util']
+    const oleVal = guideItem[field]
+    let val = guideItem[field]
+
+    if (util === '%') {
+      val = oleVal > 1 ? getUtilValue(val, '%', windowWidth) : oleVal
+    } else {
+      val = oleVal < 1 ? getUtilValue(val, 'px', windowWidth) : parseInt(oleVal)
+    }
+    return assign(acc, { [field]: val })
+  }, {})
+
+  return assign({}, guideItem, transformData)
 }
 
-export function isFixed (flag) {
-  return flag !== 'N'
+/**
+ * 把目标元素移动到可视区域
+ * @param {dom} el 需要显示的元素
+ */
+export function scrollIntoToView (el, options = {}) {
+  if (isElement(el)) {
+    el.scrollIntoView(assign({ behavior: 'smooth', block: 'center', inline: 'nearest' }, options))
+  }
+}
+
+/**
+ * 获取窗口的宽高
+ * @param {*} isFixed 是否是 fixed 定位
+ */
+export function getWindowWidthHeight (isFixed) {
+  const vw = document.body.scrollWidth
+  const vh = isFixed ? window.innerHeight : document.body.scrollHeight
+  return [vw, vh]
+}
+
+export function px (n) {
+  return n + 'px'
+}
+
+export function addUtils (obj, keys, util = 'px') {
+  return Object.keys(obj).reduce((prev, current) => {
+    if (keys.indexOf(current) > -1) {
+      return assign(prev, { [current]: obj[current] + util })
+    } else {
+      return prev
+    }
+  }, {})
+}
+
+export function getUtilValue (val, util, width) {
+  width = width || getWindowWidthHeight()[0]
+  return util === '%' ? Number((val / width).toFixed(2)) : parseInt(val * width)
 }

@@ -4,77 +4,30 @@
  * @author Abner <xiaocao1602@qq.com>
  * @date 2021/01/01
  */
-import { ele, getElementById, getElement, setStyles } from '@/utils/dom'
-import { assign, transformUtil, toPixel, selectPosition, addUtils } from '@/utils/index'
+import { formDomText } from '@/config/dom-text'
+import { createElement, getElementById, getElement, setStyles } from '@/utils/dom'
+import { assign, selectCorner, addUtils, isFixed, getUtilValue, isFixedPosition } from '@/utils'
 
 // 创建用户指导编辑框
-export function createGuideEditModal(_this, editInfo) {
-  const rootElement = ele('div', { class: 'e_edit-modal', id: '_eG_editModal' })
-  rootElement.innerHTML = modalDomText(editInfo)
+export function createGuideEditModal(_this, guideItem) {
+  const rootElement = createElement('div', { class: 'e_edit-modal', id: '_eG_editModal' })
+  rootElement.innerHTML = modalDomText(guideItem)
   document.body.appendChild(rootElement)
 
+  // 事件监听
   setTimeout(() => {
     getElement(rootElement, 'e_cancel-btn').onclick = () => handleClickCancel(_this)
-    getElement(rootElement, 'e_confirm-btn').onclick = () => handleClickConfirm(_this, editInfo)
+    getElement(rootElement, 'e_confirm-btn').onclick = () => handleClickConfirm(_this, guideItem)
     rootElement.onchange = (e) => handleOnChange(_this, e)
   })
-}
-
-// 用户点击确认，更新对编辑对应的 dom
-const refreshEdit = (patchData, windowWidth, windowHeight) => {
-  const { content, id } = patchData
-  const editItemDom = getElementById(String(id))
-  const contentBox = getElement(editItemDom, '_eG_guide-content-text')
-
-  const pixelData = toPixel(patchData, windowWidth, windowHeight)
-  const temp1 = assign({}, patchData, pixelData)
-  const checkPositionData = selectPosition(temp1)
-  const temp2 = assign({}, temp1, checkPositionData)
-  const pixel = addUtils(temp2, ['top', 'left', 'height', 'width'], 'px')
-  setStyles(editItemDom, pixel)
-  contentBox.innerHTML = content || '请维护用户指导内容！'
-}
-
-// 处理点击取消按钮
-const handleClickCancel = _this => {
-  _this.hiddenEditModal()
-}
-
-// 处理点击确认按钮
-const handleClickConfirm = (_this, editInfo) => {
-  const { windowWidth, windowHeight } = _this
-  const inputElements = document.getElementsByClassName('e_edit_class')
-  const values = Array.from(inputElements).reduce((prev, inputEle) => {
-    let { name, value } = inputEle
-    return assign(prev, { [name]: value })
-  }, {})
-
-  if (editInfo.fixFlag !== values.fixFlag) {
-    const { topUtil, leftUtil } = values
-    if (values.fixFlag === 'N') {
-      values.top = topUtil === '%' ? 0.15 : 200
-      values.left = leftUtil === '%' ? 0.15 : (windowWidth / 2 - 150) | 0
-    } else {
-      // 四个角
-      values.top = topUtil === '%' ? 0.15 : 200
-      values.left = leftUtil === '%' ? 0.15 : 200
-    }
-  }
-
-  const temp = assign(editInfo, values, { id: editInfo.id })
-  const transformUtilData = transformUtil(temp, windowWidth, windowHeight)
-  _this.dispatch('modify', transformUtilData)
-  _this.hiddenEditModal()
-  refreshEdit(transformUtilData, windowWidth, windowHeight)
 }
 
 // 处理表单 onchange 事件
 const handleOnChange = (_this, e) => {
   let { value, name } = e.target
   const selectKeys = ['leftUtil', 'topUtil', 'widthUtil', 'heightUtil']
-  if (selectKeys.indexOf(name) === -1) {
-    return
-  }
+  if (selectKeys.indexOf(name) === -1) { return }
+
   const valueElement = getElementById(`_EG_${name}`)
   const oldVal = Number(valueElement.innerHTML)
 
@@ -86,66 +39,7 @@ const handleOnChange = (_this, e) => {
   valueElement.innerHTML = value
 }
 
-/* --------------------------- Private function ---------------------------------------- */
-
-function selectElement (value, fileName, optionList) {
-  const selectedFlag = (val) => val === value ? ' selected' : ''
-  return `
-    <select class="e_select e_edit_class" name="${fileName}">
-      ${optionList.map(o => {
-        return `<option value="${o.value}"${selectedFlag(o.value)}>${o.showText}</option>`
-      }).join('')}
-    </select>
-  `
-}
-function prefixSelect ({ fileName, value, suffixValue }) {
-  const prefixOptionList = [
-    { showText: '百分比', value: '%' },
-    { showText: '像素', value: 'px' }
-  ]
-
-  return `
-    <div class="prefix-select">
-      <div class="select-left" id="_EG_${fileName}">${value}</div>
-      ${selectElement(suffixValue, fileName, prefixOptionList)}
-    </div>
-  `
-}
-function requireElement (flag) {
-  return flag ? '<span style="color: red;">* </span>' : ''
-}
-function formItem (itemData) {
-  return `
-    <div class="form-item">
-      ${formItemLeft(itemData)}
-      <div class="item-right">
-        ${formItemRight(itemData)}
-      </div>
-    </div>
-  `
-}
-function formItemLeft ({ title, isRequired }) {
-  return `<div class="item-left"><label>${requireElement(isRequired)}<span>${title}：</span></label></div>`
-}
-function formItemRight (itemData) {
-  const { fileName, value } = itemData
-  switch (fileName) {
-    case 'orderNumber':
-      return `<input value="${value}" name="orderNumber" class="e_input e_edit_class" style="width: 50px;" type="number" min="1" />`
-    case 'content':
-      return `<textarea class="e_input e_textarea e_edit_class" name="content" placeholder="请输入指导内容">${value}</textarea>`
-    case 'fixFlag':
-      return selectElement(value, fileName, [
-        { showText: '不固定', value: 'N' },
-        { showText: '参考左上角固定', value: 'leftTop' },
-        { showText: '参考右上角固定', value: 'rightTop' },
-        { showText: '参考右下角固定', value: 'rightBottom' },
-        { showText: '参考左下角固定', value: 'leftBottom' }
-      ])
-    default:
-      return prefixSelect(itemData)
-  }
-}
+// 表单元素
 function modalDomText (initData) {
   const {
     orderNumber, content, fixFlag,
@@ -164,21 +58,81 @@ function modalDomText (initData) {
     { title: '是否固定', fileName: 'fixFlag', value: fixFlag }
   ]
 
-  return `
-    <div class="e_modal-mast"></div>
-    <div class="e_modal-content-wrap">
-      <div class="e_modal-inner-content">
-        <div class="modal-header">编辑指导信息</div>
-        <div class="modal-content">
-          <form method="POST" url="">
-            ${formItemList.map(o => formItem(o)).join('')}
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button class="e_cancel-btn" id="_eG_modalCancel">取消</button>
-          <button class="e_confirm-btn" id="_eG_modalConfirm">确定</button>
-        </div>
-      </div>
-    </div>
-  `
+  return formDomText(formItemList)
+}
+
+// 处理点击取消按钮
+const handleClickCancel = _this => {
+  _this.hiddenEditModal()
+}
+
+// 获取表单数据
+const getFormValues = (guideItem, windowWidth) => {
+  const inputElements = document.getElementsByClassName('e_edit_class')
+  const values = Array.from(inputElements).reduce((prev, inputEle) => {
+    const { name, value } = inputEle
+    return assign(prev, { [name]: value })
+  }, {})
+
+  // 定位方式变了，需要指定默认的 top, left 值
+  if (guideItem.fixFlag !== values.fixFlag) {
+    const { topUtil, leftUtil } = values
+    values.top = topUtil === '%' ? 0.15 : 200
+    values.left = leftUtil === '%' ? 0.15 : isFixed(values.fixFlag) ? 200 : (windowWidth / 2 - 150) | 0
+  }
+  return values
+}
+
+const transformChangeFields = (formValues, guideItem, windowWidth) => {
+  const changeFields =
+    (['left', 'top', 'width', 'height'])
+    .filter(o => formValues[o + 'Util'] !== guideItem[o + 'Util'])
+    .reduce((acc, field) => {
+      return assign(acc, {
+        [field]: getUtilValue(guideItem[field], formValues[field + 'Util'], windowWidth)
+      })
+    }, {})
+
+  return assign({}, guideItem, formValues, changeFields)
+}
+
+const toPixel = (guideItem, windowWidth) => {
+  const pixelFields = (['left', 'top', 'width', 'height']).reduce((acc, field) => {
+    const util = guideItem[field + 'Util']
+    const val = guideItem[field]
+
+    return assign(acc, { [field]: util === '%' ? getUtilValue(val, 'px', windowWidth) : val })
+  }, {})
+
+  return assign({}, guideItem, pixelFields)
+}
+
+// 处理点击确认按钮
+const handleClickConfirm = (_this, guideItem) => {
+  const { content, id } = guideItem
+
+  // 获取表单数据
+  const { windowWidth } = _this
+  const formValues = getFormValues(guideItem, windowWidth)
+
+  // 根据改变的字段，转换他们的值
+  const transData = transformChangeFields(formValues, guideItem, windowWidth)
+
+  // 把数据转成像素
+  const pixelGuideItem = toPixel(transData, windowWidth)
+
+  // 根据四个角落转换数据
+  const cornerGuideItem = selectCorner(pixelGuideItem)
+
+  // Dispatch To Dom
+  const editItemDom = getElementById(String(id))
+  const styles = addUtils(cornerGuideItem, ['top', 'left', 'height', 'width'], 'px')
+  getElement(editItemDom, '_eG_guide-content-text').innerHTML = content || '请维护用户指导内容！'
+  setStyles(editItemDom, assign({}, styles, { position: isFixedPosition(editItemDom.fixFlag) }))
+
+  // Dispatch To modify
+  _this.dispatch('modify', cornerGuideItem)
+
+  // 关闭
+  _this.hiddenEditModal()
 }

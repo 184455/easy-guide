@@ -5,14 +5,26 @@
  * @date 2021/01/01
  */
 
-import { assign } from './index'
+/**
+ * 判断一个对象是否是 dom 元素
+ * @param {*} obj 被检测对象
+ */
+export function isElement(obj) {
+  try {
+    return obj instanceof HTMLElement
+  } catch (e) {
+    return (typeof obj === 'object') &&
+      (obj.nodeType === 1) && (typeof obj.style === 'object') &&
+      (typeof obj.ownerDocument === 'object')
+  }
+}
 
 /**
  * 创建一个 div 元素
  * @param {object} props 能够被 setAttribute 识别的参数列表
  * @returns {Element} 返回 创建好的 div 元素
  */
-export function ele(eleType = 'div', props = {}) {
+export function createElement(eleType = 'div', props = {}) {
   const el = document.createElement(eleType)
   Object.keys(props).forEach((propKey) => {
     el.setAttribute(propKey, props[propKey])
@@ -37,9 +49,7 @@ export function hasClass(el, className) {
  * @param className
  */
 export function addClass(el, className) {
-  if (hasClass(el, className)) {
-    return
-  }
+  if (hasClass(el, className)) { return }
 
   const classNameList = el.className.trim().split(/\s+/)
   classNameList.push(className)
@@ -52,9 +62,7 @@ export function addClass(el, className) {
  * @param className
  */
 export function deleteClass(el, className) {
-  if (!hasClass(el, className)) {
-    return
-  }
+  if (!hasClass(el, className)) { return }
 
   const classNameList = el.className.split(' ').filter(name => name !== className)
   el.className = classNameList.length ? classNameList.join(' ') : ''
@@ -94,41 +102,15 @@ export function getElement (rootEle, className) {
  * @param {dom} child 需要移除的元素
  */
 export function removeChild(rootEle, child) {
-  if (!isElement(rootEle) || !isElement(child)) {
-    return
-  }
+  if (!isElement(rootEle) || !isElement(child)) { return }
   rootEle.removeChild(child)
-}
-
-/**
- * 判断一个对象是否是 dom 元素
- * @param {*} obj 被检测对象
- */
-export function isElement(obj) {
-  try {
-    return obj instanceof HTMLElement
-  } catch (e) {
-    return (typeof obj === 'object') &&
-      (obj.nodeType === 1) && (typeof obj.style === 'object') &&
-      (typeof obj.ownerDocument === 'object')
-  }
-}
-
-/**
- * 获取元素的：左 上 宽 高
- * @param {dom} el 目标元素
- */
-export function getPosition (el) {
-  return (['top', 'left', 'width', 'height']).reduce((prev, current) => {
-    return assign({}, prev, { [current]: parseInt(el.style[current], 10) })
-  }, {})
 }
 
 // --------------------------------------------- 分割线 -----------------------------------------------------
 
 // 创建【维护模式】的根节点元素
 export function createMaintainRoot () {
-  document.body.appendChild(ele('div', { id: '_eG_root' }))
+  document.body.appendChild(createElement('div', { id: '_eG_root' }))
 }
 
 // 是否有【维护模式】的根节点元素
@@ -153,7 +135,7 @@ export function hasViewRoot () {
 
 // 创建【查看模式】的根节点元素
 export function createViewRoot () {
-  return ele('div', { style: 'height: 1px; width: 1px;', id: '_eG_viewRoot' })
+  return createElement('div', { style: 'height: 1px; width: 1px;', id: '_eG_viewRoot' })
 }
 
 // 获取【操作条】根元素

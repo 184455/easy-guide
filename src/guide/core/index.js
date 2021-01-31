@@ -4,7 +4,6 @@
  * @author Abner <xiaocao1602@qq.com>
  * @date 2021/01/01
  */
-
 import { getMaintainRoot, removeChild, getViewRoot } from '@/utils/dom'
 import {
   initMode,
@@ -45,6 +44,12 @@ export default function InitMixin (EG) {
 
   EG.prototype.setGuideList = function (list) {
     this.guideList = list
+  }
+
+  EG.prototype.setGuideItem = function (guideItem) {
+    this.guideList = this.guideList.map(o => {
+      return o.id === guideItem.id ? guideItem : o
+    })
   }
 
   EG.prototype.getGuideList = function () {

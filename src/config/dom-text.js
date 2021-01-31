@@ -5,10 +5,9 @@
  */
 import Constant from './constant'
 
-const {
-  MODE, dataSet, OperationBarDrag, DragGuide
-} = Constant
+const { MODE, dataSet, OperationBarDrag, DragGuide } = Constant
 
+// 返回操作栏的 DOM 元素
 export function getOperationBarDomText () {
   return `
     <div id="_eG_operation-bar">
@@ -29,13 +28,14 @@ export function getOperationBarDomText () {
   `
 }
 
+// 返回一个指导的 DOM 元素
 export function getGuideItemDomText (guideItem, mode) {
   const { id, position, width, height, left, top } = guideItem
-  const dots = (['top', 'right', 'bottom', 'left'])
+  const styles = `position: ${position}; width: ${width}px; height: ${height}px; left: ${left}px; top: ${top}px;`
+  const dots =
+    (['top', 'right', 'bottom', 'left'])
     .map(o => `<div class="_eG_dot-${o} _eG_dot-common" ${dataSet(`_eG_dot-${o}`)}></div>`)
     .join('')
-
-  const styles = `position: ${position}; width: ${width}px; height: ${height}px; left: ${left}px; top: ${top}px;`
 
   return `
     <div id="${id}" class="_eG_guide-item" ${dataSet(DragGuide)} style="${styles}">
@@ -45,18 +45,22 @@ export function getGuideItemDomText (guideItem, mode) {
   `
 }
 
+// 返回预览模式的 DOM 元素
 export function getGuideViewDomText (guideItem, mode) {
-  const barList = (['top', 'left', 'right', 'bottom'])
+  const barList =
+    (['top', 'left', 'right', 'bottom'])
     .map(i => `<div class="_eG_bar-${i} _eG_view-bar-common"></div>`)
     .join('')
 
   return barList + getContentBoxDomText(guideItem, mode)
 }
 
+// 退出预览
 export function exitPreview (flag) {
   return flag ? `<div ${dataSet('exitPreview')} class="_eG_exit-preview">退出预览</div>` : ''
 }
 
+// 指导的底部操作按钮
 function getContentBoxDomText (guideItem, mode) {
   const { contentPosition, orderNumber, content } = guideItem
   const position = mode === MODE.MAINTAIN ? ' ' + contentPosition : ''
@@ -77,4 +81,97 @@ function getContentBoxDomText (guideItem, mode) {
       </div>
     </div>
   `
+}
+
+// --- 表单 ---
+
+// model 表单
+export function formDomText(formItemList) {
+  return `
+    <div class="e_modal-mast"></div>
+    <div class="e_modal-content-wrap">
+      <div class="e_modal-inner-content">
+        <div class="modal-header">编辑指导信息</div>
+        <div class="modal-content">
+          <form method="POST" url="">
+            ${formItemList.map(o => formItem(o)).join('')}
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="e_cancel-btn" id="_eG_modalCancel">取消</button>
+          <button class="e_confirm-btn" id="_eG_modalConfirm">确定</button>
+        </div>
+      </div>
+    </div>
+  `
+}
+
+// Select 元素
+function selectElement (value, fileName, optionList) {
+  const selectedFlag = (val) => val === value ? ' selected' : ''
+  return `
+    <select class="e_select e_edit_class" name="${fileName}">
+      ${optionList.map(o => {
+        return `<option value="${o.value}"${selectedFlag(o.value)}>${o.showText}</option>`
+      }).join('')}
+    </select>
+  `
+}
+
+// 带前缀的 Select 元素
+function prefixSelect ({ fileName, value, suffixValue }) {
+  const prefixOptionList = [
+    { showText: '百分比', value: '%' },
+    { showText: '像素', value: 'px' }
+  ]
+
+  return `
+    <div class="prefix-select">
+      <div class="select-left" id="_EG_${fileName}">${value}</div>
+      ${selectElement(suffixValue, fileName, prefixOptionList)}
+    </div>
+  `
+}
+
+// 必输元素
+function requireElement (flag) {
+  return flag ? '<span style="color: red;">* </span>' : ''
+}
+
+// 表单的一项
+function formItem (itemData) {
+  return `
+    <div class="form-item">
+      ${formItemLeft(itemData)}
+      <div class="item-right">
+        ${formItemRight(itemData)}
+      </div>
+    </div>
+  `
+}
+
+// 表单的一项 - 左边
+function formItemLeft ({ title, isRequired }) {
+  return `<div class="item-left"><label>${requireElement(isRequired)}<span>${title}：</span></label></div>`
+}
+
+// 表单的一项 - 右边
+function formItemRight (itemData) {
+  const { fileName, value } = itemData
+  switch (fileName) {
+    case 'orderNumber':
+      return `<input value="${value}" name="orderNumber" class="e_input e_edit_class" style="width: 50px;" type="number" min="1" />`
+    case 'content':
+      return `<textarea class="e_input e_textarea e_edit_class" name="content" placeholder="请输入指导内容">${value}</textarea>`
+    case 'fixFlag':
+      return selectElement(value, fileName, [
+        { showText: '不固定', value: 'N' },
+        { showText: '参考左上角固定', value: 'leftTop' },
+        { showText: '参考右上角固定', value: 'rightTop' },
+        { showText: '参考右下角固定', value: 'rightBottom' },
+        { showText: '参考左下角固定', value: 'leftBottom' }
+      ])
+    default:
+      return prefixSelect(itemData)
+  }
 }

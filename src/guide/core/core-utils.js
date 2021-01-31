@@ -7,7 +7,7 @@
 import Config from '@/config/index'
 import Constant from '@/config/constant'
 import { getOperationBarDomText } from '@/config/dom-text'
-import { isEmptyArray, assign, getWindowWidthHeight, PX } from '@/utils/index'
+import { isEmptyArray, assign, getWindowWidthHeight, px } from '@/utils/index'
 import {
   addClass, deleteClass, setStyles, getMaintainRoot, hasMaintainRoot,
   createMaintainRoot, hasViewRoot
@@ -89,5 +89,5 @@ function createOperationBar () {
 
 function setMaintainRootWidthHeight (_this) {
   const { windowWidth, windowHeight } = _this
-  setStyles(getMaintainRoot(), { height: PX(windowHeight), width: PX(windowWidth) })
+  setStyles(getMaintainRoot(), { height: px(windowHeight), width: px(windowWidth) })
 }

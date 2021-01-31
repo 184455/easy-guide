@@ -8,8 +8,8 @@ import { calcContentPosition, commonBorderCheck, checkDot } from '@/guide/check'
 import { getGuideItemDomText, getGuideViewDomText, exitPreview } from '@/config/dom-text'
 import {
   assign, isEmptyArray, createGuideItemData,
-  getMaxNumber, scrollIntoToView, selectPosition,
-  isFunction, PX, transformUtil, addUtil
+  getMaxNumber, scrollIntoToView, selectCorner,
+  isFunction, px, transformUtilToSave, addUtils
 } from '@/utils'
 import {
   getElementById, removeChild, getMaintainRoot,
@@ -24,7 +24,7 @@ export function distribute(_this, action, data) {
         handleMouseMoving(_this, data)
         break
       case 'modify':
-        handleModify(_this, action, data)
+        handleModify(_this, data)
         break
       case 'initRender':
         handleInitRender(_this)
@@ -70,13 +70,11 @@ export function distribute(_this, action, data) {
 }
 
 function handleInitRender (_this) {
-  const renderData = transformData(_this).map(o => {
-    const temp = assign({}, o)
-    const pos = selectPosition(temp)
-    return assign({}, temp, pos)
-  })
-
-  const domText = renderData.map(o => getGuideItemDomText(o, _this.mode)).join('')
+  const domText =
+    transformData(_this)
+    .map(o => selectCorner(o))
+    .map(o => getGuideItemDomText(o, _this.mode))
+    .join('')
   getMaintainRoot().insertAdjacentHTML('beforeend', domText)
 }
 
@@ -129,10 +127,10 @@ function handleMouseMoving (_this, data) {
 
   if (type === 'barMoving') {
     const { newLeft, newTop } = commonBorderCheck(data)
-    setStyles(el, { left: PX(newLeft), top: PX(newTop) })
+    setStyles(el, { left: px(newLeft), top: px(newTop) })
   } else if (type === 'guideMoving') {
     const { newLeft, newTop } = commonBorderCheck(data)
-    setStyles(el, { left: PX(newLeft), top: PX(newTop) })
+    setStyles(el, { left: px(newLeft), top: px(newTop) })
 
     const { containHW, childHW, popElement } = data
     const [childWidth, childHeight] = childHW
@@ -153,7 +151,7 @@ function handleMouseMoving (_this, data) {
     // 设置一个选区的最小宽高
     if (newPosition.width < minWidth || newPosition.height < minHeight) { return }
 
-    setStyles(el, addUtil(newPosition, 'px'))
+    setStyles(el, addUtils(newPosition, ['left', 'top', 'width', 'height'], 'px'))
     const newGuideData = assign({}, editItem, newPosition)
     const { left, top, width, height } = newGuideData
 
@@ -164,12 +162,13 @@ function handleMouseMoving (_this, data) {
   }
 }
 
-function handleModify (_this, action, newGuideItem) {
+function handleModify (_this, newGuideItem) {
   let pipeline = null
-  pipeline = selectPosition(newGuideItem)
-  pipeline = transformUtil(pipeline, _this.windowWidth)
+  pipeline = selectCorner(newGuideItem)
+  pipeline = transformUtilToSave(pipeline, _this.windowWidth)
 
-  broadcast(_this, action, pipeline)
+  _this.setGuideItem(pipeline)
+  broadcast(_this, 'modify', pipeline)
 }
 
 async function handleClickPrevBtn(_this, e) {
@@ -329,7 +328,7 @@ function refreshStepDom(_this, showItemData, rootEle) {
   }
 
   const renderValue1 = transformPixel(showItemData, _this.windowWidth, _this.windowHeight, 0)
-  const checkPosition = selectPosition(renderValue1)
+  const checkPosition = selectCorner(renderValue1)
   const finalRender = assign({}, renderValue1, checkPosition)
   setBarLibPosition(barElementList, finalRender)
 
