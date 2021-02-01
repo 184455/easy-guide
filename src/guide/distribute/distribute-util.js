@@ -9,7 +9,7 @@ import { getGuideItemDomText, getGuideViewDomText, exitPreview } from '@/config/
 import { getElementById, removeChild, getMaintainRoot, getElement, getViewRoot, createViewRoot, setStyles } from '@/utils/dom'
 import {
   assign, isEmptyArray, createGuideItemData, getMaxNumber, scrollIntoToView, selectCorner,
-  isFunction, px, transformUtilToSave, addUtils, transformUtilToPixel, isNotEmptyArray
+  isFunction, px, transformUtilToSave, addUtils, transformUtilToPixel, isNotEmptyArray, isFixedPosition, isFixed, getWindowWidthHeight
 } from '@/utils'
 
 const { minHeight, minWidth } = Constant
@@ -308,7 +308,7 @@ function updateGuideItemPosition(_this, guideItem, rootEle) {
   const contentPosition = calcContentPosition([windowWidth, windowHeight], [left, top, width, height])
   const contentWrap = getElement(rootEle, '_eG_guide-content')
   contentWrap.className = `_eG_guide-content ${contentPosition}`
-  setStyles(contentWrap, calcGuidePosition(_this, renderGuideItem, contentPosition))
+  setStyles(contentWrap, getContentPosition(_this, renderGuideItem, contentPosition))
 }
 
 function setBarLibPosition(rootEle, { top, left, width, height, position }) {
@@ -324,74 +324,74 @@ function setBarLibPosition(rootEle, { top, left, width, height, position }) {
   })
 }
 
-// TODO 优化这里显示问题
-function calcGuidePosition (_this, guideItem, contentPosition) {
-  const { windowWidth, windowHeight } = _this
+function getContentPosition (_this, guideItem, contentPosition) {
   const { top, left, height, width, fixFlag } = guideItem
-  const styleJoin = (top, left, obj = {}) => {
-    return assign({
-      position: fixFlag !== 'N' ? 'fixed' : 'absolute',
-      top: `${top}px`,
-      left: `${left}px`
-    }, obj)
-  }
+  const fixedHeight = getWindowWidthHeight(isFixed(fixFlag))[1]
+  const { windowWidth, windowHeight } = _this
+
+  const styleJoin = ({
+    left = 'unset',
+    top = 'unset',
+    right = 'unset',
+    bottom = 'unset',
+    transform = 'none'
+  }) => ({
+    position: isFixedPosition(fixFlag),
+    left, top, right, bottom, transform
+  })
 
   const offset = 12
-  const Height = fixFlag !== 'N' ? window.innerHeight : windowHeight
+  const H = isFixed(fixFlag) ? fixedHeight : windowHeight
   switch (contentPosition) {
     case '_eG_guide-1':
-      return styleJoin(top - offset, left, {
-        right: 'unset',
-        bottom: 'unset',
+      return styleJoin({
+        left: px(left),
+        top: px(top - offset),
         transform: 'translateY(-100%)'
       })
     case '_eG_guide-2':
-      return styleJoin(top - offset, left, {
-        left: 'unset',
-        right: `${windowWidth - (left + width)}px`,
+      return styleJoin({
+        right: px(windowWidth - (left + width)),
+        top: px(top - offset),
         transform: 'translateY(-100%)'
       })
     case '_eG_guide-3':
-      return styleJoin(top, left + width + offset, {
-        right: 'unset',
-        bottom: 'unset',
-        transform: 'none'
+      return styleJoin({
+        left: px(left + width + offset),
+        top: px(top)
       })
     case '_eG_guide-4':
-      return styleJoin(top, left + width + offset, {
-        top: 'unset',
-        bottom: `${Height - (top + height)}px`,
-        transform: 'none'
+      return styleJoin({
+        left: px(left + width + offset),
+        bottom: px(H - (top + height)),
       })
     case '_eG_guide-5':
-      return styleJoin(top + height + offset, left, {
-        left: 'unset',
-        right: `${windowWidth - (left + width)}px`,
-        transform: 'none'
+      return styleJoin({
+        top: px(top + height + offset),
+        right: px(windowWidth - (left + width)),
       })
     case '_eG_guide-6':
-      return styleJoin(top + height + offset, left, {
-        right: 'unset',
-        bottom: 'unset',
-        transform: 'none'
+      return styleJoin({
+        top: px(top + height + offset),
+        left: px(left),
       })
     case '_eG_guide-7':
-      return styleJoin(top, left - offset, {
-        top: 'unset',
-        bottom: `${Height - (top + height)}px`,
+      return styleJoin({
+        left: px(left - offset),
+        bottom: px(H - (top + height)),
         transform: 'translateX(-100%)'
       })
     case '_eG_guide-8':
-      return styleJoin(top, left - offset, {
-        transform: 'translateX(-100%)',
-        right: 'unset',
-        bottom: 'unset'
+      return styleJoin({
+        top: px(top),
+        left: px(left - offset),
+        transform: 'translateX(-100%)'
       })
     default:
-      return styleJoin(top - offset, left, {
-        right: 'unset',
-        bottom: 'unset',
-        transform: 'translateY(-100%)'
+      return styleJoin({
+        top: px(top - offset),
+        left: px(left),
+        transform: 'translateX(-100%)'
       })
   }
 }
