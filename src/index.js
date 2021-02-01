@@ -11,6 +11,6 @@ Distribute(EasyGuide)
 InitEvents(EasyGuide)
 GuideEditModal(EasyGuide)
 
-EasyGuide.prototype.Version = '0.0.6'
+EasyGuide.prototype.Version = '0.0.7'
 
 export default EasyGuide
