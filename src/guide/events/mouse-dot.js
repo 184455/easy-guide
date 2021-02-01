@@ -25,6 +25,7 @@ export function handleDotDown(_this, e) {
     el: guideElement,
     elementName: getDataSet(e.target),
     startPointer: [deltaX, deltaY],
+    popContentHW: [popElement.clientWidth, popElement.clientHeight],
     childLTWH: [offsetLeft, offsetTop, clientWidth, clientHeight],
     containHW: getWindowWidthHeight(isFixed(editItem.fixFlag))
   }

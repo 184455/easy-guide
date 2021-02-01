@@ -24,6 +24,7 @@ export function handleGuideDown(_this, e) {
     moveFlag: false, // 标记是否移动过
     el: mouseEventTarget,
     mouseChildOffset: [deltaX, deltaY],
+    popContentHW: [popElement.clientWidth, popElement.clientHeight],
     childHW: [clientWidth, clientHeight],
     containHW: getWindowWidthHeight(isFixed(editItem.fixFlag))
   }

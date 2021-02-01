@@ -55,7 +55,7 @@ export function borderCheck ({ containHW, childHW, mouseContainOffset, mouseChil
  * @param {array} containBorder 屏幕宽高
  * @param {array} childReact 元素的：左上宽高
  */
-export function calcContentPosition (containBorder, childReact) {
+export function calcContentPosition (containBorder, childReact, popContentHW) {
   const [containWidth, containHeight] = containBorder
   const [childLeft, childTop, childWidth, childHeight] = childReact
 
@@ -158,7 +158,7 @@ export function calcContentPosition (containBorder, childReact) {
       res = 1
   }
 
-  return `_eG_guide-${res}`
+  return checkOverflow(containBorder, childReact, popContentHW) || `_eG_guide-${res}`
 }
 
 /**
@@ -214,40 +214,42 @@ export function checkDot ({ containHW, childLTWH, startPointer, dropPointer, ele
 }
 
 /**
- * // TODO 这个边缘检测的算法未完成
  * 根据剩余宽度计算指导位置
  * @param {array} containBorder 外部容器宽高
  * @param {array} childBorder 内部容器左上宽高
  * @param {array} guideReact 指导框的宽高
  * @returns {object} 指导框位置信息
  */
-export function getContentPosition (containBorder, childReact, guideReact) {
+export function checkOverflow (containBorder, childReact, popContentHW) {
+  const errorOffset = 10
   const [containWidth, containHeight] = containBorder
+  const [popWidth, popHeight] = popContentHW
   const [childLeft, childTop, childWidth, childHeight] = childReact
-  const [guideWidth, guideHeight] = guideReact
-
-  console.log(guideWidth)
 
   const top = childTop
-  const right = containWidth - childLeft - childWidth
-  const bottom = containHeight - childTop - childHeight
+  const right = containWidth - childLeft - (childWidth + popWidth)
+  const bottom = containHeight - childTop - (childHeight + popHeight)
   const left = childLeft
 
   // 建立边的映射关系
   const mapping = [top, right, bottom, left]
+  const minBorder = Math.min(top, right, bottom, left)
+  if (minBorder > errorOffset) { return } // 不靠近边缘，不需要特殊计算
+
   const maxBorder = Math.max(top, right, bottom, left)
   const index = mapping.indexOf(maxBorder)
   const res = val => '_eG_guide-' + val
 
   switch (index) {
     case 0: // top
-      return res(left <= right ? 1 : 2)
+      return res(1)
     case 1: // right
-      return res(childHeight <= guideHeight ? 4 : 3)
+      return (bottom + childHeight + errorOffset) < popHeight ? res(4) : res(3)
     case 2: // bottom
-      return res(left <= right ? 6 : 5)
+      return res(6)
     case 3: // left
-      return res(childHeight <= guideHeight ? 7 : 8)
+      return ((bottom + childHeight + errorOffset) < popHeight) ? res(7) : res(8)
     default:
+      return
   }
 }

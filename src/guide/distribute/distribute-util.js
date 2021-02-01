@@ -133,9 +133,13 @@ function handleMouseMoving (_this, data) {
     const { newLeft, newTop } = borderCheck(data)
     setStyles(el, { left: px(newLeft), top: px(newTop) })
 
-    const { containHW, childHW, popElement } = data
+    const { containHW, childHW, popElement, popContentHW } = data
     const [childWidth, childHeight] = childHW
-    const contentPosition = calcContentPosition(containHW, [newLeft, newTop, childWidth, childHeight])
+    const contentPosition = calcContentPosition(
+      containHW,
+      [newLeft, newTop, childWidth, childHeight],
+      popContentHW
+    )
     popElement.className = `_eG_guide-content ${contentPosition}`
 
     _this.mouseEventTempData.changeData = {
@@ -146,7 +150,7 @@ function handleMouseMoving (_this, data) {
       height: childHeight
     }
   } else if (type === 'dotMoving') {
-    const { popElement, editItem, containHW } = _this.mouseEventTempData
+    const { popElement, editItem, containHW, popContentHW } = _this.mouseEventTempData
     const newPosition = checkDot(_this.mouseEventTempData)
 
     // 设置一个选区的最小宽高
@@ -156,7 +160,7 @@ function handleMouseMoving (_this, data) {
     const newGuideData = assign({}, editItem, newPosition)
     const { left, top, width, height } = newGuideData
 
-    const contentPosition = calcContentPosition(containHW, [left, top, width, height])
+    const contentPosition = calcContentPosition(containHW, [left, top, width, height], popContentHW)
     popElement.className = `_eG_guide-content ${contentPosition}`
 
     _this.mouseEventTempData.changeData = { contentPosition, left, top, width, height }
@@ -281,7 +285,8 @@ function updateGuideItemPosition(_this, guideItem, rootEle) {
   const { finalFlag, firstFlag, orderNumber, content } = guideItem
 
   // 1. update content
-  getElement(rootEle, '_eG_guide-content-text').innerHTML = content
+  const popElement = getElement(rootEle, '_eG_guide-content-text')
+  popElement.innerHTML = content
 
   // 2. update button text
   const prevBtn = getElement(rootEle, '_eG_prev-btn')
@@ -305,7 +310,11 @@ function updateGuideItemPosition(_this, guideItem, rootEle) {
   // 6. update wrapper
   const { windowWidth, windowHeight } = _this
   const { left, top, width, height } = renderGuideItem
-  const contentPosition = calcContentPosition([windowWidth, windowHeight], [left, top, width, height])
+  const contentPosition = calcContentPosition(
+    [windowWidth, windowHeight],
+    [left, top, width, height],
+    [popElement.clientWidth, popElement.clientHeight]
+  )
   const contentWrap = getElement(rootEle, '_eG_guide-content')
   contentWrap.className = `_eG_guide-content ${contentPosition}`
   setStyles(contentWrap, getContentPosition(_this, renderGuideItem, contentPosition))
