@@ -91,8 +91,6 @@ const transformChangeFields = (formValues, guideItem, windowWidth) => {
 
 // 处理点击确认按钮
 const handleClickConfirm = (_this, guideItem) => {
-  const { content, id } = guideItem
-
   // 获取表单数据
   const { windowWidth } = _this
   const formValues = getFormValues(guideItem, windowWidth)
@@ -107,6 +105,7 @@ const handleClickConfirm = (_this, guideItem) => {
   const cornerGuideItem = selectCorner(pixelGuideItem)
 
   // Dispatch To Dom
+  const { content, id } = cornerGuideItem
   const editItemDom = getElementById(String(id))
   const styles = addUtils(cornerGuideItem, ['top', 'left', 'height', 'width'], 'px')
   getElement(editItemDom, '_eG_guide-content-text').innerHTML = content || '请维护用户指导内容！'
