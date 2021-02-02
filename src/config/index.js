@@ -9,8 +9,14 @@ import Constant from './constant'
 
 const Config = {
   mode: Constant.MODE.READ,
-  scrollAble: true,
-  defaultFillStyle: 'rgba(0, 0, 0, 0.5)'
+  beforeCreate: null,
+  beforeNext: null,
+  afterNext: null,
+  beforePrev: null,
+  afterPrev: null,
+  guildClose: null,
+  onGuideListChange: null,
+
 }
 
 export default Config

@@ -183,12 +183,16 @@ const handleClickPrevBtn = async (_this, e) => {
   const { currentIndex: oldIndex } = _this
   const newIndex = oldIndex - 1
 
-  const { beforePrev } = _this.Options
+  const { beforePrev, afterPrev } = _this.Options
   if (isFunction(beforePrev)) {
     await beforePrev(oldIndex, newIndex, guideList)
   }
 
   handleShowStep(_this, newIndex)
+  
+  if (isFunction(afterPrev)) {
+    await afterPrev(oldIndex, newIndex, guideList)
+  }
 }
 
 const handleClickNextBtn = async (_this, e) => {
@@ -198,12 +202,16 @@ const handleClickNextBtn = async (_this, e) => {
   const { currentIndex: oldIndex } = _this
   const newIndex = oldIndex + 1
 
-  const { beforeNext } = _this.Options
+  const { beforeNext, afterNext } = _this.Options
   if (isFunction(beforeNext)) {
     await beforeNext(oldIndex, newIndex, guideList)
   }
 
   handleShowStep(_this, newIndex)
+
+  if (isFunction(afterNext)) {
+    await afterNext(oldIndex, newIndex, guideList)
+  }
 }
 
 function handleShowStep (_this, index) {
