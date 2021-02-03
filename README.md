@@ -78,21 +78,21 @@ EasyGuide 配置：
   每一项指导至少包含这些内容：
 
   ```javascript
-  	{
-      id: String((new Date()).getTime()),
-      content: '',
-      width: 0.15,
-      widthUtil: '%',
-      height: 120,
-      heightUtil: 'px',
-      left: 0.5,
-      leftUtil: '%',
-      top: 200,
-      topUtil: 'px',
-      orderNumber: 1,
-      fixFlag: 'N',
-      contentPosition: '_eG_guide-1'
-    }
+  {
+    id: String((new Date()).getTime()),
+    content: '',
+    width: 0.15,
+    widthUtil: '%',
+    height: 120,
+    heightUtil: 'px',
+    left: 0.5,
+    leftUtil: '%',
+    top: 200,
+    topUtil: 'px',
+    orderNumber: 1,
+    fixFlag: 'N',
+    contentPosition: '_eG_guide-1'
+  }
   ```
 
 
