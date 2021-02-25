@@ -48,7 +48,7 @@ export default function InitMixin (EG) {
 
   EG.prototype.setGuideItem = function (guideItem) {
     this.guideList = this.guideList.map(o => {
-      return o.id === guideItem.id ? guideItem : o
+      return String(o.id) === String(guideItem.id) ? guideItem : o
     })
   }
 
@@ -57,7 +57,7 @@ export default function InitMixin (EG) {
   }
 
   EG.prototype.getGuideItemById = function (id) {
-    return (this.guideList || []).find(o => o.id === id) || {}
+    return (this.guideList || []).find(o => String(o.id) === String(id)) || {}
   }
 
   EG.prototype.broadcast = function (action, data) {
