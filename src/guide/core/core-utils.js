@@ -70,7 +70,7 @@ export function showFlag (_this, m) {
 function showModeMaintain(_this) {
   createMaintainRoot()
   setMaintainRootWidthHeight(_this)
-  createOperationBar()
+  createOperationBar(_this)
   _this.dispatch('initRender')
 }
 
@@ -82,8 +82,9 @@ function setStatus(_this, m) {
   _this.status = m
 }
 
-function createOperationBar () {
-  const domText = getOperationBarDomText()
+function createOperationBar (_this) {
+  const { operationTextConfig = {} } = _this.Options
+  const domText = getOperationBarDomText(operationTextConfig)
   getMaintainRoot().insertAdjacentHTML('afterbegin', domText)
 }
 

@@ -15,6 +15,7 @@ const Config = {
   beforePrev: null,
   afterPrev: null,
   guildClose: null,
+  onClickOperationBarClose: null,
   onGuideListChange: null,
 
 }

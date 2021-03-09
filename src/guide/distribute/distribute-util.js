@@ -253,7 +253,10 @@ function handleClickCloseBtn(_this) {
 }
 
 // 关闭按钮
-function handleClickCloseButton (_this) {
+async function handleClickCloseButton (_this) {
+  const { onClickOperationBarClose } = _this.Options
+  if (isFunction(onClickOperationBarClose)) { await onClickOperationBarClose() }
+
   _this.destroy()
 }
 
